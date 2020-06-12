@@ -3,20 +3,11 @@ import styled from "styled-components";
 import SingleList from "./SingleList";
 import ListFilter from "./ListFilter";
 import Pagination from "./Pagination";
-import MapContainer from "./MapContainer";
-import MapView from "./MapView";
+import MapContainer from "./map/MapContainer";
+import MapView from "./map/MapView";
 
 const List = () => {
-  const [data, setData] = useState([]);
-
-  useEffect(() => {
-    fetch("/data/data.json")
-      .then((res) => res.json())
-      .then((res) => {
-        setData(res);
-        // console.log(res);
-      });
-  }, []);
+  // const [data, setData] = useState([]);
 
   return (
     <Container>
@@ -46,8 +37,8 @@ const List = () => {
         <Pagination>Pagination</Pagination>
       </ListWrapper>
       <MapWrapper>
-        <MapContainer />
-        {/* <MapView /> */}
+        {/* <MapContainer /> */}
+        <MapView />
       </MapWrapper>
     </Container>
   );

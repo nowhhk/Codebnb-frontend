@@ -5,7 +5,7 @@ import {
   withGoogleMap,
   Marker,
 } from "react-google-maps";
-import * as jejuData from "../../data/data.json";
+import * as jejuData from "../../../data/data.json";
 
 const Map = () => {
   return (

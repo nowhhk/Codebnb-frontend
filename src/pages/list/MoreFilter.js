@@ -1,7 +1,19 @@
-import React from "react";
+import React, { useState } from "react";
 import styled from "styled-components";
 
-const MoreFilter = ({ handleModal, handleOutside }) => {
+const MoreFilter = ({ filter, handleModal, handleOutside }) => {
+  // console.log("filter:", filter);
+
+  const [selected, setSelected] = useState([]);
+
+  const selectedItem = (e) => {
+    const { value } = e.target;
+    // 각 항목당 id 가 있으면 value 대신 id
+    setSelected((selected) => [...selected, value]);
+    console.log(selected);
+    // it's one step behind. fix this
+  };
+
   return (
     <Container>
       <Backdrop id="outside" onClick={(e) => handleOutside(e)}>
@@ -16,6 +28,12 @@ const MoreFilter = ({ handleModal, handleOutside }) => {
           <Content>
             <Section>
               <h1>침실과 침대</h1>
+              {filter.map((a) => (
+                <List key={a}>
+                  <input type="checkbox" value={a} onChange={selectedItem} />
+                  <label>{a}</label>
+                </List>
+              ))}
             </Section>
             <Section>
               <h1>편의시설</h1>
@@ -128,4 +146,7 @@ const Btn = styled.button`
   cursor: pointer;
 `;
 
+const List = styled.li`
+  list-style: none;
+`;
 export default MoreFilter;

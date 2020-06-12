@@ -9,7 +9,8 @@
         "bedroom": 1,
         "bed": null,
         "tag": true,
-        "image_url_1": null
+        "image_url_1": null,
+        "price": "$80"
       },
       "geometry": {
         "coordinates": [33.442415, 126.278675]
@@ -24,7 +25,8 @@
         "bedroom": 1,
         "bed": 1,
         "tag": true,
-        "image_url_1": null
+        "image_url_1": null,
+        "price": "$80"
       },
       "geometry": {
         "coordinates": [33.43271, 126.282537]
@@ -39,7 +41,8 @@
         "bedroom": 1,
         "bed": 1,
         "tag": false,
-        "image_url_1": null
+        "image_url_1": null,
+        "price": "$80"
       },
       "geometry": {
         "coordinates": [33.356041, 126.286851]
@@ -54,7 +57,8 @@
         "bedroom": 1,
         "bed": 1,
         "tag": true,
-        "image_url_1": null
+        "image_url_1": null,
+        "price": "$80"
       },
       "geometry": {
         "coordinates": [33.474483, 126.457682]
@@ -69,7 +73,8 @@
         "bedroom": 1,
         "bed": 2,
         "tag": false,
-        "image_url_1": null
+        "image_url_1": null,
+        "price": "$80"
       },
       "geometry": {
         "coordinates": [33.323511, 126.665597]

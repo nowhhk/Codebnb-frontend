@@ -6,6 +6,17 @@ import MoreFilter from "./MoreFilter";
 import { useState, useRef } from "react";
 
 const ListFilter = () => {
+  const [filter, setFilter] = useState([]);
+
+  useEffect(() => {
+    fetch("/data/filter.json")
+      .then((res) => res.json())
+      .then((res) => {
+        setFilter(res.amenities);
+        // console.log(filter);
+      });
+  }, []);
+
   const [dropdown, setDropdown] = useState(undefined);
 
   const handleDrop = (id) => {
@@ -99,7 +110,11 @@ const ListFilter = () => {
         ) : null}
         <Pill onClick={handleModal}>필터 추가하기</Pill>
         {open ? (
-          <MoreFilter handleModal={handleModal} handleOutside={handleOutside}>
+          <MoreFilter
+            filter={filter}
+            handleModal={handleModal}
+            handleOutside={handleOutside}
+          >
             hello
           </MoreFilter>
         ) : null}

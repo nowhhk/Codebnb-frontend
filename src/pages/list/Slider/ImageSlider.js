@@ -12,7 +12,7 @@ const ImageSlider = () => {
       .then((res) => res.json())
       .then((res) => {
         setSlides(res.slides);
-        console.log(res);
+        //console.log(res);
       });
   }, []);
 
@@ -106,6 +106,7 @@ const Container = styled.div`
   height: 100%;
   position: relative;
   overflow: hidden;
+  z-index: 0;
 `;
 
 const Heart = styled.div`
