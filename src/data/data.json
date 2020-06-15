@@ -8,13 +8,13 @@
         "guests": 2,
         "bedroom": 1,
         "bed": null,
-        "PICTURE_LI": null,
-        "PICTURE_DE": null,
-        "PICTURE__1": null
+        "tag": true,
+        "image_url_1": null,
+        "price": "$50",
+        "wishlist": true
       },
       "geometry": {
-        "type": "Point",
-        "coordinates": [33.442415, 126.278675]
+        "coordinates": [33.471629, 126.729448]
       }
     },
     {
@@ -25,12 +25,12 @@
         "guests": 2,
         "bedroom": 1,
         "bed": 1,
-        "PICTURE_LI": null,
-        "PICTURE_DE": null,
-        "PICTURE__1": null
+        "tag": true,
+        "image_url_1": null,
+        "price": "$80",
+        "wishlist": false
       },
       "geometry": {
-        "type": "Point",
         "coordinates": [33.43271, 126.282537]
       }
     },
@@ -42,12 +42,12 @@
         "guests": 2,
         "bedroom": 1,
         "bed": 1,
-        "PICTURE_LI": null,
-        "PICTURE_DE": null,
-        "PICTURE__1": null
+        "tag": false,
+        "image_url_1": null,
+        "price": "$110",
+        "wishlist": false
       },
       "geometry": {
-        "type": "Point",
         "coordinates": [33.356041, 126.286851]
       }
     },
@@ -59,12 +59,12 @@
         "guests": 2,
         "bedroom": 1,
         "bed": 1,
-        "PICTURE_LI": null,
-        "PICTURE_DE": null,
-        "PICTURE__1": null
+        "tag": true,
+        "image_url_1": null,
+        "price": "$120",
+        "wishlist": false
       },
       "geometry": {
-        "type": "Point",
         "coordinates": [33.474483, 126.457682]
       }
     },
@@ -76,13 +76,30 @@
         "guests": 4,
         "bedroom": 1,
         "bed": 2,
-        "PICTURE_LI": null,
-        "PICTURE_DE": null,
-        "PICTURE__1": null
+        "tag": false,
+        "image_url_1": null,
+        "price": "$60",
+        "wishlist": false
       },
       "geometry": {
-        "type": "Point",
         "coordinates": [33.323511, 126.665597]
+      }
+    },
+    {
+      "properties": {
+        "home_id": 1,
+        "title": "[New 오픈] 마리따 m01,바닷가바로 앞, 커플펜션,조용한마을,곽지,협재 인근",
+        "address": "Hallim-eup Jeju-si",
+        "guests": 2,
+        "bedroom": 1,
+        "bed": null,
+        "tag": true,
+        "image_url_1": null,
+        "price": "$50",
+        "wishlist": true
+      },
+      "geometry": {
+        "coordinates": [33.326299, 126.469454]
       }
     }
   ]

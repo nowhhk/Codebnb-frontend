@@ -50,6 +50,4 @@ const PageLi = styled.li`
   align-items: center;
 `;
 
-const Center = styled.div``;
-
 export default Pagination;
