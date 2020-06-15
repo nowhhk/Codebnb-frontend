@@ -84,6 +84,23 @@
       "geometry": {
         "coordinates": [33.323511, 126.665597]
       }
+    },
+    {
+      "properties": {
+        "home_id": 1,
+        "title": "[New 오픈] 마리따 m01,바닷가바로 앞, 커플펜션,조용한마을,곽지,협재 인근",
+        "address": "Hallim-eup Jeju-si",
+        "guests": 2,
+        "bedroom": 1,
+        "bed": null,
+        "tag": true,
+        "image_url_1": null,
+        "price": "$50",
+        "wishlist": true
+      },
+      "geometry": {
+        "coordinates": [33.326299, 126.469454]
+      }
     }
   ]
 }

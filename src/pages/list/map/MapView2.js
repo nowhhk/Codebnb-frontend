@@ -1,33 +1,37 @@
 import React, { useState, useEffect } from "react";
+import styled from "styled-components";
 import {
   GoogleMap,
   useLoadScript,
   Marker,
   OverlayView,
+  InfoWindow,
 } from "@react-google-maps/api";
-
-import styled from "styled-components";
-
-const mapContainerStyle = {
-  height: "100vh",
-  width: "100%",
-};
 
 const MapView = ({ rooms }) => {
   const [mapRef, setMapRef] = useState(null);
   const [center, setCenter] = useState({ lat: 33.393506, lng: 126.55652 });
+  const [zoom, setZoom] = useState(5);
 
-  const { isLoaded, loadError } = useLoadScript({
-    googleMapsApiKey: "AIzaSyCqJz2U6vsxMjz3npYEj1mBqvzrPpVbgYY",
-  });
+  const data = [
+    { latitude: 33.471629, longitude: 126.729448, price: 100 },
+    { latitude: 33.356041, longitude: 126.286851, price: 100 },
+    { latitude: 33.474483, longitude: 126.457682, price: 100 },
+    { latitude: 33.323511, longitude: 126.665597, price: 100 },
+  ];
 
-  if (loadError) return "Error";
-  if (!isLoaded) return "Loading...";
+  // const data = [
+  //   { latitude: 37.519807, longitude: 127.035855, price: 100 },
+  //   { latitude: 37.533487, longitude: 127.007254, price: 100 },
+  // ];
 
   const fitBounds = (map) => {
     const bounds = new window.google.maps.LatLngBounds();
-    rooms.map((room, idx) => {
-      bounds.extend({ lat: room.latitude, lng: room.longitude });
+    data.map((room, idx) => {
+      bounds.extend({
+        lat: room.latitude,
+        lng: room.longitude,
+      });
       return idx;
     });
     map.fitBounds(bounds);
@@ -40,14 +44,25 @@ const MapView = ({ rooms }) => {
     fitBounds(map);
   };
 
+  const { isLoaded } = useLoadScript({
+    googleMapsApiKey: "AIzaSyCqJz2U6vsxMjz3npYEj1mBqvzrPpVbgYY",
+  });
+
+  if (!isLoaded) {
+    return "Loading...";
+  }
   return (
     <div>
       <GoogleMap
-        mapContainerStyle={mapContainerStyle}
-        zoom={10}
+        onLoad={loadHandler}
         center={center}
+        zoom={zoom}
+        mapContainerStyle={{
+          height: "100vh",
+          width: "100%",
+        }}
       >
-        {rooms.map((room, idx) => (
+        {data.map((room, idx) => (
           <OverlayView
             key={idx}
             position={{
@@ -65,11 +80,6 @@ const MapView = ({ rooms }) => {
             </CustomMarker>
           </OverlayView>
         ))}
-        {/* {rooms.map((room, idx) => {
-          return (
-            <Marker key={idx} position={{ lat: 33.393506, lng: 126.55652 }} />
-          );
-        })} */}
       </GoogleMap>
     </div>
   );

@@ -7,17 +7,17 @@ import { useState, useRef } from "react";
 
 const ListFilter = () => {
   const [filter, setFilter] = useState([]);
+  const [dropdown, setDropdown] = useState(undefined);
+  const [open, setOpen] = useState(false);
 
   useEffect(() => {
     fetch("/data/filter.json")
       .then((res) => res.json())
       .then((res) => {
-        setFilter(res.amenities);
+        setFilter(res);
         // console.log(filter);
       });
   }, []);
-
-  const [dropdown, setDropdown] = useState(undefined);
 
   const handleDrop = (id) => {
     setDropdown(id);
@@ -28,8 +28,6 @@ const ListFilter = () => {
       handleDrop();
     }
   };
-
-  const [open, setOpen] = useState(false);
 
   const handleModal = () => {
     setOpen(!open);
@@ -42,90 +40,92 @@ const ListFilter = () => {
   };
 
   return (
-    <div>
-      <Container>
-        <div style={{ display: "relative" }}>
-          <Pill onClick={() => handleDrop(0)}>유연한 환불 정책</Pill>
-          {dropdown === 0 ? (
-            <Dropdown handleDDOutside={handleDDOutside}>
-              <div style={{ display: "flex" }}>
-                <div style={{ marginRight: "2em" }}>
-                  유연한 화불 정책을 제공하는 숙소만 검색 결과에 표시
-                </div>
-                <Toggle></Toggle>
-              </div>
-            </Dropdown>
-          ) : null}
-        </div>
-        <div>
-          <Pill onClick={() => handleDrop(1)}>숙소 유형</Pill>
-          {dropdown === 1 ? (
-            <Dropdown handleDDOutside={handleDDOutside}>
-              <div style={{ display: "flex" }}>
-                <Checkbox type="checkbox" style={{ marginRight: "1em" }} />
-                <div>
-                  <div>집 전체</div>
-                  <div>집 전체를 단독으로 사용합니다.</div>
-                </div>
-              </div>
-              <div style={{ display: "flex" }}>
-                <Checkbox type="checkbox" style={{ marginRight: "1em" }} />
-                <div>
-                  <div>개인실</div>
-                  <div>
-                    침실은 단독으로 쓰고, 이외의 공간은 호스트나 다른 게스트와
-                    함께 이용할 수도 있습니다.
-                  </div>
-                </div>
-              </div>
-              <div style={{ display: "flex" }}>
-                <Checkbox type="checkbox" style={{ marginRight: "1em" }} />
-                <div>
-                  <div>호텔 객실</div>
-                  <div>
-                    부티크 호텔, 호스텔 등의 개인실이나 다인실을 이용합니다
-                  </div>
-                </div>
-              </div>
-              <div style={{ display: "flex" }}>
-                <Checkbox type="checkbox" style={{ marginRight: "1em" }} />
-                <div>
-                  <div>다인실</div>
-                  <div>
-                    사적 공간 없이, 침실이나 욕실 등을 호스트나 다른 게스트와
-                    함께 이용합니다
-                  </div>
-                </div>
-              </div>
-            </Dropdown>
-          ) : null}
-        </div>
-        <Pill onClick={() => handleDrop(2)}>요금</Pill>
-        {dropdown === 2 ? (
+    <Container>
+      <div>
+        <Pill onClick={() => handleDrop(0)}>유연한 환불 정책</Pill>
+        {dropdown === 0 ? (
           <Dropdown handleDDOutside={handleDDOutside}>
             <div style={{ display: "flex" }}>
-              <div style={{ marginRight: "2em" }}>요금</div>
+              <div style={{ marginRight: "2em" }}>
+                유연한 화불 정책을 제공하는 숙소만 검색 결과에 표시
+              </div>
+              <Toggle></Toggle>
             </div>
           </Dropdown>
         ) : null}
-        <Pill onClick={handleModal}>필터 추가하기</Pill>
-        {open ? (
-          <MoreFilter
-            filter={filter}
-            handleModal={handleModal}
-            handleOutside={handleOutside}
-          >
-            hello
-          </MoreFilter>
+      </div>
+      <div>
+        <Pill onClick={() => handleDrop(1)}>숙소 유형</Pill>
+        {dropdown === 1 ? (
+          <Dropdown handleDDOutside={handleDDOutside}>
+            <div style={{ display: "flex" }}>
+              <Checkbox type="checkbox" style={{ marginRight: "1em" }} />
+              <div>
+                <div>집 전체</div>
+                <div>집 전체를 단독으로 사용합니다.</div>
+              </div>
+            </div>
+            <div style={{ display: "flex" }}>
+              <Checkbox type="checkbox" style={{ marginRight: "1em" }} />
+              <div>
+                <div>개인실</div>
+                <div>
+                  침실은 단독으로 쓰고, 이외의 공간은 호스트나 다른 게스트와
+                  함께 이용할 수도 있습니다.
+                </div>
+              </div>
+            </div>
+            <div style={{ display: "flex" }}>
+              <Checkbox type="checkbox" style={{ marginRight: "1em" }} />
+              <div>
+                <div>호텔 객실</div>
+                <div>
+                  부티크 호텔, 호스텔 등의 개인실이나 다인실을 이용합니다
+                </div>
+              </div>
+            </div>
+            <div style={{ display: "flex" }}>
+              <Checkbox type="checkbox" style={{ marginRight: "1em" }} />
+              <div>
+                <div>다인실</div>
+                <div>
+                  사적 공간 없이, 침실이나 욕실 등을 호스트나 다른 게스트와 함께
+                  이용합니다
+                </div>
+              </div>
+            </div>
+          </Dropdown>
         ) : null}
-      </Container>
-    </div>
+      </div>
+      <Pill onClick={() => handleDrop(2)}>요금</Pill>
+      {dropdown === 2 ? (
+        <Dropdown handleDDOutside={handleDDOutside}>
+          <div style={{ display: "flex" }}>
+            <div style={{ marginRight: "2em" }}>요금</div>
+          </div>
+        </Dropdown>
+      ) : null}
+      <Pill onClick={handleModal}>필터 추가하기</Pill>
+      {open ? (
+        <MoreFilter
+          filter={filter}
+          handleModal={handleModal}
+          handleOutside={handleOutside}
+        >
+          hello
+        </MoreFilter>
+      ) : null}
+    </Container>
   );
 };
 
 const Container = styled.div`
   display: flex;
   margin: 0.875em 0;
+
+  div {
+    display: relative;
+  }
 `;
 
 const Pill = styled.button`
