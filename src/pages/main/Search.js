@@ -7,9 +7,9 @@ import styled from "styled-components";
 
 const Search = () => {
   //위치
-  const [city, setCity] = useState("");
+  const [location, setLocation] = useState("");
   const onChange = (e) => {
-    setCity(e.target.value);
+    setLocation(e.target.value);
   };
 
   //체크인, 체크아웃 날짜
@@ -30,7 +30,7 @@ const Search = () => {
 
   //게스트 인원체크
   const [adults, setAdults] = useState(0);
-  const [children, setChild] = useState(0);
+  const [children, setChildren] = useState(0);
   const [infants, setInfants] = useState(0);
 
   let guestNum;
@@ -51,7 +51,7 @@ const Search = () => {
 
   console.log("checkin:", checkin);
   console.log("checkout:", checkout);
-  console.log(city, checkin, checkout, adults, children, infants);
+  console.log(location, checkin, checkout, adults, children, infants);
   //   console.log("오늘은", moment().format("YYYY-MM-DD"));
 
   return (
@@ -64,7 +64,7 @@ const Search = () => {
               <input
                 placeholder="어디로 여행가세요?"
                 onChange={onChange}
-                value={city}
+                value={location}
               ></input>
             </InputBtn>
           </SearchInput>
@@ -91,7 +91,7 @@ const Search = () => {
             </InputBtn>
           </SearchInput>
           <Line></Line>
-          <SearchInput style={{ position: "relative" }}>
+          <SearchInput>
             <InputBtn onClick={handleOpen}>
               <div>인원</div>
               <div>{guestNum}</div>
@@ -105,8 +105,18 @@ const Search = () => {
                   </div>
                   <div>
                     <button
+                      style={
+                        adults === 0
+                          ? {
+                              color: "rgb(235, 235, 235)",
+                              borderColor: "rgb(235, 235, 235)",
+                            }
+                          : undefined
+                      }
                       onClick={() => {
-                        if (adults !== 0) {
+                        if (adults === 1 && (children !== 0 || infants !== 0)) {
+                          setAdults((num) => num);
+                        } else if (adults !== 0) {
                           setAdults((num) => num - 1);
                         }
                       }}
@@ -132,9 +142,17 @@ const Search = () => {
                   </div>
                   <div>
                     <button
+                      style={
+                        children === 0
+                          ? {
+                              color: "rgb(235, 235, 235)",
+                              borderColor: "rgb(235, 235, 235)",
+                            }
+                          : undefined
+                      }
                       onClick={() => {
                         if (children !== 0) {
-                          setChild((num) => num - 1);
+                          setChildren((num) => num - 1);
                         }
                       }}
                     >
@@ -143,8 +161,11 @@ const Search = () => {
                     <div>{children}</div>
                     <button
                       onClick={() => {
-                        if (children !== 16) {
-                          setChild((num) => num + 1);
+                        if (adults === 0 && children === 0) {
+                          setAdults(1);
+                          setChildren(1);
+                        } else if (children !== 16) {
+                          setChildren((num) => num + 1);
                         }
                       }}
                     >
@@ -159,6 +180,14 @@ const Search = () => {
                   </div>
                   <div>
                     <button
+                      style={
+                        infants === 0
+                          ? {
+                              color: "rgb(235, 235, 235)",
+                              borderColor: "rgb(235, 235, 235)",
+                            }
+                          : undefined
+                      }
                       onClick={() => {
                         if (infants !== 0) {
                           setInfants((num) => num - 1);
@@ -169,8 +198,19 @@ const Search = () => {
                     </button>
                     <div>{infants}</div>
                     <button
+                      style={
+                        infants === 5
+                          ? {
+                              color: "rgb(235, 235, 235)",
+                              borderColor: "rgb(235, 235, 235)",
+                            }
+                          : undefined
+                      }
                       onClick={() => {
-                        if (infants !== 5) {
+                        if (adults === 0 && infants === 0) {
+                          setAdults(1);
+                          setInfants(1);
+                        } else if (infants !== 5) {
                           setInfants((num) => num + 1);
                         }
                       }}
@@ -183,6 +223,7 @@ const Search = () => {
             ) : null}
           </SearchInput>
         </SearchInputs>
+
         <SearchBtn>
           <i className="fas fa-search"></i>&nbsp;&nbsp;검색
         </SearchBtn>
@@ -200,36 +241,32 @@ const SearchWrapper = styled.div`
   height: 70px;
   /* border: solid 1px black; */
   display: flex;
-  justify-content: space-between;
+  /* justify-content: space-between; */
   padding: 12px;
   margin-bottom: 70px;
   border-radius: 12px;
   box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.08) !important;
-  &:hover {
-    /* border: solid 1px black; */
-  }
 `;
 
 const SearchInputs = styled.div`
   display: flex;
   align-items: center;
-  /* border: solid 1px black; */
+  width: 100%;
 `;
 
 const SearchInput = styled.div`
-  /* border: solid 2px ${(props) => props.theme.color.black}; */
   border-radius: 10px;
   padding: 8px;
-  width: 25vw;
-  padding: 1em;
-  font-size:12px;
+  width: 100%;
+  font-size: 12px;
+  position: relative;
+
   input {
     border: none;
-    margin-top:3px;
+    margin-top: 3px;
     font-size: 14px;
-    width:100%;
+    width: 100%;
   }
-  
 `;
 
 const InputBtn = styled.button`
@@ -240,6 +277,7 @@ const InputBtn = styled.button`
   display: flex;
   flex-direction: column;
   font-size: 12px;
+  cursor: pointer;
   div:nth-child(2) {
     color: ${(props) => props.theme.color.gray};
     margin-top: 3px;
@@ -256,12 +294,14 @@ const SearchBtn = styled.button`
   background-image: radial-gradient(circle at center, #FF385C 0%, #E61E4D 27.5%, #E31C5F 40%, #D70466 57.5%, #BD1E59 75%, #BD1E59 100% );
   background-size: 200% 200%;
   min-width:95px;
+  cursor: pointer;
 `;
 const GuestModal = styled.div`
+  z-index: 10;
   padding: 12px;
   position: absolute;
   left: 1em;
-  top: 77px;
+  top: 73px;
   width: 100%;
   height: 260px;
   border-bottom-left-radius: 3px;

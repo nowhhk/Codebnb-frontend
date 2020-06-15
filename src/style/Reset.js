@@ -50,6 +50,7 @@ hr { display:block; height:1px; border:0; border-top:1px solid #cccccc; margin:1
 input, select { vertical-align:middle; box-sizing: border-box; }
 textarea { box-sizing: border-box; }
 
-`;
 
+input, button:focus {outline: 0;}
+`;
 export default Reset;
