@@ -4,24 +4,13 @@ import Slide from "./Slide";
 import Arrow from "./Arrow";
 import styled from "styled-components";
 
-const ImageSlider = () => {
-  const [slides, setSlides] = useState([]);
-
-  useEffect(() => {
-    fetch("/data/slides.json")
-      .then((res) => res.json())
-      .then((res) => {
-        setSlides(res.slides);
-        console.log(res);
-      });
-  }, []);
-
+const ImageSlider = ({ slides, heart }) => {
   const [state, setState] = useState({
     active: 0,
     translate: 0,
     transition: 0.25,
     width: 300,
-    wishlist: false,
+    wishlist: heart,
     arrow: false,
   });
 
@@ -106,6 +95,7 @@ const Container = styled.div`
   height: 100%;
   position: relative;
   overflow: hidden;
+  z-index: 0;
 `;
 
 const Heart = styled.div`

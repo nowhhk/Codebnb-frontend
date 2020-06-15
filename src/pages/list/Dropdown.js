@@ -18,7 +18,7 @@ const Dropdown = ({ handleDDOutside, children }) => {
 };
 
 const Container = styled.div`
-  position: fixed;
+  position: absolute;
   top: 0;
   bottom: 0;
   left: 0;
@@ -27,7 +27,7 @@ const Container = styled.div`
 `;
 
 const Wrapper = styled.div`
-  position: relative;
+  position: absolute;
 `;
 
 const Box = styled.div`
@@ -35,8 +35,9 @@ const Box = styled.div`
   width: 360px;
   background-color: white;
   box-shadow: 0 0 10px rgba(0, 0, 0, 0.25);
-
   border-radius: 20px;
+  top: 150px;
+  left: 20px;
 `;
 
 const Content = styled.div`

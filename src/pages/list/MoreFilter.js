@@ -1,7 +1,37 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import styled from "styled-components";
+import Checkbox from "../../components/Checkbox";
 
-const MoreFilter = ({ handleModal, handleOutside }) => {
+const MoreFilter = ({ filter, handleModal, handleOutside }) => {
+  const [selected, setSelected] = useState([]);
+
+  const handleCheckbox = (e) => {
+    // 각 항목당 id 가 있으면 value 대신 id
+    const { value } = e.target;
+    let userSelected = [...selected];
+    if (userSelected.includes(value)) {
+      userSelected = userSelected.filter((s) => s !== value);
+    } else {
+      userSelected = [...userSelected, value];
+    }
+    setSelected(userSelected);
+  };
+
+  useEffect(() => {
+    console.log(selected);
+  }, [selected]);
+
+  const clearForm = (e) => {
+    e.preventDefault();
+    setSelected([]);
+  };
+
+  const submitForm = (e) => {
+    e.preventDefault();
+
+    // update fetch?
+  };
+
   return (
     <Container>
       <Backdrop id="outside" onClick={(e) => handleOutside(e)}>
@@ -15,35 +45,46 @@ const MoreFilter = ({ handleModal, handleOutside }) => {
           </Header>
           <Content>
             <Section>
-              <h1>침실과 침대</h1>
-            </Section>
-            <Section>
               <h1>편의시설</h1>
-              <Line>
-                <div>
-                  <input type="checkbox" style={{ marginRight: "1em" }} />
-                  <span>map facilities</span>
-                </div>
-                <div>
-                  <input type="checkbox" style={{ marginRight: "1em" }} />
-                  <span>list or div?</span>
-                </div>
-              </Line>
+              <div>
+                <Checkbox
+                  name={"amenities"}
+                  value={selected}
+                  options={filter.amenities}
+                  onChange={handleCheckbox}
+                />
+              </div>
             </Section>
             <Section>
-              <h1>시설</h1>
+              <h1>건물유형</h1>
+              <div>
+                <Checkbox
+                  name={"property_types"}
+                  value={selected}
+                  options={filter.property_types}
+                  onChange={handleCheckbox}
+                />
+              </div>
+            </Section>
+            <Section>
+              <h1>호스트 언어</h1>
+              <div>
+                <Checkbox
+                  name={"languages"}
+                  value={selected}
+                  options={filter.languages}
+                  onChange={handleCheckbox}
+                />
+              </div>
             </Section>
             <Section>
               <h1>건물유형</h1>
             </Section>
-            <Section>
-              <h1>숙소 이용규칙</h1>
-            </Section>
+            <BtnContainer>
+              <div onClick={clearForm}>지우기</div>
+              <Btn onClick={submitForm}>저장</Btn>
+            </BtnContainer>
           </Content>
-          <BtnContainer>
-            <div>지우기</div>
-            <Btn>저장</Btn>
-          </BtnContainer>
         </Box>
       </Backdrop>
     </Container>
@@ -87,7 +128,7 @@ const Header = styled.div`
   padding: 1.75em;
 `;
 
-const Content = styled.div`
+const Content = styled.form`
   max-height: calc(100vh - 200px);
   overflow-y: auto;
   padding: 1em 1.5em;
@@ -105,11 +146,8 @@ const Section = styled.div`
 
   div {
     display: flex;
+    flex-wrap: wrap;
   }
-`;
-
-const Line = styled.div`
-  display: flex;
 `;
 
 const BtnContainer = styled.div`
@@ -117,6 +155,7 @@ const BtnContainer = styled.div`
   justify-content: space-between;
   align-items: center;
   padding: 1em 1.5em;
+  border-top: 1px solid #eee;
 `;
 
 const Btn = styled.button`
