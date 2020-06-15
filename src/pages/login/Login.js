@@ -12,7 +12,7 @@ const Login = (props) => {
   const responseGoogle = (response) => {
     console.log(response);
 
-    fetch("http://10.58.5.247:8000/api/google", {
+    fetch("http://10.58.5.55:8000/api/google", {
       method: "POST",
       headers: {
         "Content-type": "application/json",
