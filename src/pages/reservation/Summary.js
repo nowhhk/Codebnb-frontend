@@ -1,10 +1,28 @@
 import React from "react";
 import styled from "styled-components";
 
-const Summary = ({ price, changeCurrency }) => {
+const Summary = ({ data, changeCurrency, calcNights, totalAmount }) => {
   return (
     <Container>
-      <div>상세페이지에서 가져오기</div>
+      <div>
+        <div>몇박 {calcNights()}</div>
+        <div>
+          {data.currency === "KRW" ? (
+            <span>₩</span>
+          ) : data.currency === "USD" ? (
+            <span>$</span>
+          ) : null}
+          {`${data.price} x ${calcNights()}박`}
+        </div>
+        <div>
+          {data.currency === "KRW" ? (
+            <span>₩</span>
+          ) : data.currency === "USD" ? (
+            <span>$</span>
+          ) : null}
+          {totalAmount}
+        </div>
+      </div>
 
       <hr></hr>
       <ShortMsg>
@@ -15,8 +33,25 @@ const Summary = ({ price, changeCurrency }) => {
         </p>
       </ShortMsg>
       <Currency>
-        <div onClick={changeCurrency}>KRW</div>
-        <div onclick={changeCurrency}>USD</div>
+        {data.currency === "KRW" ? (
+          <div>
+            <button className="active" disabled="true">
+              KRW
+            </button>
+            <button value="USD" className="inactive" onClick={changeCurrency}>
+              USD
+            </button>
+          </div>
+        ) : (
+          <div>
+            <button className="active" disabled="true">
+              USD
+            </button>
+            <button value="KRW" className="inactive" onClick={changeCurrency}>
+              KRW
+            </button>
+          </div>
+        )}
       </Currency>
     </Container>
   );
@@ -40,7 +75,24 @@ const ShortMsg = styled.div`
 `;
 
 const Currency = styled.div`
-  display: flex;
-  cursor: pointer;
+  div {
+    display: flex;
+
+    .active {
+      font-weight: bold;
+      color: black;
+      margin-right: 0.5em;
+      background-color: transparent;
+      border: none;
+    }
+
+    .inactive {
+      text-decoration: underline;
+      margin-right: 0.5em;
+      background-color: transparent;
+      border: none;
+      cursor: pointer;
+    }
+  }
 `;
 export default Summary;

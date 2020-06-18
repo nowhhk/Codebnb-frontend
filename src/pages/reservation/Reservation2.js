@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from "react";
+import { withRouter } from "react-router-dom";
 import Textarea from "../../components/TextArea";
 import Summary from "./Summary";
 import styled from "styled-components";
@@ -6,21 +7,34 @@ import styled from "styled-components";
 const Reservation = (props) => {
   // state
   const [data, setData] = useState([]);
+  const [currency, setCurrency] = useState("");
   const [reservation, setReservation] = useState({
     room_id: "",
     greeting: "",
     check_in: "",
     check_out: "",
     adults: "",
-    children: "",
-    infants: "",
+    children: 0,
+    infants: 0,
     total_cost: "",
     payment_methods: "",
   });
-
-  console.log(props);
+  const [total, setTotal] = useState("");
+  const [totalAmount, setTotalAmount] = useState(0);
 
   // get data
+
+  // useEffect(() => {
+  //   fetch("http://10.58.7.153:8000/booking/payment", {
+  //     method: "GET",
+  //     headers: {
+  //       "Content-type": "application/json",
+  //     },
+  //   })
+  //     .then((res) => res.json())
+  //     .then((res) => console.log(res.booking_information));
+  // }, []);
+
   useEffect(() => {
     fetch("/data/booking.json")
       .then((res) => res.json())
@@ -30,7 +44,16 @@ const Reservation = (props) => {
       });
   }, []);
 
-  const changeCurrency = () => {};
+  const changeCurrency = (e) => {
+    // fetch("address") + currency query
+    const { value } = e.target;
+    if (value === "KRW") {
+      //set value as currency query
+      setCurrency(`display_currency=KRW`);
+    } else {
+      setCurrency(`display_currency=USD`);
+    }
+  };
 
   const handleMessage = (e) => {
     const { value } = e.target;
@@ -42,7 +65,23 @@ const Reservation = (props) => {
     setReservation({ ...reservation, payment_methods: value });
   };
 
-  console.log(reservation.payment_methods);
+  const calcNights = () => {
+    const start = new Date(data.check_in_date);
+    const end = new Date(data.check_out_date);
+    let nightCount = 0;
+    while (end > start) {
+      nightCount++;
+      start.setDate(start.getDate() + 1);
+    }
+    setTotal(nightCount);
+    setTotalAmount(data.price * nightCount);
+  };
+
+  // const roomTotal = data.price * total;
+  // setReservation({ total_cost: roomTotal });
+
+  // let total = calcNights() * data.price;
+  // setReservation({ ...reservation, total_cost: total });
 
   const sendReservation = () => {};
 
@@ -55,21 +94,10 @@ const Reservation = (props) => {
   //       Authorization: token,
   //     },
   //     body: JSON.stringify({
-  //       room_id
-  //       greeting
-  //       check_in
-  //       check_out
-  //       adults
-  //       children
-  //       infants
-  //       total_cost
-  //       payment_methods
+  //       reservation: reservation
   //     }),
   //   })
-  //     .then((res) => res.json())
-  //     //.then((res) => console.log(res));
   //     .then((res) => {
-  //       console.log("response", res);
   //       if (res.status === 200) {
   //         alert("Reservation Successful");
   //         this.props.history.push("/complete?");
@@ -77,6 +105,8 @@ const Reservation = (props) => {
   //     });
   //   this.props.history.push("/complete?");
   // };
+
+  console.log(props);
 
   return (
     <Container>
@@ -357,7 +387,14 @@ const Reservation = (props) => {
             <div className="flexCenter">
               <div className="res">
                 <h4>날짜</h4>
-                <p>{data.dates}</p>
+                <div className="flexBet">
+                  <div>체크인</div>
+                  <div>{data.check_in_date}</div>
+                </div>
+                <div className="flexBet">
+                  <div>체크아웃</div>
+                  <div>{data.check_out_date}</div>
+                </div>
               </div>
             </div>
             <div className="flexCenter">
@@ -372,7 +409,7 @@ const Reservation = (props) => {
             <h3>결제 일정</h3>
             <div className="payment">
               <div>
-                <h4>{data.price}₩231,059 지금 결제</h4>
+                <h4>{totalAmount} 지금 결제</h4>
                 <p>총액을 결제하시면 모든 절차가 완료됩니다.</p>
               </div>
               <label>
@@ -455,7 +492,14 @@ const Reservation = (props) => {
         </Left>
         <Right>
           {/* pass in checkin, checkout, price */}
-          <Summary price={data.price} changeCurrency={changeCurrency} />
+          <Summary
+            data={data}
+            price={data.price}
+            calcNights={calcNights}
+            totalAmount={totalAmount}
+            currency={data.currency && data.currency}
+            changeCurrency={changeCurrency}
+          />
         </Right>
       </MainWrapper>
     </Container>
@@ -653,4 +697,4 @@ const Right = styled.div`
   width: 40%;
 `;
 
-export default Reservation;
+export default withRouter(Reservation);

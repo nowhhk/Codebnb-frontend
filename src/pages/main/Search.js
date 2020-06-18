@@ -1,11 +1,12 @@
 import React, { useState } from "react";
+import { withRouter } from "react-router-dom";
 import "react-dates/initialize";
 import "./reactdate.css";
 import { DateRangePicker } from "react-dates";
 // import moment from "moment";
 import styled from "styled-components";
 
-const Search = () => {
+const Search = (props) => {
   //위치
   const [location, setLocation] = useState("");
   const onChange = (e) => {
@@ -53,6 +54,12 @@ const Search = () => {
   console.log("checkout:", checkout);
   console.log(location, checkin, checkout, adults, children, infants);
   //   console.log("오늘은", moment().format("YYYY-MM-DD"));
+
+  const goToList = () => {
+    props.history.push(
+      `/list?location=${location}&checkin=${checkin}&checkout=${checkout}&adults=${adults}&childen=${children}&infants=${infants}`
+    );
+  };
 
   return (
     <>
@@ -224,7 +231,7 @@ const Search = () => {
           </SearchInput>
         </SearchInputs>
 
-        <SearchBtn>
+        <SearchBtn onClick={goToList}>
           <i className="fas fa-search"></i>&nbsp;&nbsp;검색
         </SearchBtn>
       </SearchWrapper>
@@ -232,7 +239,7 @@ const Search = () => {
   );
 };
 
-export default Search;
+export default withRouter(Search);
 
 //styled-components
 

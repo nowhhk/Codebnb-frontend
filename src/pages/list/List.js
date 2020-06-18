@@ -1,9 +1,9 @@
 import React, { useState, useEffect } from "react";
-import { useHistory, Link } from "react-router-dom";
-import { shortstay } from "../../config";
+import { withRouter, useHistory, Link } from "react-router-dom";
+import { API } from "../../config";
 import SingleList from "./SingleList";
 import ListFilter from "./ListFilter";
-import Pagination from "./Pagination";
+// import Pagination from "./Pagination";
 import MapView from "./map/MapView2";
 import styled from "styled-components";
 
@@ -13,32 +13,82 @@ const List = (props) => {
   ///// 숙소유형 /////
   const [placeOpen, setPlaceOpen] = useState(false);
   const [place, setPlaceType] = useState([]);
-  const [place_query, setPlaceQuery] = useState("");
+  const [placeQuery, setPlaceQuery] = useState("");
 
   ///// 요금 /////
   const [priceOpen, setPriceOpen] = useState(false);
   const [price, setPrice] = useState([]);
-  const [price_query, setPriceQuery] = useState("");
+  const [priceQuery, setPriceQuery] = useState("");
 
   ///// 필터추가 /////
   const [filterOpen, setFilterOpen] = useState(false);
   const [filters, setFilters] = useState([]);
-  const [filters_query, setFiltersQuery] = useState("");
-
   const [property_type, setPropertyType] = useState([]);
-  const [property_query, setPropertyQuery] = useState("");
-
   const [language, setLanguage] = useState([]);
-  const [language_query, setLanguageQuery] = useState("");
+
+  const [queryupdate, setqueryupdate] = useState({
+    place_query: "",
+    filters_query: "",
+    property_query: "",
+    language_query: "",
+  });
+
+  const limit = 10;
+  const [offset, setOffset] = useState(0);
 
   /////////////////////// fetch data  //////////////////////
-  //     //`${shortstay}/room/list?location=서울&${place_query}`,
   //component did update `${shortstay}/room/list${this.props.location.search}&${place_query}&${amenities_query}&${property_query}&${language_query}`
 
+  useEffect(() => {
+    // let location = props.location.search;
+    getData("?location=서울", 0);
+  }, []);
+
+  const handlePage = (to) => {
+    if (to === "prev") {
+      if (offset === 0) return;
+      setOffset(offset - limit);
+      let prevOffset = offset - limit;
+      getData("?location=서울", prevOffset);
+    } else if (to === "next") {
+      console.log("next clicked");
+      setOffset(offset + limit);
+      let nextOffset = offset + limit;
+      getData("?location=서울", nextOffset);
+    }
+  };
+
+  const getData = (location, offsetNum) => {
+    fetch(
+      `${API}/room/list${location}&limit=${limit}&offset=${offsetNum}&${placeQuery}`,
+      {
+        headers: {
+          "Content-type": "application/json",
+        },
+      }
+    )
+      .then((res) => res.json())
+      .then((res) => {
+        setData(res.rooms);
+      });
+  };
+
+  const handlePlaceType = () => {
+    console.log("handlePlaceType");
+  };
+
+  const handlePrice = () => {
+    console.log("handlePrice");
+  };
+
+  const handleFilter = () => {
+    console.log("handleFilter");
+  };
+
+  ///////////////////// update fetch data  //////////////////////
   // useEffect(() => {
   //   fetch(
-  //      `${shortstay}/room/list${props.location.search}`,
-  //
+  //     `${shortstay}/room/list?location=서울&${queryupdate.place_query}&limit=${limit}&offset=${offset}`,
   //     {
   //       method: "GET",
   //       headers: {
@@ -51,60 +101,60 @@ const List = (props) => {
   //     .then((res) => {
   //       setData(res.rooms);
   //     });
+  // }, [queryupdate]);
+
+  // useEffect(() => {
+  //   fetch("/data/data_seoul.json")
+  //     .then((res) => res.json())
+  //     // .then((res) => console.log(res));
+  //     .then((res) => {
+  //       setData(res.rooms);
+  //     });
   // }, []);
 
-  useEffect(() => {
-    fetch("/data/data_seoul.json")
-      .then((res) => res.json())
-      // .then((res) => console.log(res));
-      .then((res) => {
-        setData(res.rooms);
-      });
-  }, []);
-
   // pagination
-  const limit = 10;
-  const [offset, setOffset] = useState(0);
 
-  const prevPage = () => {
-    const prevOffset = offset - limit;
+  // const prevPage = () => {
+  //   const prevOffset = offset - limit;
 
-    if (offset >= limit) {
-      fetch(
-        // `${api}/room/list${this.props.location.search}&${place_query}&${amenities_query}&${property_query}&${language_query}&limit=${limit}&offset=${offset}`,
-        {
-          method: "GET",
-          headers: {
-            "Content-type": "application/json",
-          },
-        }
-      )
-        .then((res) => res.json())
-        .then((res) => {
-          setData(res.rooms);
-        });
-      setOffset(prevOffset);
-    }
-  };
+  //   if (offset >= limit) {
+  //     getData();
+  //     // fetch(
+  //     //   `${shortstay}/room/list?location=서울&limit=${limit}&offset=${offset}`,
+  //     //   {
+  //     //     method: "GET",
+  //     //     headers: {
+  //     //       "Content-type": "application/json",
+  //     //     },
+  //     //   }
+  //     // )
+  //     //   .then((res) => res.json())
+  //     //   .then((res) => {
+  //     //     setData(res.rooms);
+  //     //   });
+  //     setOffset(prevOffset);
+  //   }
+  // };
 
-  const nextPage = () => {
-    const nextOffset = limit + offset;
+  // const nextPage = () => {
+  //   const nextOffset = limit + offset;
+  //   setOffset(nextOffset);
+  //   getData();
 
-    fetch(
-      //   `${api}/room/list${this.props.location.search}&${place_query}&${amenities_query}&${property_query}&${language_query}&limit=${limit}&offset=${offset}`,
-      {
-        method: "GET",
-        headers: {
-          "Content-type": "application/json",
-        },
-      }
-    )
-      .then((res) => res.json())
-      .then((res) => {
-        setData(res.rooms);
-      });
-    setOffset(nextOffset);
-  };
+  //   // fetch(
+  //   //   `${shortstay}/room/list?location=서울&limit=${limit}&offset=${offset}`,
+  //   //   {
+  //   //     method: "GET",
+  //   //     headers: {
+  //   //       "Content-type": "application/json",
+  //   //     },
+  //   //   }
+  //   // )
+  //   //   .then((res) => res.json())
+  //   //   .then((res) => {
+  //   //     setData(res.rooms);
+  //   //   });
+  // };
 
   // useEffect(() => {
   //   console.log(amenities);
@@ -140,8 +190,12 @@ const List = (props) => {
       return `place_type=${item}`;
     });
     const placeQuery = query.join("&");
+    // setqueryupdate({ ...placeQuery, placeQuery: placeQuery });
     setPlaceQuery(placeQuery);
+    setPlaceOpen(false);
   };
+
+  // console.log(queryupdate.place_query);
 
   ///// 요금 /////
 
@@ -193,33 +247,55 @@ const List = (props) => {
     setLanguage(selected);
   };
 
+  // // submit form
+  // const submitFilter = (e) => {
+  //   e.preventDefault();
+  //   const filtersQuery = filters.map((item) => {
+  //     return `amenities=${item}`;
+  //   });
+  //   const filtersQueryString = filtersQuery.join("&");
+  //   setFiltersQuery(filtersQueryString);
+
+  //   const propertyQuery = property_type.map((item) => {
+  //     return `property_type=${item}`;
+  //   });
+  //   const propertyQueryString = propertyQuery.join("&");
+  //   setPropertyQuery(propertyQueryString);
+
+  //   const languageQuery = language.map((item) => {
+  //     return `language=${item}`;
+  //   });
+  //   const languageQueryString = languageQuery.join("&");
+  //   setLanguageQuery(languageQueryString);
+
+  //   setFilterOpen(false);
+  // };
+
   // submit form
   const submitFilter = (e) => {
     e.preventDefault();
     const filtersQuery = filters.map((item) => {
       return `amenities=${item}`;
     });
-    const filtersQueryString = filtersQuery.join("&");
-    setFiltersQuery(filtersQueryString);
+    const filtersQS = filtersQuery.join("&");
+    setqueryupdate({ ...queryupdate, filters_query: filtersQS });
 
     const propertyQuery = property_type.map((item) => {
       return `property_type=${item}`;
     });
-    const propertyQueryString = propertyQuery.join("&");
-    setPropertyQuery(propertyQueryString);
+    const propertyQS = propertyQuery.join("&");
+    setqueryupdate({ ...queryupdate, property_query: propertyQS });
 
-    const languageQuery = language.map((item) => {
-      return `language=${item}`;
-    });
-    const languageQueryString = languageQuery.join("&");
-    setLanguageQuery(languageQueryString);
+    // const languageQuery = language.map((item) => {
+    //   return `language=${item}`;
+    // });
+    // const languageQueryString = languageQuery.join("&");
+    // setqueryupdate({ ...queryupdate, language_query: languageQueryString });
 
     setFilterOpen(false);
   };
 
-  console.log(filters_query);
-  console.log(property_query);
-  console.log(language_query);
+  // console.log(queryupdate.filters_query);
 
   const clearPlace = (e) => {
     e.preventDefault();
@@ -227,10 +303,10 @@ const List = (props) => {
   };
 
   const goToDetail = () => {
-    // const queryProductId = this.props.productID
+    const queryRoomId = props.room_id;
     //console.log("query Product ID:", queryProductID)
     //this.props.history.push(`detail/${queryProductID}`)
-    history.push("/reservation");
+    history.push(`/detail/${queryRoomId}`);
   };
 
   return (
@@ -272,7 +348,11 @@ const List = (props) => {
           </Alert>
           {/* <Link to={"./detail/${}"}> */}
           <SingleList rooms={data} goToDetail={goToDetail} />
-          <Pagination prevPage={prevPage} nextPage={nextPage} />
+          {/* <Pagination prevPage={prevPage} nextPage={nextPage} /> */}
+          <BtnContainer>
+            <div onClick={() => handlePage("prev")}>이전</div>
+            <div onClick={() => handlePage("next")}>다음</div>
+          </BtnContainer>
         </Listings>
       </ListWrapper>
       <MapWrapper>
@@ -315,6 +395,28 @@ const Listings = styled.div`
   z-index: -1;
 `;
 
+const BtnContainer = styled.div`
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+  padding-bottom: 2em;
+  margin: 0 auto;
+
+  div {
+    background-color: ${(props) => props.theme.color.black};
+    color: white;
+    border-radius: 0.5em;
+    padding: 0.5em 1em;
+    margin: 0 2em;
+    cursor: pointer;
+
+    &:hover {
+      background-color: black;
+    }
+  }
+`;
+
 const Alert = styled.div`
   display: flex;
   align-items: center;
@@ -346,4 +448,4 @@ const MapWrapper = styled.div`
   z-index: 0;
 `;
 
-export default List;
+export default withRouter(List);

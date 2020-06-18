@@ -19,9 +19,9 @@ const SingleList = ({ rooms, goToDetail }) => {
   return (
     <div>
       {rooms.map((house, idx) => (
-        <Container key={house.idx} onClick={goToDetail}>
+        <Container key={house.idx} room_id={house.room_id}>
           <ImageSlider slides={house.images} heart={house.is_wishlist} />
-          <DetailContainer>
+          <DetailContainer onClick={goToDetail}>
             <div style={{ justifyContent: "normal" }}>
               <Subtitle>
                 <div style={{ display: "flex" }}>
