@@ -13,6 +13,7 @@ import {
 } from "react-dates";
 import { GoogleMap, LoadScript } from "@react-google-maps/api";
 import LocationMap from "../detail/LocationMap";
+import Nav from "../../components/Nav";
 import { API } from "../../../src/config";
 
 class Detail extends Component {
@@ -29,6 +30,7 @@ class Detail extends Component {
       safetyFacilities: [],
       sharedSpaces: [],
       reviews: [],
+      reviewsDate: [],
       ratings: [],
       monthlyDiscount: [],
     };
@@ -54,6 +56,7 @@ class Detail extends Component {
             safetyFacilities: res.safety_facilities,
             sharedSpaces: res.shared_spaces,
             reviews: res.reviews,
+            reviewsDate: res.reviews.created_at,
             ratings: res.ratings,
             monthlyDiscount: res.monthly_discount,
           }
@@ -72,11 +75,13 @@ class Detail extends Component {
       safetyFacilities,
       sharedSpaces,
       reviews,
+      reviewsDate,
       ratings,
       monthlyDiscount,
     } = this.state;
     return (
       <>
+        <Nav />
         <DetailWrapper>
           {/* <div style={{ display: "flex" }}></div> */}
 
@@ -388,7 +393,7 @@ class Detail extends Component {
               </Calendar_Left>
               <Point_Review>
                 <Point_Upper>
-                  <i class="fas fa-star"></i> {ratings.overall} 후기 1개
+                  <i class="fas fa-star"></i> {ratings.overall}
                 </Point_Upper>
                 <Point_Down>
                   <Point_Down_Left>
@@ -945,8 +950,8 @@ const Point_Upper = styled.div`
   font-size: 22px;
   font-weight: 600;
   margin-bottom: 20px;
-  .fas fa-star {
-    color: red;
+  i {
+    color: #ff385c;
   }
 `;
 const Point_Down = styled.div`

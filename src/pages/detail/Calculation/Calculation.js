@@ -16,6 +16,7 @@ class Calendar extends Component {
       startDate: null,
       endDate: null,
       unitPrice: [],
+      ratings: [],
       totalPrice: 0,
       cleanCost: 40,
       stage1: false,
@@ -38,8 +39,9 @@ class Calendar extends Component {
           {
             unitPrice: res.room_info.price,
             monthlyDiscount: res.monthly_discount,
-          },
-          () => console.log("bathInfo : ", res.room_info.images)
+            ratings: res.ratings,
+          }
+          // () => console.log("bathInfo : ", res.room_info.images)
         )
       );
   };
@@ -67,14 +69,6 @@ class Calendar extends Component {
     }
   };
 
-  // discountHandler = (duration) => {
-  //   if (duration < 28) {
-  //     this.setState({ stage3: true });
-  //   } else {
-  //     this.setState({ stage3: false });
-  //   }
-  // };
-
   render() {
     console.log("stage3 :", this.state.stage3);
 
@@ -84,6 +78,7 @@ class Calendar extends Component {
       totalPrice,
       cleanCost,
       monthlyDiscount,
+      ratings,
     } = this.state;
 
     return (
@@ -101,7 +96,9 @@ class Calendar extends Component {
                 <GuideWrapper3>/박</GuideWrapper3>
               </GuidePrice>
             )}
-            <PointWrapper>4.75 (61)</PointWrapper>
+            <PointWrapper>
+              <i class="fas fa-star"></i> {ratings.overall}
+            </PointWrapper>
           </TopWrapper>
           <MiddleWrapper>
             <DateRangePicker
@@ -231,11 +228,11 @@ class Calendar extends Component {
                       </tr>
                       <tr>
                         <td>
-                          $
+                          -$
                           <span
                             dangerouslySetInnerHTML={{
                               __html: Math.round(
-                                -totalPrice * monthlyDiscount
+                                totalPrice * monthlyDiscount
                               ).toLocaleString(),
                             }}
                           />
@@ -346,15 +343,15 @@ const PointWrapper = styled.div`
   height: 36px;
   font-size: 14px;
   text-align: right;
+  i {
+    color: #ff385c;
+  }
 `;
 
 const MiddleWrapper = styled.div`
   display: flex;
   justify-content: center;
   margin: 0px 0px 20px 0px;
-  /* .DateInput {
-    background-color: red;
-  } */
 `;
 
 const BottomWrapper = styled.div``;
