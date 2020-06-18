@@ -1,10 +1,11 @@
 import React, { useState, useEffect } from "react";
-import { withRouter } from "react-router-dom";
+import { useHistory } from "react-router";
 import styled from "styled-components";
 import Signup from "../pages/signup/Signup";
 import Login from "../pages/login/Login";
 
-const Nav = (props) => {
+const Nav = () => {
+  const history = useHistory();
   const [loginBtn, setLoginBtn] = useState("로그인");
 
   useEffect(() => {
@@ -40,7 +41,7 @@ const Nav = (props) => {
       <NavWrapper>
         <Logo
           onClick={() => {
-            props.history.push("/");
+            history.push("/");
             window.location.reload();
           }}
         >
@@ -50,12 +51,18 @@ const Nav = (props) => {
         </Logo>
         <NavButton>
           <div>
-            <span>숙소 호스트되기</span>
+            <span
+              onClick={() => {
+                history.push("host");
+              }}
+            >
+              숙소 호스트되기
+            </span>
           </div>
           <div>
             <span
               onClick={() => {
-                props.history.push("/trips");
+                history.push("/trips");
               }}
             >
               여행
@@ -78,7 +85,7 @@ const Nav = (props) => {
   );
 };
 
-export default withRouter(Nav);
+export default Nav;
 
 //styled-components
 

@@ -23,10 +23,9 @@ const Item = styled.div`
   box-shadow: rgba(0, 0, 0, 0.15) 0px 2px 8px;
   border-radius: 16px;
   div {
-    /* height: 100%; */
     img {
       width: 100%;
-      /* height: 65%; */
+      height: 240px;
       border-top-left-radius: 16px;
       border-top-right-radius: 16px;
       overflow: hidden;
