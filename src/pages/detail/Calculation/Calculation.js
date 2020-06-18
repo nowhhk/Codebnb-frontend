@@ -1,143 +1,284 @@
-import React, { Component, useState, useEffect, Fragment } from 'react';
-import Moment from 'react-moment';
-import styled from 'styled-components';
-import 'bootstrap/dist/css/bootstrap.min.css';
-import 'react-dates/initialize';
-import 'react-dates/lib/css/_datepicker.css';
-import { DateRangePicker, SingleDatePicker, DayPickerRangeController } from 'react-dates';
+import React, { Component, useState, useEffect, Fragment } from "react";
+import styled from "styled-components";
+import { API } from "../../../config";
+import "../../detail/reactdate.css";
+import Guest from "../Guest";
+import {
+  DateRangePicker,
+  SingleDatePicker,
+  DayPickerRangeController,
+} from "react-dates";
 
 class Calendar extends Component {
   constructor(props) {
     super(props);
-    this.state ={
+    this.state = {
       startDate: null,
       endDate: null,
-      unitPrice: 55000,
+      unitPrice: [],
+      ratings: [],
       totalPrice: 0,
-      cleanCost: 45000,
+      cleanCost: 40,
       stage1: false,
       stage2: true,
-    }
+      stage3: false,
+    };
   }
+
+  componentDidMount = () => {
+    fetch(`${API}/room/detail/1`, {
+      method: "GET",
+      headers: {
+        "content-Type": "application/json",
+      },
+    })
+      .then((res) => res.json())
+      // .then((res) => console.log("res :", res));
+      .then((res) =>
+        this.setState(
+          {
+            unitPrice: res.room_info.price,
+            monthlyDiscount: res.monthly_discount,
+            ratings: res.ratings,
+          }
+          // () => console.log("bathInfo : ", res.room_info.images)
+        )
+      );
+  };
 
   totalPriceCalculator = (startDate, endDate) => {
     const { unitPrice } = this.state;
     let duration = 0;
     if (endDate) {
-      duration = endDate.diff(startDate, 'days');
+      duration = endDate.diff(startDate, "days");
     }
     const totalPrice = duration * unitPrice;
     this.setState({ duration, totalPrice });
+
+    if (duration < 28) {
+      this.setState({ stage3: true });
+    } else if (duration >= 28) {
+      this.setState({ stage3: false });
+    }
   };
 
   displayHandler = (endDate) => {
     if (endDate) {
-      this.setState({ stage1: true })
-      this.setState({ stage2: false })
+      this.setState({ stage1: true });
+      this.setState({ stage2: false });
     }
   };
 
-  unitPriceUpdater = () => {
-      // FETCH API DATA GET
-  };
-
   render() {
-      const { 
-        duration,
-        unitPrice,
-        totalPrice,
-        cleanCost, } = this.state;
-      
+    console.log("stage3 :", this.state.stage3);
+
+    const {
+      duration,
+      unitPrice,
+      totalPrice,
+      cleanCost,
+      monthlyDiscount,
+      ratings,
+    } = this.state;
+
     return (
       <>
         <CalendarWrapper>
           <TopWrapper>
-            {this.state.stage2 &&
-            <GuideWrapper1>
+            {this.state.stage2 && (
+              <GuideWrapper1>
                 요금을 확인하려면 날짜를 입력하세요.
-            </GuideWrapper1>}
-            {this.state.stage1 &&
-            (<GuidePrice>
-              <GuideWrapper2>
-                  ${unitPrice.toLocaleString()}
-              </GuideWrapper2>
-              <GuideWrapper3>
-                  /박
-              </GuideWrapper3>
-            </GuidePrice>)}
+              </GuideWrapper1>
+            )}
+            {this.state.stage1 && (
+              <GuidePrice>
+                <GuideWrapper2>${unitPrice.toLocaleString()}</GuideWrapper2>
+                <GuideWrapper3>/박</GuideWrapper3>
+              </GuidePrice>
+            )}
             <PointWrapper>
-                4.75 (61)
+              <i class="fas fa-star"></i> {ratings.overall}
             </PointWrapper>
-          </TopWrapper>  
+          </TopWrapper>
           <MiddleWrapper>
             <DateRangePicker
-                startDate={this.state.startDate} 
-                startDateId="your_unique_start_date_id" 
-                endDate={this.state.endDate}
-                endDateId="your_unique_end_date_id" 
-                onDatesChange={({ startDate, endDate }) => {
-                  this.setState({ startDate, endDate })
-                  this.totalPriceCalculator(startDate, endDate)
-                  this.displayHandler(endDate)
-                }}
-                focusedInput={this.state.focusedInput} 
-                onFocusChange={focusedInput => this.setState({ focusedInput })}
-                appendToBody={true}
-                />
-            </MiddleWrapper>
+              startDate={this.state.startDate}
+              startDateId="your_unique_start_date_id"
+              endDate={this.state.endDate}
+              endDateId="your_unique_end_date_id"
+              onDatesChange={({ startDate, endDate }) => {
+                this.setState({ startDate, endDate });
+                this.totalPriceCalculator(startDate, endDate);
+                this.displayHandler(endDate);
+                // this.discountHandler(endDate);
+              }}
+              focusedInput={this.state.focusedInput}
+              onFocusChange={(focusedInput) => this.setState({ focusedInput })}
+              appendToBody={true}
+              startDatePlaceholderText={"체크인"}
+              endDatePlaceholderText={"체크아웃"}
+            />
+          </MiddleWrapper>
+
+          <Guest />
 
           {this.state.stage2 && <Button>예약 가능 여부 보기</Button>}
 
-          {this.state.stage1 && (<BottomWrapper>
-                    <Button>예약 하기</Button>
-              <CommentWrapper>
-                예약 확정 전에는 요금이 청구되지 않습니다
-              </CommentWrapper>
-              <CalculWrapper>
-                  <Calcul_Left_Wrapper>
-                    <tr>
-                      <td className="longwidth"> ${unitPrice.toLocaleString()} x {duration}박 </td>
-                    </tr>
-                    <tr>
-                      <td>청소비</td>
-                    </tr>
-                    <tr>
-                      <td>서비스 수수료</td>
-                    </tr>
-                    <tr>
-                      <td>숙박세와 수수료</td>
-                    </tr>
-                  </Calcul_Left_Wrapper>
-                  <Calcul_Right_Wrapper>
-                    <tr>
-                      <td> ${totalPrice.toLocaleString()} </td>
-                    </tr>
-                    <tr>
-                      <td>${cleanCost.toLocaleString()}</td>
-                    </tr>
-                    <tr>
-                      <td>${Math.round(totalPrice*0.17).toLocaleString()}</td>
-                    </tr>
-                    <tr>
-                      <td>${Math.round(totalPrice*0.17*0.1).toLocaleString()}</td>
-                    </tr>
-                  </Calcul_Right_Wrapper>
-              </CalculWrapper>
-              <Line/>
-              <GrandTotalWrapper>
-                <Grand_Left_Wrapper>
-                    <tr>
-                      <td>총 합계</td>
-                    </tr>
-                </Grand_Left_Wrapper>
-                <Grand_Right_Wrapper>
-                    <tr>
-                      <td>${Math.round(totalPrice + cleanCost + (totalPrice*0.17) + (totalPrice*0.17*0.1)).toLocaleString()}</td>
-                    </tr>
-                </Grand_Right_Wrapper>
-              </GrandTotalWrapper>   
-            </BottomWrapper>)}
-       </CalendarWrapper>
+          {this.state.stage1 && (
+            <div>
+              {this.state.stage3 ? (
+                <BottomWrapper>
+                  <Button>예약 하기</Button>
+                  <CommentWrapper>
+                    예약 확정 전에는 요금이 청구되지 않습니다
+                  </CommentWrapper>
+                  <CalculWrapper>
+                    <Calcul_Left_Wrapper>
+                      <tr>
+                        <td className="longwidth">
+                          {" "}
+                          ${unitPrice.toLocaleString()} x {duration}박{" "}
+                        </td>
+                      </tr>
+                      <tr>
+                        <td>청소비</td>
+                      </tr>
+                      <tr>
+                        <td>서비스 수수료</td>
+                      </tr>
+                      <tr>
+                        <td>숙박세와 수수료</td>
+                      </tr>
+                    </Calcul_Left_Wrapper>
+                    <Calcul_Right_Wrapper>
+                      <tr>
+                        <td> ${totalPrice.toLocaleString()} </td>
+                      </tr>
+                      <tr>
+                        <td>${cleanCost.toLocaleString()}</td>
+                      </tr>
+                      <tr>
+                        <td>
+                          ${Math.round(totalPrice * 0.17).toLocaleString()}
+                        </td>
+                      </tr>
+                      <tr>
+                        <td>
+                          $
+                          {Math.round(totalPrice * 0.17 * 0.1).toLocaleString()}
+                        </td>
+                      </tr>
+                    </Calcul_Right_Wrapper>
+                  </CalculWrapper>
+                  <Line />
+                  <GrandTotalWrapper>
+                    <Grand_Left_Wrapper>
+                      <tr>
+                        <td>총 합계</td>
+                      </tr>
+                    </Grand_Left_Wrapper>
+                    <Grand_Right_Wrapper>
+                      <tr>
+                        <td>
+                          $
+                          {Math.round(
+                            totalPrice +
+                              cleanCost +
+                              totalPrice * 0.17 +
+                              totalPrice * 0.17 * 0.1
+                          ).toLocaleString()}
+                        </td>
+                      </tr>
+                    </Grand_Right_Wrapper>
+                  </GrandTotalWrapper>
+                </BottomWrapper>
+              ) : (
+                <BottomWrapper>
+                  <Button>예약 하기</Button>
+                  <CommentWrapper>
+                    예약 확정 전에는 요금이 청구되지 않습니다
+                  </CommentWrapper>
+                  <CalculWrapper>
+                    <Calcul_Left_Wrapper>
+                      <tr>
+                        <td className="longwidth">
+                          {" "}
+                          ${unitPrice.toLocaleString()} x {duration}박{" "}
+                        </td>
+                      </tr>
+                      <tr>
+                        <td>청소비</td>
+                      </tr>
+                      <tr>
+                        <td>장기 요금 할인</td>
+                      </tr>
+                      <tr>
+                        <td>서비스 수수료</td>
+                      </tr>
+                      <tr>
+                        <td>숙박세와 수수료</td>
+                      </tr>
+                    </Calcul_Left_Wrapper>
+                    <Calcul_Right_Wrapper>
+                      <tr>
+                        <td> ${totalPrice.toLocaleString()} </td>
+                      </tr>
+                      <tr>
+                        <td>${cleanCost.toLocaleString()}</td>
+                      </tr>
+                      <tr>
+                        <td>
+                          -$
+                          <span
+                            dangerouslySetInnerHTML={{
+                              __html: Math.round(
+                                totalPrice * monthlyDiscount
+                              ).toLocaleString(),
+                            }}
+                          />
+                          {/* $"{-totalPrice}*{monthlyDiscount}" */}
+                        </td>
+                      </tr>
+                      <tr>
+                        <td>
+                          ${Math.round(totalPrice * 0.17).toLocaleString()}
+                        </td>
+                      </tr>
+                      <tr>
+                        <td>
+                          $
+                          {Math.round(totalPrice * 0.17 * 0.1).toLocaleString()}
+                        </td>
+                      </tr>
+                    </Calcul_Right_Wrapper>
+                  </CalculWrapper>
+                  <Line />
+                  <GrandTotalWrapper>
+                    <Grand_Left_Wrapper>
+                      <tr>
+                        <td>총 합계</td>
+                      </tr>
+                    </Grand_Left_Wrapper>
+                    <Grand_Right_Wrapper>
+                      <tr>
+                        <td>
+                          $
+                          {Math.round(
+                            totalPrice +
+                              cleanCost +
+                              totalPrice * 0.17 +
+                              totalPrice * 0.17 * 0.1 -
+                              totalPrice * monthlyDiscount
+                          ).toLocaleString()}
+                        </td>
+                      </tr>
+                    </Grand_Right_Wrapper>
+                  </GrandTotalWrapper>
+                </BottomWrapper>
+              )}
+            </div>
+          )}
+        </CalendarWrapper>
       </>
     );
   }
@@ -147,14 +288,12 @@ export default Calendar;
 
 const CalendarWrapper = styled.div`
   width: 362.63px;
-  margin: 24px 0px ;
+  margin: 24px 0px;
   padding: 8px 24px 24px;
   box-shadow: rgba(0, 0, 0, 0.12) 0px 6px 16px !important;
   border-radius: 12px;
-  
-  
-  /* border: 1px solid blue; */
 
+  /* border: 1px solid blue; */
 `;
 
 const TopWrapper = styled.div`
@@ -165,7 +304,6 @@ const TopWrapper = styled.div`
   flex-direction: row;
   align-items: center;
   /* border: 1px solid red */
-  
 `;
 
 const GuideWrapper1 = styled.div`
@@ -182,7 +320,7 @@ const GuidePrice = styled.div`
   flex-direction: row;
   align-items: center;
   /* border: 1px solid red */
-`
+`;
 
 const GuideWrapper2 = styled.div`
   width: 91.23px;
@@ -198,28 +336,25 @@ const GuideWrapper3 = styled.div`
   font-size: 16px;
   font-weight: 600;
   text-align: left;
-
 `;
 
 const PointWrapper = styled.div`
   width: 48.06px;
   height: 36px;
-  font-size: 14px; 
-  text-align: right; 
+  font-size: 14px;
+  text-align: right;
+  i {
+    color: #ff385c;
+  }
 `;
 
 const MiddleWrapper = styled.div`
   display: flex;
   justify-content: center;
-  margin: 0px 0px 20px 0px ;
-  .DateInput {
-    background-color: red;
-  }
+  margin: 0px 0px 20px 0px;
 `;
 
-const BottomWrapper = styled.div`
-
-`;
+const BottomWrapper = styled.div``;
 
 const Button = styled.button`
   width: 314.63px;
@@ -227,27 +362,39 @@ const Button = styled.button`
   font-size: 16px;
   font-weight: 600;
   color: white;
-  background-image: var(--dls19-brand-gradient-radial, radial-gradient(circle at center, #FF385C 0%, #E61E4D 27.5%, #E31C5F 40%, #D70466 57.5%, #BD1E59 75%, #BD1E59 100% )) !important;
-  background-position: calc((100 - var(--mouse-x, 0)) * 1%) calc((100 - var(--mouse-y, 0)) * 1%);
+  background-image: var(
+    --dls19-brand-gradient-radial,
+    radial-gradient(
+      circle at center,
+      #ff385c 0%,
+      #e61e4d 27.5%,
+      #e31c5f 40%,
+      #d70466 57.5%,
+      #bd1e59 75%,
+      #bd1e59 100%
+    )
+  ) !important;
+  background-position: calc((100 - var(--mouse-x, 0)) * 1%)
+    calc((100 - var(--mouse-y, 0)) * 1%);
   cursor: pointer;
   text-align: center;
-  font-family: Circular, -apple-system, BlinkMacSystemFont, Roboto, "Helvetica Neue", sans-serif;
+  font-family: Circular, -apple-system, BlinkMacSystemFont, Roboto,
+    "Helvetica Neue", sans-serif;
   border-radius: 8px;
   outline: none;
 `;
 
 const CommentWrapper = styled.div`
-  font-size : 14px;
+  font-size: 14px;
   color: #222222;
   margin: 20px 0px;
   text-align: center;
-
-`
+`;
 
 const CalculWrapper = styled.div`
   display: flex;
   justify-content: center;
-`
+`;
 
 const Calcul_Left_Wrapper = styled.div`
   font-size: 16px;
@@ -258,7 +405,7 @@ const Calcul_Left_Wrapper = styled.div`
     text-align: left;
     text-decoration: underline;
   }
-`
+`;
 
 const Calcul_Right_Wrapper = styled.div`
   font-size: 16px;
@@ -268,22 +415,22 @@ const Calcul_Right_Wrapper = styled.div`
     height: 25px;
     text-align: right;
   }
-`
+`;
 
 const Line = styled.div`
-        display: flex;
-        justify-content: center;
-        width: 100%;
-        border-bottom: 1px solid #dddddd;
-        margin: 10px 0px;
-`
+  display: flex;
+  justify-content: center;
+  width: 100%;
+  border-bottom: 1px solid #dddddd;
+  margin: 10px 0px;
+`;
 
 const GrandTotalWrapper = styled.div`
   display: flex;
   justify-content: center;
   margin-top: 10px;
   /* border: 1px solid blue; */
-`
+`;
 
 const Grand_Left_Wrapper = styled.div`
   font-size: 16px;
@@ -295,7 +442,7 @@ const Grand_Left_Wrapper = styled.div`
     text-align: left;
     text-decoration: underline;
   }
-`
+`;
 
 const Grand_Right_Wrapper = styled.div`
   font-size: 16px;
@@ -305,6 +452,5 @@ const Grand_Right_Wrapper = styled.div`
     width: 140px;
     height: 25px;
     text-align: right;
-    
   }
-`
+`;
