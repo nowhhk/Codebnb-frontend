@@ -6,6 +6,7 @@ import "react-dates/initialize";
 import "./reactdate.css";
 import moment from "moment";
 import Footer from "../../../src/components/Footer";
+import Modal from "../detail/Modal";
 import {
   DateRangePicker,
   SingleDatePicker,
@@ -579,6 +580,7 @@ class Detail extends Component {
                   <ViewAll>
                     <div>모두 보기</div>
                   </ViewAll>
+                  <Modal />
                 </Convinience_Down_Left>
               </Convinience_Down>
             </Rule>
@@ -602,7 +604,7 @@ const TitleHeader = styled.div`
   width: 1120px;
   height: 88px;
   margin: 0 auto;
-  margin-top: 50px;
+  margin-top: 20px;
   /* border: 1px solid orange; */
 `;
 

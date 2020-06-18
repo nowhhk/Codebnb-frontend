@@ -784,7 +784,7 @@
 }
 .DateInput_input {
   font-weight: 200;
-  font-size: 12px;
+  font-size: 14px;
   /* line-height: 24px; */
   color: #565a5c;
   background-color: transparent;
@@ -820,7 +820,7 @@
   border-left: 0;
 }
 .DateInput_input__disabled {
-  background: #f2f2f2;
+  background: #f2f2f2#;
   font-style: italic;
 }
 .DateInput_screenReaderMessage {
