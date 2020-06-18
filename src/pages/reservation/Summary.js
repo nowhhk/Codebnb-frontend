@@ -1,7 +1,7 @@
 import React from "react";
 import styled from "styled-components";
 
-const Summary = () => {
+const Summary = ({ price, changeCurrency }) => {
   return (
     <Container>
       <div>상세페이지에서 가져오기</div>
@@ -14,6 +14,10 @@ const Summary = () => {
           취소하면 서비스 수수료를 제외한 요금 전액이 환불됩니다.
         </p>
       </ShortMsg>
+      <Currency>
+        <div onClick={changeCurrency}>KRW</div>
+        <div onclick={changeCurrency}>USD</div>
+      </Currency>
     </Container>
   );
 };
@@ -35,4 +39,8 @@ const ShortMsg = styled.div`
   }
 `;
 
+const Currency = styled.div`
+  display: flex;
+  cursor: pointer;
+`;
 export default Summary;

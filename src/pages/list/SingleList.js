@@ -2,7 +2,7 @@ import React from "react";
 import styled from "styled-components";
 import ImageSlider from "./Slider/ImageSlider";
 
-const SingleList = ({ rooms }) => {
+const SingleList = ({ rooms, goToDetail }) => {
   const truncate = (str) => {
     return str.length > 40 ? str.substring(0, 37) + "..." : str;
   };
@@ -18,82 +18,80 @@ const SingleList = ({ rooms }) => {
 
   return (
     <div>
-      {rooms.map((house) => {
-        return (
-          <Container>
-            <ImageSlider slides={house.images} heart={house.is_wishlist} />
-            <DetailContainer>
-              <div style={{ justifyContent: "normal" }}>
-                <Subtitle>
-                  <div style={{ display: "flex" }}>
-                    <div>{house.property_type}</div>
-                  </div>
-                  <div>
-                    <i className="fas fa-star" style={{ color: "red" }}></i>
-                    <span style={{ marginLeft: ".25em" }}>
-                      {house.rating}({house.reviews})
-                    </span>
-                  </div>
-                </Subtitle>
-                <Header>{truncate(house.title)}</Header>
-                <Options>
-                  <p>
-                    인원 {house.max_capacity}명 · 침실 {house.bedrooms}개 · 침대
-                    {house.beds}개 · 욕실 1개
-                  </p>
-                  <p>
-                    {house.features.map((f) => {
-                      return <span>{f}</span>;
-                    })}
-                  </p>
-                </Options>
-              </div>
-              <Bottom>
-                {house.discount_rate > 0 ? (
-                  <Tag>
-                    <i className="fas fa-tag"></i>
-                    <span style={{ marginLeft: ".5em" }}>더 낮아진 요금</span>
-                  </Tag>
-                ) : house.tag ? (
-                  <Tag>
-                    <i className="far fa-gem"></i>
-                    <span style={{ marginLeft: ".5em" }}>
-                      예약이 금방 마감되는 숙소
-                    </span>
-                  </Tag>
-                ) : (
-                  <div></div>
-                )}
-
-                <div>
-                  <Price>
-                    {house.discount_rate > 0 ? (
-                      <p>
-                        <span className="discount">
-                          <span>${house.price}</span>
-                        </span>
-                        ${discount(house.price, house.discount_rate)}
-                      </p>
-                    ) : (
-                      <span>${house.price}</span>
-                    )}
-                    <span style={{ fontWeight: "normal", color: "#767676" }}>
-                      /1박
-                    </span>
-                  </Price>
-                  <Total>
-                    <span>총 요금: ₩273,882{calculateTotal}</span>
-                    <i
-                      className="fas fa-question-circle"
-                      style={{ marginLeft: ".35em" }}
-                    ></i>
-                  </Total>
+      {rooms.map((house, idx) => (
+        <Container key={house.idx} onClick={goToDetail}>
+          <ImageSlider slides={house.images} heart={house.is_wishlist} />
+          <DetailContainer>
+            <div style={{ justifyContent: "normal" }}>
+              <Subtitle>
+                <div style={{ display: "flex" }}>
+                  <div>{house.property_type}</div>
                 </div>
-              </Bottom>
-            </DetailContainer>
-          </Container>
-        );
-      })}
+                <div>
+                  <i className="fas fa-star" style={{ color: "red" }}></i>
+                  <span style={{ marginLeft: ".25em" }}>
+                    {house.rating}({house.reviews})
+                  </span>
+                </div>
+              </Subtitle>
+              <Header>{truncate(house.title)}</Header>
+              <Options>
+                <p>
+                  인원 {house.max_capacity}명 · 침실 {house.bedrooms}개 · 침대
+                  {house.beds}개 · 욕실 1개
+                </p>
+                <p>
+                  {house.features.map((feature, idx) => {
+                    return <span key={feature.idx}>{feature}</span>;
+                  })}
+                </p>
+              </Options>
+            </div>
+            <Bottom>
+              {house.discount_rate > 0 ? (
+                <Tag>
+                  <i className="fas fa-tag"></i>
+                  <span style={{ marginLeft: ".5em" }}>더 낮아진 요금</span>
+                </Tag>
+              ) : house.tag ? (
+                <Tag>
+                  <i className="far fa-gem"></i>
+                  <span style={{ marginLeft: ".5em" }}>
+                    예약이 금방 마감되는 숙소
+                  </span>
+                </Tag>
+              ) : (
+                <div></div>
+              )}
+
+              <div>
+                <Price>
+                  {house.discount_rate > 0 ? (
+                    <p>
+                      <span className="discount">
+                        <span>${house.price}</span>
+                      </span>
+                      ${discount(house.price, house.discount_rate)}
+                    </p>
+                  ) : (
+                    <span>${house.price}</span>
+                  )}
+                  <span style={{ fontWeight: "normal", color: "#767676" }}>
+                    /1박
+                  </span>
+                </Price>
+                <Total>
+                  <span>총 요금: ₩273,882</span>
+                  <i
+                    className="fas fa-question-circle"
+                    style={{ marginLeft: ".35em" }}
+                  ></i>
+                </Total>
+              </div>
+            </Bottom>
+          </DetailContainer>
+        </Container>
+      ))}
     </div>
   );
 };
@@ -105,6 +103,7 @@ const Container = styled.div`
   padding: 0 0 1.5em 0;
   border-bottom: 1px solid #e4e4e4;
   margin-bottom: 1.5em;
+  cursor: pointer;
 `;
 
 const DetailContainer = styled.div`

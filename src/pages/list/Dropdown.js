@@ -1,43 +1,31 @@
 import React from "react";
 import styled from "styled-components";
 
-const Dropdown = ({ handleDDOutside, children }) => {
+const Dropdown = ({ submitPlace, clearPlace, children }) => {
   return (
-    <Container id="outside" onClick={(e) => handleDDOutside(e)}>
-      <Wrapper>
-        <Box>
-          <Content>{children}</Content>
-          <BtnContainer>
-            <div>지우기</div>
-            <Btn>저장</Btn>
-          </BtnContainer>
-        </Box>
-      </Wrapper>
-    </Container>
+    <Wrapper>
+      <Box>
+        <Content>{children}</Content>
+        <BtnContainer>
+          <div onClick={clearPlace}>지우기</div>
+          <Btn onClick={submitPlace}>저장</Btn>
+        </BtnContainer>
+      </Box>
+    </Wrapper>
   );
 };
 
-const Container = styled.div`
-  position: absolute;
-  top: 0;
-  bottom: 0;
-  left: 0;
-  right: 0;
-  z-index: 100;
-`;
-
-const Wrapper = styled.div`
-  position: absolute;
-`;
+const Wrapper = styled.div``;
 
 const Box = styled.div`
   position: absolute;
-  width: 360px;
+  width: 400px;
   background-color: white;
   box-shadow: 0 0 10px rgba(0, 0, 0, 0.25);
   border-radius: 20px;
   top: 150px;
   left: 20px;
+  z-index: 100;
 `;
 
 const Content = styled.div`
