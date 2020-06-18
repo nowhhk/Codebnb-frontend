@@ -7,7 +7,7 @@ import Login from "./pages/login/Login";
 import Main from "./pages/main/Main";
 import Reservation from "./pages/reservation/Reservation2";
 import Signup from "./pages/signup/Signup";
-import Range from "./components/Range/Range";
+import Trips from "./pages/trips/Trips";
 
 const Routes = () => {
   return (
@@ -20,7 +20,7 @@ const Routes = () => {
         <Route exact path="/" component={Main} />
         <Route exact path="/reservation" component={Reservation} />
         <Route exact path="/signup" component={Signup} />
-        <Route exact path="/range" component={Range} />
+        <Route exact path="/trips" component={Trips} />
       </Switch>
     </Router>
   );
