@@ -2,6 +2,10 @@ import React, { Component, useState, useEffect, Fragment } from "react";
 import styled from "styled-components";
 import moment from "moment";
 import "react-dates/initialize";
+<<<<<<< HEAD
+=======
+import "../../detail/reactdate.css";
+>>>>>>> master
 import {
   DateRangePicker,
   SingleDatePicker,

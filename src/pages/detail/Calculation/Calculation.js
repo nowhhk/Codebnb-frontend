@@ -1,6 +1,12 @@
 import React, { Component, useState, useEffect, Fragment } from "react";
 import styled from "styled-components";
+<<<<<<< HEAD
 import "react-dates/initialize";
+=======
+import { API } from "../../../config";
+import "../../detail/reactdate.css";
+import Guest from "../Guest";
+>>>>>>> master
 import {
   DateRangePicker,
   SingleDatePicker,
@@ -13,13 +19,39 @@ class Calendar extends Component {
     this.state = {
       startDate: null,
       endDate: null,
-      unitPrice: 55000,
+      unitPrice: [],
+      ratings: [],
       totalPrice: 0,
-      cleanCost: 45000,
+      cleanCost: 40,
       stage1: false,
       stage2: true,
+<<<<<<< HEAD
+=======
+      stage3: false,
+>>>>>>> master
     };
   }
+
+  componentDidMount = () => {
+    fetch(`${API}/room/detail/1`, {
+      method: "GET",
+      headers: {
+        "content-Type": "application/json",
+      },
+    })
+      .then((res) => res.json())
+      // .then((res) => console.log("res :", res));
+      .then((res) =>
+        this.setState(
+          {
+            unitPrice: res.room_info.price,
+            monthlyDiscount: res.monthly_discount,
+            ratings: res.ratings,
+          }
+          // () => console.log("bathInfo : ", res.room_info.images)
+        )
+      );
+  };
 
   totalPriceCalculator = (startDate, endDate) => {
     const { unitPrice } = this.state;
@@ -29,6 +61,12 @@ class Calendar extends Component {
     }
     const totalPrice = duration * unitPrice;
     this.setState({ duration, totalPrice });
+
+    if (duration < 28) {
+      this.setState({ stage3: true });
+    } else if (duration >= 28) {
+      this.setState({ stage3: false });
+    }
   };
 
   displayHandler = (endDate) => {
@@ -38,12 +76,26 @@ class Calendar extends Component {
     }
   };
 
+<<<<<<< HEAD
   unitPriceUpdater = () => {
     // FETCH API DATA GET
   };
 
   render() {
     const { duration, unitPrice, totalPrice, cleanCost } = this.state;
+=======
+  render() {
+    console.log("stage3 :", this.state.stage3);
+
+    const {
+      duration,
+      unitPrice,
+      totalPrice,
+      cleanCost,
+      monthlyDiscount,
+      ratings,
+    } = this.state;
+>>>>>>> master
 
     return (
       <>
@@ -60,7 +112,13 @@ class Calendar extends Component {
                 <GuideWrapper3>/박</GuideWrapper3>
               </GuidePrice>
             )}
+<<<<<<< HEAD
             <PointWrapper>4.75 (61)</PointWrapper>
+=======
+            <PointWrapper>
+              <i class="fas fa-star"></i> {ratings.overall}
+            </PointWrapper>
+>>>>>>> master
           </TopWrapper>
           <MiddleWrapper>
             <DateRangePicker
@@ -72,16 +130,30 @@ class Calendar extends Component {
                 this.setState({ startDate, endDate });
                 this.totalPriceCalculator(startDate, endDate);
                 this.displayHandler(endDate);
+<<<<<<< HEAD
+=======
+                // this.discountHandler(endDate);
+>>>>>>> master
               }}
               focusedInput={this.state.focusedInput}
               onFocusChange={(focusedInput) => this.setState({ focusedInput })}
               appendToBody={true}
+<<<<<<< HEAD
             />
           </MiddleWrapper>
+=======
+              startDatePlaceholderText={"체크인"}
+              endDatePlaceholderText={"체크아웃"}
+            />
+          </MiddleWrapper>
+
+          <Guest />
+>>>>>>> master
 
           {this.state.stage2 && <Button>예약 가능 여부 보기</Button>}
 
           {this.state.stage1 && (
+<<<<<<< HEAD
             <BottomWrapper>
               <Button>예약 하기</Button>
               <CommentWrapper>
@@ -144,6 +216,160 @@ class Calendar extends Component {
                 </Grand_Right_Wrapper>
               </GrandTotalWrapper>
             </BottomWrapper>
+=======
+            <div>
+              {this.state.stage3 ? (
+                <BottomWrapper>
+                  <Button>예약 하기</Button>
+                  <CommentWrapper>
+                    예약 확정 전에는 요금이 청구되지 않습니다
+                  </CommentWrapper>
+                  <CalculWrapper>
+                    <Calcul_Left_Wrapper>
+                      <tr>
+                        <td className="longwidth">
+                          {" "}
+                          ${unitPrice.toLocaleString()} x {duration}박{" "}
+                        </td>
+                      </tr>
+                      <tr>
+                        <td>청소비</td>
+                      </tr>
+                      <tr>
+                        <td>서비스 수수료</td>
+                      </tr>
+                      <tr>
+                        <td>숙박세와 수수료</td>
+                      </tr>
+                    </Calcul_Left_Wrapper>
+                    <Calcul_Right_Wrapper>
+                      <tr>
+                        <td> ${totalPrice.toLocaleString()} </td>
+                      </tr>
+                      <tr>
+                        <td>${cleanCost.toLocaleString()}</td>
+                      </tr>
+                      <tr>
+                        <td>
+                          ${Math.round(totalPrice * 0.17).toLocaleString()}
+                        </td>
+                      </tr>
+                      <tr>
+                        <td>
+                          $
+                          {Math.round(totalPrice * 0.17 * 0.1).toLocaleString()}
+                        </td>
+                      </tr>
+                    </Calcul_Right_Wrapper>
+                  </CalculWrapper>
+                  <Line />
+                  <GrandTotalWrapper>
+                    <Grand_Left_Wrapper>
+                      <tr>
+                        <td>총 합계</td>
+                      </tr>
+                    </Grand_Left_Wrapper>
+                    <Grand_Right_Wrapper>
+                      <tr>
+                        <td>
+                          $
+                          {Math.round(
+                            totalPrice +
+                              cleanCost +
+                              totalPrice * 0.17 +
+                              totalPrice * 0.17 * 0.1
+                          ).toLocaleString()}
+                        </td>
+                      </tr>
+                    </Grand_Right_Wrapper>
+                  </GrandTotalWrapper>
+                </BottomWrapper>
+              ) : (
+                <BottomWrapper>
+                  <Button>예약 하기</Button>
+                  <CommentWrapper>
+                    예약 확정 전에는 요금이 청구되지 않습니다
+                  </CommentWrapper>
+                  <CalculWrapper>
+                    <Calcul_Left_Wrapper>
+                      <tr>
+                        <td className="longwidth">
+                          {" "}
+                          ${unitPrice.toLocaleString()} x {duration}박{" "}
+                        </td>
+                      </tr>
+                      <tr>
+                        <td>청소비</td>
+                      </tr>
+                      <tr>
+                        <td>장기 요금 할인</td>
+                      </tr>
+                      <tr>
+                        <td>서비스 수수료</td>
+                      </tr>
+                      <tr>
+                        <td>숙박세와 수수료</td>
+                      </tr>
+                    </Calcul_Left_Wrapper>
+                    <Calcul_Right_Wrapper>
+                      <tr>
+                        <td> ${totalPrice.toLocaleString()} </td>
+                      </tr>
+                      <tr>
+                        <td>${cleanCost.toLocaleString()}</td>
+                      </tr>
+                      <tr>
+                        <td>
+                          -$
+                          <span
+                            dangerouslySetInnerHTML={{
+                              __html: Math.round(
+                                totalPrice * monthlyDiscount
+                              ).toLocaleString(),
+                            }}
+                          />
+                          {/* $"{-totalPrice}*{monthlyDiscount}" */}
+                        </td>
+                      </tr>
+                      <tr>
+                        <td>
+                          ${Math.round(totalPrice * 0.17).toLocaleString()}
+                        </td>
+                      </tr>
+                      <tr>
+                        <td>
+                          $
+                          {Math.round(totalPrice * 0.17 * 0.1).toLocaleString()}
+                        </td>
+                      </tr>
+                    </Calcul_Right_Wrapper>
+                  </CalculWrapper>
+                  <Line />
+                  <GrandTotalWrapper>
+                    <Grand_Left_Wrapper>
+                      <tr>
+                        <td>총 합계</td>
+                      </tr>
+                    </Grand_Left_Wrapper>
+                    <Grand_Right_Wrapper>
+                      <tr>
+                        <td>
+                          $
+                          {Math.round(
+                            totalPrice +
+                              cleanCost +
+                              totalPrice * 0.17 +
+                              totalPrice * 0.17 * 0.1 -
+                              totalPrice * monthlyDiscount
+                          ).toLocaleString()}
+                        </td>
+                      </tr>
+                    </Grand_Right_Wrapper>
+                  </GrandTotalWrapper>
+                </BottomWrapper>
+              )}
+            </div>
+>>>>>>> master
           )}
         </CalendarWrapper>
       </>
@@ -210,15 +436,24 @@ const PointWrapper = styled.div`
   height: 36px;
   font-size: 14px;
   text-align: right;
+<<<<<<< HEAD
+=======
+  i {
+    color: #ff385c;
+  }
+>>>>>>> master
 `;
 
 const MiddleWrapper = styled.div`
   display: flex;
   justify-content: center;
   margin: 0px 0px 20px 0px;
+<<<<<<< HEAD
   .DateInput {
     background-color: red;
   }
+=======
+>>>>>>> master
 `;
 
 const BottomWrapper = styled.div``;

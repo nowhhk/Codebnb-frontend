@@ -1,10 +1,11 @@
 import React, { Component, useState, useEffect, Fragment } from "react";
-import { withRouter, useHistory, Link } from "react-router-dom";
 import styled, { injectGlobal } from "styled-components";
 import Calendar from "./calendar/Calendar";
 import Calculation from "./Calculation/Calculation";
 import "react-dates/initialize";
+import "./reactdate.css";
 import moment from "moment";
+import Footer from "../../../src/components/Footer";
 import {
   DateRangePicker,
   SingleDatePicker,
@@ -12,6 +13,8 @@ import {
 } from "react-dates";
 import { GoogleMap, LoadScript } from "@react-google-maps/api";
 import LocationMap from "../detail/LocationMap";
+import Nav from "../../components/Nav";
+import { API } from "../../../src/config";
 
 class Detail extends Component {
   constructor(props) {
@@ -19,30 +22,98 @@ class Detail extends Component {
     this.state = {
       startDate: null,
       endDate: null,
+      roomInfo: [],
+      bedroomInfo: [],
+      bathInfo: [],
+      characteristics: [],
+      amenities: [],
+      safetyFacilities: [],
+      sharedSpaces: [],
+      reviews: [],
+      reviewsDate: [],
+      ratings: [],
+      monthlyDiscount: [],
     };
   }
 
+  componentDidMount = () => {
+    fetch(`${API}/room/detail/${this.props.match.params.id}`, {
+      method: "GET",
+      headers: {
+        "content-Type": "application/json",
+      },
+    })
+      .then((res) => res.json())
+      // .then((res) => console.log("res :", res));
+      .then((res) =>
+        this.setState(
+          {
+            roomInfo: res.room_info,
+            bedroomInfo: res.bedroom_info,
+            bathInfo: res.bath_info,
+            characteristics: res.characteristics,
+            amenities: res.amenities,
+            safetyFacilities: res.safety_facilities,
+            sharedSpaces: res.shared_spaces,
+            reviews: res.reviews,
+            reviewsDate: res.reviews.created_at,
+            ratings: res.ratings,
+            monthlyDiscount: res.monthly_discount,
+          }
+          // () => console.log("ratings : ", res.characteristics[0].icon_fa)
+        )
+      );
+  };
+
   render() {
+    const {
+      roomInfo,
+      bedroomInfo,
+      bathInfo,
+      characteristics,
+      amenities,
+      safetyFacilities,
+      sharedSpaces,
+      reviews,
+      reviewsDate,
+      ratings,
+      monthlyDiscount,
+    } = this.state;
     return (
       <>
+        <Nav />
         <DetailWrapper>
           {/* <div style={{ display: "flex" }}></div> */}
 
           <TitleHeader>
-            <UpperTitleWrapper>#3 Bucheon / 4ppl only USD50</UpperTitleWrapper>
+            <UpperTitleWrapper>{roomInfo.title}</UpperTitleWrapper>
             <DownTitleWrapper>
-              <PointAddress>4.75(61) (Address)</PointAddress>
+              <PointAddress>
+                {Math.round(ratings.overall * 100) / 100.0} {roomInfo.address}
+              </PointAddress>
               <ShareSave>공유하기 저장</ShareSave>
             </DownTitleWrapper>
 
             <PhotoSliderWrapper>
-              <PhotoSlider_Left></PhotoSlider_Left>
+              <PhotoSlider_Left>
+                <img src={roomInfo.images && roomInfo.images[0]} />
+              </PhotoSlider_Left>
               <PhotoSlider_Right>
-                <PhotoSlider1></PhotoSlider1>
+                <PhotoSlider1>
+                  <img src={roomInfo.images && roomInfo.images[1]} />
+                </PhotoSlider1>
 
-                <PhotoSlider2></PhotoSlider2>
-                <PhotoSlider3></PhotoSlider3>
-                <PhotoSlider4></PhotoSlider4>
+                <PhotoSlider2>
+                  <img src={roomInfo.images && roomInfo.images[2]} />
+                </PhotoSlider2>
+
+                <PhotoSlider3>
+                  <img src={roomInfo.images && roomInfo.images[3]} />
+                </PhotoSlider3>
+
+                <PhotoSlider4>
+                  <img src={roomInfo.images && roomInfo.images[4]} />
+                </PhotoSlider4>
               </PhotoSlider_Right>
             </PhotoSliderWrapper>
           </TitleHeader>
@@ -53,54 +124,88 @@ class Detail extends Component {
                 <UpperSummary>
                   <UpperSummary_Left>
                     <UpperSummary_Left1>
-                      (Olivia)님이 호스팅하는 (아파트 전체)
+                      {roomInfo.host_name}님이 호스팅하는{" "}
+                      {roomInfo.property_type}
                     </UpperSummary_Left1>
                     <UpperSummary_Left2>
-                      인원4명 침실2개 침대2개 욕실1개
+                      인원{roomInfo.max_capacity}명 침실{roomInfo.bedrooms}개
+                      침대{roomInfo.beds}개 욕실
+                      {bathInfo[0] && bathInfo[0].quantity}개
                     </UpperSummary_Left2>
                   </UpperSummary_Left>
-                  <UpperSummary_Right>프로필 사진</UpperSummary_Right>
+                  <UpperSummary_Right>
+                    <img src={roomInfo.host_avatar} />
+                  </UpperSummary_Right>
                 </UpperSummary>
                 <DownSummary>
                   <DownSummary_1>
                     <DownSummary_Left>
-                      <i class="fas fa-home fa-lg"></i>
+                      {characteristics[0] && (
+                        <div
+                          dangerouslySetInnerHTML={{
+                            __html: characteristics[0].icon_fa,
+                          }}
+                        />
+                      )}
                     </DownSummary_Left>
                     <DownSummary_Right>
-                      <DownSummary_Right1>집 전체</DownSummary_Right1>
+                      <DownSummary_Right1>
+                        {characteristics[0] && characteristics[0].title}
+                      </DownSummary_Right1>
                       <DownSummary_Right2>
-                        아파트 전체를 단독으로 사용하시게 됩니다
+                        {characteristics[0] && characteristics[0].description}
                       </DownSummary_Right2>
                     </DownSummary_Right>
                   </DownSummary_1>
                   <DownSummary_2>
                     <DownSummary_Left>
-                      <i class="fas fa-user-lock"></i>
+                      {/* <div
+                        dangerouslySetInnerHTML={{
+                          __html: '<i class="fas fa-spray-can"></i>',
+                        }}
+                      /> */}
+
+                      {characteristics[1] && (
+                        <div
+                          dangerouslySetInnerHTML={{
+                            __html: characteristics[1].icon_fa,
+                          }}
+                        />
+                      )}
                     </DownSummary_Left>
                     <DownSummary_Right>
-                      <DownSummary_Right1>셀프 체크인</DownSummary_Right1>
+                      <DownSummary_Right1>
+                        {characteristics[1] && characteristics[1].title}
+                      </DownSummary_Right1>
                       <DownSummary_Right2>
-                        키패드를 이용해 체크인하세요
+                        {characteristics[1] && characteristics[1].description}
                       </DownSummary_Right2>
                     </DownSummary_Right>
                   </DownSummary_2>
                   <DownSummary_3>
                     <DownSummary_Left>
-                      <i class="fas fa-spray-can"></i>
+                      {characteristics[2] && (
+                        <div
+                          dangerouslySetInnerHTML={{
+                            __html: characteristics[2].icon_fa,
+                          }}
+                        />
+                      )}
                     </DownSummary_Left>
                     <DownSummary_Right>
                       <DownSummary_Right1>
-                        깨끗하고 깔끔한 숙소
+                        {characteristics[2] && characteristics[2].title}
                       </DownSummary_Right1>
                       <DownSummary_Right2>
-                        최근 게스트 10명이 이 숙소가 티 없이 깨끗하다고 후기를
-                        남겼습니다.
+                        {characteristics[2] && characteristics[2].description}
                       </DownSummary_Right2>
                     </DownSummary_Right>
                   </DownSummary_3>
                   <DownSummary_4>
                     <DownSummary_Left>
-                      <i class="fas fa-credit-card"></i>
+                      <div>
+                        <i class="fas fa-credit-card"></i>
+                      </div>
                     </DownSummary_Left>
                     <DownSummary_Right>
                       <DownSummary_Right1>환불 정책</DownSummary_Right1>
@@ -112,11 +217,7 @@ class Detail extends Component {
                 </DownSummary>
               </Summary>
 
-              <Description>
-                **인체에 무해한 소독제를 사용해 건물 전체를 수시로
-                소독중입니다** 예약하시는 모든 게스트님들도 개인위생을 철저하게
-                부탁드립니다. 감사합니다**
-              </Description>
+              <Description>{roomInfo.description}</Description>
               <Bed>
                 <Bed_Upper>침대/침구 유형</Bed_Upper>
                 <Bed_Down>
@@ -124,8 +225,13 @@ class Detail extends Component {
                     <Bed_Image>
                       <i class="fas fa-bed"></i>
                     </Bed_Image>
-                    <Bedroom_Num>1번 침실</Bedroom_Num>
-                    <Bed_Size_Num>퀸사이즈 침대 1개</Bed_Size_Num>
+                    <Bedroom_Num>
+                      {bedroomInfo[0] && bedroomInfo[0].room_name}
+                    </Bedroom_Num>
+                    <Bed_Size_Num>
+                      {bedroomInfo[0] && bedroomInfo[0].bed_info[0].size} 침대
+                      {bedroomInfo[0] && bedroomInfo[0].bed_info[0].quantity}개
+                    </Bed_Size_Num>
                   </Bed_Down_Box>
                 </Bed_Down>
               </Bed>
@@ -136,39 +242,136 @@ class Detail extends Component {
                   <Convinience_Down_Left>
                     <CDL>
                       <CDL_Image>
-                        <i class="fas fa-utensils"></i>
+                        {amenities[0] && (
+                          <div
+                            dangerouslySetInnerHTML={{
+                              __html: amenities[0].icon_fa,
+                            }}
+                          />
+                        )}
                       </CDL_Image>
-                      <CDL_Item>주방</CDL_Item>
+                      <CDL_Item>{amenities[0] && amenities[0].name}</CDL_Item>
                     </CDL>
 
                     <CDL>
                       <CDL_Image>
-                        <i class="fas fa-building"></i>
+                        {amenities[1] && (
+                          <div
+                            dangerouslySetInnerHTML={{
+                              __html: amenities[1].icon_fa,
+                            }}
+                          />
+                        )}
                       </CDL_Image>
-                      <CDL_Item>엘리베이터</CDL_Item>
+                      <CDL_Item>{amenities[1] && amenities[1].name}</CDL_Item>
                     </CDL>
 
                     <CDL>
                       <CDL_Image>
-                        <i class="fas fa-tv"></i>
+                        {amenities[2] && (
+                          <div
+                            dangerouslySetInnerHTML={{
+                              __html: amenities[2].icon_fa,
+                            }}
+                          />
+                        )}
                       </CDL_Image>
-                      <CDL_Item>케이블TV</CDL_Item>
+                      <CDL_Item>{amenities[2] && amenities[2].name}</CDL_Item>
                     </CDL>
 
                     <CDL>
                       <CDL_Image>
-                        <i class="fas fa-laptop-code"></i>
+                        {amenities[3] && (
+                          <div
+                            dangerouslySetInnerHTML={{
+                              __html: amenities[3].icon_fa,
+                            }}
+                          />
+                        )}
                       </CDL_Image>
-                      <CDL_Item>노트북 작업 공간</CDL_Item>
+                      <CDL_Item>{amenities[3] && amenities[3].name}</CDL_Item>
                     </CDL>
 
                     <CDL>
                       <CDL_Image>
-                        <i class="fas fa-user-secret"></i>
+                        {amenities[4] && (
+                          <div
+                            dangerouslySetInnerHTML={{
+                              __html: amenities[4].icon_fa,
+                            }}
+                          />
+                        )}
                       </CDL_Image>
-                      <CDL_Item>옷걸이</CDL_Item>
+                      <CDL_Item>{amenities[4] && amenities[4].name}</CDL_Item>
                     </CDL>
                   </Convinience_Down_Left>
+
+                  <Convinience_Down_Right>
+                    <CDL>
+                      <CDL_Image>
+                        {amenities[5] && (
+                          <div
+                            dangerouslySetInnerHTML={{
+                              __html: amenities[5].icon_fa,
+                            }}
+                          />
+                        )}
+                      </CDL_Image>
+                      <CDL_Item>{amenities[5] && amenities[5].name}</CDL_Item>
+                    </CDL>
+
+                    <CDL>
+                      <CDL_Image>
+                        {amenities[6] && (
+                          <div
+                            dangerouslySetInnerHTML={{
+                              __html: amenities[6].icon_fa,
+                            }}
+                          />
+                        )}
+                      </CDL_Image>
+                      <CDL_Item>{amenities[6] && amenities[6].name}</CDL_Item>
+                    </CDL>
+
+                    <CDL>
+                      <CDL_Image>
+                        {amenities[7] && (
+                          <div
+                            dangerouslySetInnerHTML={{
+                              __html: amenities[7].icon_fa,
+                            }}
+                          />
+                        )}
+                      </CDL_Image>
+                      <CDL_Item>{amenities[7] && amenities[7].name}</CDL_Item>
+                    </CDL>
+
+                    <CDL>
+                      <CDL_Image>
+                        {amenities[8] && (
+                          <div
+                            dangerouslySetInnerHTML={{
+                              __html: amenities[8].icon_fa,
+                            }}
+                          />
+                        )}
+                      </CDL_Image>
+                      <CDL_Item>{amenities[8] && amenities[8].name}</CDL_Item>
+                    </CDL>
+
+                    <CDL>
+                      <CDL_Image>
+                        {amenities[9] && (
+                          <div
+                            dangerouslySetInnerHTML={{
+                              __html: amenities[9].icon_fa,
+                            }}
+                          />
+                        )}
+                      </CDL_Image>
+                      <CDL_Item>{amenities[9] && amenities[9].name}</CDL_Item>
+                    </CDL>
+                  </Convinience_Down_Right>
                 </Convinience_Down>
               </Convinience>
 
@@ -188,12 +391,106 @@ class Detail extends Component {
                   numberOfMonths="2"
                 />
               </Calendar_Left>
-              <Point>
-                <Point_Upper>후기 1개</Point_Upper>
+              <Point_Review>
+                <Point_Upper>
+                  <i class="fas fa-star"></i> {ratings.overall}
+                </Point_Upper>
                 <Point_Down>
-                  조용하고 편의시설도 가까이 있어서 좋았습니다.
+                  <Point_Down_Left>
+                    <PDL>
+                      <PDL1>청결도</PDL1>
+                      <PDL2>
+                        <div
+                          style={{
+                            width: `${ratings.cleanliness * 20}%`,
+                          }}
+                        ></div>
+                      </PDL2>
+                      <PDL3>{ratings.cleanliness}</PDL3>
+                    </PDL>
+
+                    <PDL>
+                      <PDL1>의사소통</PDL1>
+                      <PDL2>
+                        <div
+                          style={{
+                            width: `${ratings.communication * 20}%`,
+                          }}
+                        ></div>
+                      </PDL2>
+                      <PDL3>{ratings.communication}</PDL3>
+                    </PDL>
+
+                    <PDL>
+                      <PDL1>체크인</PDL1>
+                      <PDL2>
+                        <div
+                          style={{
+                            width: `${ratings.check_in * 20}%`,
+                          }}
+                        ></div>
+                      </PDL2>
+                      <PDL3>{ratings.check_in}</PDL3>
+                    </PDL>
+                  </Point_Down_Left>
+
+                  <Point_Down_Right>
+                    <PDL>
+                      <PDL1>정확성</PDL1>
+                      <PDL2>
+                        <div
+                          style={{
+                            width: `${ratings.accuracy * 20}%`,
+                          }}
+                        ></div>
+                      </PDL2>
+                      <PDL3>{ratings.accuracy}</PDL3>
+                    </PDL>
+
+                    <PDL>
+                      <PDL1>위치</PDL1>
+                      <PDL2>
+                        <div
+                          style={{
+                            width: `${ratings.location * 20}%`,
+                          }}
+                        ></div>
+                      </PDL2>
+                      <PDL3>{ratings.location}</PDL3>
+                    </PDL>
+
+                    <PDL>
+                      <PDL1>가격 대비 만족도</PDL1>
+                      <PDL2>
+                        <div
+                          style={{
+                            width: `${ratings.value * 20}%`,
+                          }}
+                        ></div>
+                      </PDL2>
+                      <PDL3>{ratings.value}</PDL3>
+                    </PDL>
+                  </Point_Down_Right>
                 </Point_Down>
-              </Point>
+                <Review>
+                  <Review_Upper>
+                    <Review_ProfilePhoto>
+                      <img src={reviews[0] && reviews[0].avatar} />
+                    </Review_ProfilePhoto>
+                    <Review_Right>
+                      <ReviewerName>
+                        {reviews[0] && reviews[0].name}
+                      </ReviewerName>
+                      <Review_Date>
+                        {reviews[0] && reviews[0].created_at}
+                      </Review_Date>
+                    </Review_Right>
+                  </Review_Upper>
+                  <Review_Content>
+                    {reviews[0] && reviews[0].content}
+                  </Review_Content>
+                </Review>
+              </Point_Review>
             </MiddleWrapper_Left>
             <MiddleWrapper_Right>
               <Calculator>
@@ -207,16 +504,87 @@ class Detail extends Component {
               <Location_Middle>
                 <LocationMap />
               </Location_Middle>
-              <Location_Down>부평역, 문화의 거리, 테마의 거리</Location_Down>
+              <Location_Down></Location_Down>
             </Location>
 
-            <Location>
-              <Location_Upper>호스트: 동휘님</Location_Upper>
-              <Location_Middle>후기 1개</Location_Middle>
-              <Location_Down>반갑습니다.</Location_Down>
-            </Location>
+            <Rule>
+              <Convinience_Upper>알아두어야 할 사항</Convinience_Upper>
+              <Convinience_Down>
+                <Convinience_Down_Left>
+                  <CDL>
+                    <CDL_Image>
+                      {amenities[0] && (
+                        <div
+                          dangerouslySetInnerHTML={{
+                            __html: amenities[0].icon_fa,
+                          }}
+                        />
+                      )}
+                    </CDL_Image>
+                    <CDL_Item>오후 {roomInfo.check_in} 이후</CDL_Item>
+                  </CDL>
+
+                  <CDL>
+                    <CDL_Image>
+                      {amenities[1] && (
+                        <div
+                          dangerouslySetInnerHTML={{
+                            __html: amenities[1].icon_fa,
+                          }}
+                        />
+                      )}
+                    </CDL_Image>
+                    <CDL_Item>오전 {roomInfo.check_out}</CDL_Item>
+                  </CDL>
+
+                  <CDL>
+                    <CDL_Image>
+                      {amenities[2] && (
+                        <div
+                          dangerouslySetInnerHTML={{
+                            __html: amenities[2].icon_fa,
+                          }}
+                        />
+                      )}
+                    </CDL_Image>
+                    <CDL_Item>흡연금지</CDL_Item>
+                  </CDL>
+
+                  <CDL>
+                    <CDL_Image>
+                      {amenities[3] && (
+                        <div
+                          dangerouslySetInnerHTML={{
+                            __html: amenities[3].icon_fa,
+                          }}
+                        />
+                      )}
+                    </CDL_Image>
+                    <CDL_Item>반려동물 동반 불가</CDL_Item>
+                  </CDL>
+
+                  <CDL>
+                    <CDL_Image>
+                      {amenities[4] && (
+                        <div
+                          dangerouslySetInnerHTML={{
+                            __html: amenities[4].icon_fa,
+                          }}
+                        />
+                      )}
+                    </CDL_Image>
+                    <CDL_Item>파티나 이벤트 금지</CDL_Item>
+                  </CDL>
+
+                  <ViewAll>
+                    <div>모두 보기</div>
+                  </ViewAll>
+                </Convinience_Down_Left>
+              </Convinience_Down>
+            </Rule>
           </LowerWrapper>
         </DetailWrapper>
+        <Footer />
       </>
     );
   }
@@ -234,6 +602,7 @@ const TitleHeader = styled.div`
   width: 1120px;
   height: 88px;
   margin: 0 auto;
+  margin-top: 50px;
   /* border: 1px solid orange; */
 `;
 
@@ -278,48 +647,63 @@ const PhotoSliderWrapper = styled.div`
 const PhotoSlider_Left = styled.div`
   width: 560px;
   height: 541.39px;
-  border-top-left-radius: 9px;
-  border-bottom-left-radius: 9px;
+  img {
+    width: 560px;
+    height: 541.39px;
+    border-top-left-radius: 12px;
+    border-bottom-left-radius: 12px;
+  }
+
+  /* border: 20px solid blue; */
   /* border: 1px solid orange; */
-  background-image: url("https://a0.muscache.com/im/pictures/37edc9ce-2e90-4faf-93fb-c45f78727f42.jpg?im_w=720");
 `;
 
 const PhotoSlider_Right = styled.div`
   width: 560px;
   height: 541.39px;
   display: flex;
-  justify-content: space-between;
+  justify-content: space-around;
   flex-wrap: wrap;
   /* border: 1px solid green; */
 `;
 const PhotoSlider1 = styled.div`
-  width: 272px;
-  height: 270.69px;
+  img {
+    width: 272px;
+    height: 270.69px;
+  }
 
-  background-image: url("https://a0.muscache.com/im/pictures/f5c0c117-f781-4f5b-9c41-f013e94234b9.jpg?im_w=320");
   /* border: 1px solid purple; */
 `;
 const PhotoSlider2 = styled.div`
   width: 272px;
   height: 270.69px;
+  img {
+    border-top-right-radius: 12px;
+    width: 272px;
+    height: 270.69px;
+  }
 
-  border-top-right-radius: 9px;
-  background-image: url("https://a0.muscache.com/im/pictures/51dbb3e1-97c7-49cb-bb5e-9aadb1606b7c.jpg?im_w=320");
   /* border: 1px solid purple; */
 `;
 const PhotoSlider3 = styled.div`
   width: 272px;
   height: 270.69px;
+  img {
+    width: 272px;
+    height: 270.69px;
+  }
 
-  background-image: url("https://a0.muscache.com/im/pictures/253f5904-3b65-4bbd-921b-41c17268d832.jpg?im_w=320");
   /* border: 1px solid purple; */
 `;
 const PhotoSlider4 = styled.div`
   width: 272px;
   height: 270.69px;
+  img {
+    width: 272px;
+    height: 270.69px;
+    border-bottom-right-radius: 12px;
+  }
 
-  border-bottom-right-radius: 9px;
-  background-image: url("https://a0.muscache.com/im/pictures/770b3db8-da1a-492a-9aa5-59c0e03a1840.jpg?im_w=320");
   /* border: 1px solid purple; */
 `;
 
@@ -374,8 +758,11 @@ const UpperSummary_Left2 = styled.div`
 `;
 
 const UpperSummary_Right = styled.div`
-  width: 56px;
-  height: 56px;
+  img {
+    width: 56px;
+    height: 56px;
+    border-radius: 70%;
+  }
   /* border: 1px solid black; */
 `;
 
@@ -406,12 +793,14 @@ const DownSummary_4 = styled.div`
 `;
 
 const DownSummary_Left = styled.div`
-  display: flex;
-  align-items: center;
-  flex-direction: row;
-  justify-content: center;
-  width: 30px;
-  height: 30px;
+  div {
+    width: 30px;
+    height: 30px;
+    display: flex;
+    justify-content: center;
+    flex-direction: column;
+    align-items: center;
+  }
   /* border: 1px solid purple; */
 `;
 const DownSummary_Right = styled.div`
@@ -434,6 +823,7 @@ const Description = styled.div`
   width: 646.59px;
   border-bottom: 1px solid #dddddd;
   padding: 40px 0px 40px 0px;
+  line-height: 150%;
 `;
 
 const Bed = styled.div`
@@ -480,7 +870,7 @@ const Bed_Size_Num = styled.div`
   height: 20px;
   font-size: 14px;
   font-weight: 400;
-  color: #222222  
+  color: #222222;
   border: 1px soild green;
 `;
 
@@ -503,21 +893,30 @@ const Convinience_Down = styled.div`
   font-size: 16px;
   font-weight: 400;
   margin-bottom: 20px;
+  display: flex;
 `;
 const Convinience_Down_Left = styled.div`
+  width: 262.73px;
+  margin-right: 50px;
+`;
+const Convinience_Down_Right = styled.div`
   width: 262.73px;
 `;
 
 const CDL = styled.div`
   width: 646.59px;
   display: flex;
-  margin: 10px 0px;
+  margin: 20px 0px;
 `;
+
 const CDL_Image = styled.div`
-  width: 24px;
-  height: 24px;
-  display: flex;
-  justify-content: center;
+  div {
+    width: 24px;
+    height: 24px;
+    display: flex;
+    justify-content: center;
+    /* border: 1px solid purple; */
+  }
 `;
 const CDL_Item = styled.div`
   width: 230px;
@@ -538,7 +937,7 @@ const Calendar_Upper = styled.div`
   margin-bottom: 20px;
 `;
 
-const Point = styled.div`
+const Point_Review = styled.div`
   display: block;
   width: 646.59px;
   /* border-bottom: 1px solid #dddddd; */
@@ -550,13 +949,97 @@ const Point_Upper = styled.div`
   font-size: 22px;
   font-weight: 600;
   margin-bottom: 20px;
+  i {
+    color: #ff385c;
+  }
 `;
 const Point_Down = styled.div`
   width: 646.59px;
-  height: 70px;
+  font-size: 16px;
+  font-weight: 400;
+  display: flex;
+`;
+
+const Point_Down_Left = styled.div`
+  width: 262.73px;
+  margin-right: 50px;
+`;
+
+const Point_Down_Right = styled.div`
+  width: 262.73px;
+`;
+
+const PDL = styled.div`
+  display: flex;
+  margin: 20px 0;
+`;
+
+const PDR = styled.div`
+  display: flex;
+  margin: 20px 0;
+`;
+
+const PDL1 = styled.div`
+  width: 250px;
+`;
+const PDL2 = styled.div`
+  width: 100px;
+  margin-right: 30px;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+
+  div {
+    border: 2px solid black;
+    border-radius: 2px;
+  }
+`;
+const PDL3 = styled.div`
+  width: 30px;
+`;
+
+const Review = styled.div``;
+
+const Review_Upper = styled.div`
+  display: flex;
+  margin: 30px 0;
+`;
+
+const Review_ProfilePhoto = styled.div`
+  img {
+    width: 56px;
+    height: 56px;
+    border-radius: 50%;
+  }
+`;
+
+const Review_Right = styled.div`
+  width: 72px;
+  height: 40px;
+  margin-left: 20px;
+`;
+
+const ReviewerName = styled.div`
+  width: 72px;
+  height: 25px;
+  font-size: 16px;
+  font-weight: 600;
+`;
+
+const Review_Date = styled.div`
+  width: 72px;
+  height: 20px;
+  font-size: 14px;
+  font-weight: 400;
+  color: #717171;
+`;
+
+const Review_Content = styled.div`
+  width: 646.59px;
   font-size: 16px;
   font-weight: 400;
 `;
+
 const LowerWrapper = styled.div`
   width: 1120px;
   margin: 0 auto;
@@ -594,4 +1077,19 @@ const Calculator = styled.div`
   margin: 0 auto;
   position: sticky;
   top: 40px;
+`;
+
+const Rule = styled.div`
+  display: block;
+  width: 646.59px;
+  border-bottom: 1px solid #dddddd;
+  padding: 40px 0px;
+`;
+
+const ViewAll = styled.div`
+  font-size: 16px;
+  font-weight: 600;
+  color: #717171;
+  cursor: pointer;
+  text-decoration: underline;
 `;
