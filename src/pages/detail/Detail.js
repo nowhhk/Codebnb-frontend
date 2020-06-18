@@ -5,7 +5,7 @@ import Calculation from "./Calculation/Calculation";
 import "react-dates/initialize";
 import "./reactdate.css";
 import moment from "moment";
-import Guest from "../detail/Guest";
+import Footer from "../../../src/components/Footer";
 import {
   DateRangePicker,
   SingleDatePicker,
@@ -35,7 +35,7 @@ class Detail extends Component {
   }
 
   componentDidMount = () => {
-    fetch(`${API}/room/detail/1`, {
+    fetch(`${API}/room/detail/${this.props.match.params.id}`, {
       method: "GET",
       headers: {
         "content-Type": "application/json",
@@ -56,8 +56,8 @@ class Detail extends Component {
             reviews: res.reviews,
             ratings: res.ratings,
             monthlyDiscount: res.monthly_discount,
-          },
-          () => console.log("ratings : ", res.characteristics[0].icon_fa)
+          }
+          // () => console.log("ratings : ", res.characteristics[0].icon_fa)
         )
       );
   };
@@ -388,8 +388,7 @@ class Detail extends Component {
               </Calendar_Left>
               <Point_Review>
                 <Point_Upper>
-                  <i class="fas fa-star"></i>
-                  {ratings.overall} 후기 1개
+                  <i class="fas fa-star"></i> {ratings.overall} 후기 1개
                 </Point_Upper>
                 <Point_Down>
                   <Point_Down_Left>
@@ -500,16 +499,87 @@ class Detail extends Component {
               <Location_Middle>
                 <LocationMap />
               </Location_Middle>
-              <Location_Down>부평역, 문화의 거리, 테마의 거리</Location_Down>
+              <Location_Down></Location_Down>
             </Location>
 
-            <Location>
-              <Location_Upper>호스트: 동휘님</Location_Upper>
-              <Location_Middle>후기 1개</Location_Middle>
-              <Location_Down>반갑습니다.</Location_Down>
-            </Location>
+            <Rule>
+              <Convinience_Upper>알아두어야 할 사항</Convinience_Upper>
+              <Convinience_Down>
+                <Convinience_Down_Left>
+                  <CDL>
+                    <CDL_Image>
+                      {amenities[0] && (
+                        <div
+                          dangerouslySetInnerHTML={{
+                            __html: amenities[0].icon_fa,
+                          }}
+                        />
+                      )}
+                    </CDL_Image>
+                    <CDL_Item>오후 {roomInfo.check_in} 이후</CDL_Item>
+                  </CDL>
+
+                  <CDL>
+                    <CDL_Image>
+                      {amenities[1] && (
+                        <div
+                          dangerouslySetInnerHTML={{
+                            __html: amenities[1].icon_fa,
+                          }}
+                        />
+                      )}
+                    </CDL_Image>
+                    <CDL_Item>오전 {roomInfo.check_out}</CDL_Item>
+                  </CDL>
+
+                  <CDL>
+                    <CDL_Image>
+                      {amenities[2] && (
+                        <div
+                          dangerouslySetInnerHTML={{
+                            __html: amenities[2].icon_fa,
+                          }}
+                        />
+                      )}
+                    </CDL_Image>
+                    <CDL_Item>흡연금지</CDL_Item>
+                  </CDL>
+
+                  <CDL>
+                    <CDL_Image>
+                      {amenities[3] && (
+                        <div
+                          dangerouslySetInnerHTML={{
+                            __html: amenities[3].icon_fa,
+                          }}
+                        />
+                      )}
+                    </CDL_Image>
+                    <CDL_Item>반려동물 동반 불가</CDL_Item>
+                  </CDL>
+
+                  <CDL>
+                    <CDL_Image>
+                      {amenities[4] && (
+                        <div
+                          dangerouslySetInnerHTML={{
+                            __html: amenities[4].icon_fa,
+                          }}
+                        />
+                      )}
+                    </CDL_Image>
+                    <CDL_Item>파티나 이벤트 금지</CDL_Item>
+                  </CDL>
+
+                  <ViewAll>
+                    <div>모두 보기</div>
+                  </ViewAll>
+                </Convinience_Down_Left>
+              </Convinience_Down>
+            </Rule>
           </LowerWrapper>
         </DetailWrapper>
+        <Footer />
       </>
     );
   }
@@ -805,6 +875,7 @@ const Convinience = styled.div`
   border-bottom: 1px solid #dddddd;
   padding: 40px 0px;
 `;
+
 const Convinience_Upper = styled.div`
   width: 646.59px;
   height: 26px;
@@ -840,7 +911,7 @@ const CDL_Image = styled.div`
     height: 24px;
     display: flex;
     justify-content: center;
-    border: 1px solid purple;
+    /* border: 1px solid purple; */
   }
 `;
 const CDL_Item = styled.div`
@@ -1002,4 +1073,19 @@ const Calculator = styled.div`
   margin: 0 auto;
   position: sticky;
   top: 40px;
+`;
+
+const Rule = styled.div`
+  display: block;
+  width: 646.59px;
+  border-bottom: 1px solid #dddddd;
+  padding: 40px 0px;
+`;
+
+const ViewAll = styled.div`
+  font-size: 16px;
+  font-weight: 600;
+  color: #717171;
+  cursor: pointer;
+  text-decoration: underline;
 `;
