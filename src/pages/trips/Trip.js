@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import styled from "styled-components";
 import { withRouter } from "react-router-dom";
 import Form from "./Form";
+import { API } from "../../config";
 
 const Trip = (props) => {
   const [openComment, setOpenComment] = useState(false);
@@ -9,7 +10,7 @@ const Trip = (props) => {
   const handleOpen = () => {
     const token = localStorage.getItem("access_token");
     console.log(props);
-    fetch(`http://10.58.5.55:8000/api/review/${props.room_id}`, {
+    fetch(`${API}/api/review/${props.room_id}`, {
       method: "GET",
       headers: {
         "Content-Type": "application/json",

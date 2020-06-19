@@ -56,9 +56,13 @@ const Search = (props) => {
   //   console.log("오늘은", moment().format("YYYY-MM-DD"));
 
   const goToList = () => {
-    props.history.push(
-      `/list?location=${location}&checkin=${checkin}&checkout=${checkout}&adults=${adults}&childen=${children}&infants=${infants}`
-    );
+    if (location !== null && checkin !== undefined && checkout !== undefined) {
+      props.history.push(
+        `/list?location=${location}&checkin=${checkin}&checkout=${checkout}&adults=${adults}&childen=${children}&infants=${infants}`
+      );
+    } else {
+      alert("날짜 / 위치를 입력하세요.");
+    }
   };
 
   return (

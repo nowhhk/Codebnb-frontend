@@ -1,7 +1,11 @@
 import React, { useState, useEffect } from "react";
+import { useHistory } from "react-router";
 import styled from "styled-components";
+import { API } from "../../config";
 
 const Form = (props) => {
+  const history = useHistory();
+
   const [inputs, setInputs] = useState({
     cleanliness: "5",
     communication: "5",
@@ -11,16 +15,6 @@ const Form = (props) => {
     value: "5",
     content: "",
   });
-
-  const {
-    cleanliness,
-    communication,
-    check_in,
-    accuracy,
-    location,
-    value,
-    content,
-  } = inputs;
 
   const onChange = (e) => {
     const { value, name } = e.target;
@@ -35,7 +29,7 @@ const Form = (props) => {
     // console.log(inputs);
     // console.log(props.roomId, props.hostId);
     const token = localStorage.getItem("access_token");
-    fetch(`http://10.58.5.55:8000/api/review/${props.roomId}/${props.hostId}`, {
+    fetch(`${API}/api/review/${props.roomId}/${props.hostId}`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -44,8 +38,15 @@ const Form = (props) => {
       body: JSON.stringify({
         inputs: inputs,
       }),
-    }).then((res) => window.location.reload());
-    // .then((res) => props.handleClose());
+    }).then((res) => {
+      if (res.status === 200) {
+        window.location.reload();
+        // history.push(`/datail/${props.roomId}`);
+      } else {
+        alert("");
+      }
+    });
+    // .then((res) => p window.location.reload());
   };
 
   return (
@@ -125,9 +126,18 @@ export default Form;
 
 //styled-components
 
-const FormWrapper = styled.div`
-  /* border: solid 2px black; */
+const Back = styled.div`
+  position: fixed !important;
+  z-index: 2000 !important;
+  top: 0px !important;
+  right: 0px !important;
+  bottom: 0px !important;
+  left: 0px !important;
+  overflow-y: auto !important;
+  background: rgba(0, 0, 0, 0.75) !important;
+`;
 
+const FormWrapper = styled.div`
   position: fixed !important;
   top: 25%;
   left: 40%;
@@ -142,13 +152,12 @@ const FormWrapper = styled.div`
     label {
     }
     select {
-      /* width: 200px; 원하는 너비설정 */
-      padding: 0.4em 0.5em; /* 여백으로 높이 설정 */
-      font-family: inherit; /* 폰트 상속 */
-      background: url("이미지 경로") no-repeat 95% 50%; /* 네이티브 화살표를 커스텀 화살표로 대체 */
+      padding: 0.4em 0.5em;
+      font-family: inherit;
+      background: url("") no-repeat 95% 50%;
       border: 1px solid #999;
-      border-radius: 0px; /* iOS 둥근모서리 제거 */
-      -webkit-appearance: none; /*네이티브 외형 감추기*/
+      border-radius: 0px;
+      -webkit-appearance: none;
       -moz-appearance: none;
       appearance: none;
       border-radius: 10px;
@@ -157,32 +166,29 @@ const FormWrapper = styled.div`
     textarea {
       border-radius: 10px;
     }
-    label{
-      margin:3px 0;
+    label {
+      margin: 3px 0;
     }
-    button{
+    button {
       border: none;
-  /* background-color: ${(props) => props.theme.color.red}; */
-  padding: 0 25px;
-  color: #ffffff;
-  border-radius: 10px;
-  background-image: radial-gradient(circle at center, #FF385C 0%, #E61E4D 27.5%, #E31C5F 40%, #D70466 57.5%, #BD1E59 75%, #BD1E59 100% );
-  background-size: 200% 200%;
-  min-width:95px;
-  padding: 10px;
-  margin-top:16px; 
-  cursor: pointer;
-    
+      background-color: ${(props) => props.theme.color.red};
+      padding: 0 25px;
+      color: #ffffff;
+      border-radius: 10px;
+      background-image: radial-gradient(
+        circle at center,
+        #ff385c 0%,
+        #e61e4d 27.5%,
+        #e31c5f 40%,
+        #d70466 57.5%,
+        #bd1e59 75%,
+        #bd1e59 100%
+      );
+      background-size: 200% 200%;
+      min-width: 95px;
+      padding: 10px;
+      margin-top: 16px;
+      cursor: pointer;
+    }
   }
-`;
-
-const Back = styled.div`
-  position: fixed !important;
-  z-index: 2000 !important;
-  top: 0px !important;
-  right: 0px !important;
-  bottom: 0px !important;
-  left: 0px !important;
-  overflow-y: auto !important;
-  background: rgba(0, 0, 0, 0.75) !important;
 `;

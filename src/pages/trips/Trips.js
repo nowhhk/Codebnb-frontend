@@ -6,6 +6,7 @@ import Footer from "../../components/Footer";
 import TripList from "./TripList";
 import Trip from "./Trip";
 import Form from "./Form";
+import { API } from "../../config";
 
 const Trips = () => {
   const [activeTab, setActiveTab] = useState("upcoming");
@@ -14,7 +15,7 @@ const Trips = () => {
 
   useEffect(() => {
     const token = localStorage.getItem("access_token");
-    fetch("http://10.58.5.55:8000/api/tripstate", {
+    fetch(`${API}/user/tripstate`, {
       method: "GET",
       headers: {
         "Content-Type": "application/json",
@@ -85,7 +86,7 @@ const Trips = () => {
                 이전 예약
               </button>
             </Buttons>
-            <div>{tab[activeTab]}</div>
+            <Tab>{tab[activeTab]}</Tab>
             <div>
               <svg
                 focusable="false"
@@ -824,4 +825,8 @@ const Buttons = styled.div`
     font-size: 16px;
     margin: 30px 30px 20px 0;
   }
+`;
+
+const Tab = styled.span`
+  color: ${(props) => props.theme.color.gray};
 `;
