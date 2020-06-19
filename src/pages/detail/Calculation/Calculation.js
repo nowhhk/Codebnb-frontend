@@ -1,5 +1,6 @@
 import React, { Component, useState, useEffect, Fragment } from "react";
 import styled from "styled-components";
+import { Link, withRouter } from "react-router-dom";
 import { API } from "../../../config";
 import "../../detail/reactdate.css";
 import Guest from "../Guest";
@@ -9,7 +10,7 @@ import {
   DayPickerRangeController,
 } from "react-dates";
 
-class Calendar extends Component {
+class Calculation extends Component {
   constructor(props) {
     super(props);
     this.state = {
@@ -25,8 +26,15 @@ class Calendar extends Component {
     };
   }
 
+  // componentDidMount = () => {
+  //   fetch(`${API}/room/detail/1`, {
+  //     method: "GET",
+  //     headers: {
+  //       "content-Type": "application/json",
+  //     },
+  //   })
   componentDidMount = () => {
-    fetch(`${API}/room/detail/1`, {
+    fetch(`${API}/room/detail/${this.props.match.params.id}`, {
       method: "GET",
       headers: {
         "content-Type": "application/json",
@@ -70,7 +78,9 @@ class Calendar extends Component {
   };
 
   render() {
-    console.log("stage3 :", this.state.stage3);
+    // console.log("stage3 :", this.state.stage3);
+    // console.log(this.props.location.state.parsed.checkin);
+    // console.log("startDate :", this.state.startDate);
 
     const {
       duration,
@@ -97,7 +107,7 @@ class Calendar extends Component {
               </GuidePrice>
             )}
             <PointWrapper>
-              <i class="fas fa-star"></i> {ratings.overall}
+              <i class="fas fa-star"></i> {Math.round(ratings.overall)}
             </PointWrapper>
           </TopWrapper>
           <MiddleWrapper>
@@ -128,7 +138,11 @@ class Calendar extends Component {
             <div>
               {this.state.stage3 ? (
                 <BottomWrapper>
-                  <Button>예약 하기</Button>
+                  <Button>
+                    <div className="linkButton">
+                      <Link to="/reservation">예약 하기</Link>
+                    </div>
+                  </Button>
                   <CommentWrapper>
                     예약 확정 전에는 요금이 청구되지 않습니다
                   </CommentWrapper>
@@ -194,7 +208,9 @@ class Calendar extends Component {
                 </BottomWrapper>
               ) : (
                 <BottomWrapper>
-                  <Button>예약 하기</Button>
+                  <Button>
+                    <Link to="/reservation">예약 하기</Link>
+                  </Button>
                   <CommentWrapper>
                     예약 확정 전에는 요금이 청구되지 않습니다
                   </CommentWrapper>
@@ -284,7 +300,7 @@ class Calendar extends Component {
   }
 }
 
-export default Calendar;
+export default withRouter(Calculation);
 
 const CalendarWrapper = styled.div`
   width: 362.63px;
@@ -382,6 +398,9 @@ const Button = styled.button`
     "Helvetica Neue", sans-serif;
   border-radius: 8px;
   outline: none;
+  .linkButton {
+    color: white;
+  }
 `;
 
 const CommentWrapper = styled.div`
