@@ -1,10 +1,13 @@
 import React, { useState, useEffect } from "react";
 import { withRouter, useHistory, Link } from "react-router-dom";
 import { API } from "../../config";
+import Nav from "../../components/Nav";
+import Footer from "../../components/Footer";
 import SingleList from "./SingleList";
 import ListFilter from "./ListFilter";
 import MapView from "./map/MapView2";
 import JejuMap from "./map/MapJeju";
+import BusanMap from "./map/MapBusan";
 import styled from "styled-components";
 
 const List = (props) => {
@@ -81,6 +84,11 @@ const List = (props) => {
         // console.log(res.rooms);
       });
   };
+
+  useEffect(() => {
+    let location = props.location.search;
+    getData(location, 0);
+  }, [placeQuery]);
 
   ///// 숙소유형 /////
 
@@ -201,62 +209,71 @@ const List = (props) => {
   };
 
   return (
-    <Container>
-      <ListWrapper>
-        <header>
-          <p>
-            300개 이상의 숙소 · {parsed.checkin} - {parsed.checkout} · 게스트
-            {parsed.adults}명
-          </p>
-          <h1>{parsed.location}의 숙소</h1>
-        </header>
-        <ListFilter
-          rooms={data}
-          placeOpen={placeOpen}
-          TogglePlace={TogglePlace}
-          savePlaceType={savePlaceType}
-          submitPlace={submitPlace}
-          priceOpen={priceOpen}
-          TogglePrice={TogglePrice}
-          filterOpen={filterOpen}
-          ToggleFilter={ToggleFilter}
-          saveFilterType={saveFilterType}
-          submitFilter={submitFilter}
-          savePropertyType={savePropertyType}
-          saveLanguage={saveLanguage}
-          clearFilter={clearFilter}
-        />
-        <Listings>
-          <Alert>
-            <div>
-              <img
-                src="https://a0.muscache.com/airbnb/static/packages/icon-uc-alarm.e0a2b02f.gif"
-                alt=""
-              />
-            </div>
+    <div>
+      <Container>
+        <ListWrapper>
+          <header>
             <p>
-              예약에 앞서 여행 제한 사항을 확인하세요.에어비앤비 커뮤니티의
-              건강과 안전이 최우선입니다. 정부 지침을 준수하고 꼭 필요한
-              경우에만 여행하실 것을 부탁드립니다.자세히 알아보기
+              {parsed.checkin} - {parsed.checkout} · 게스트
+              {parsed.adults}명
             </p>
-          </Alert>
-          {/* <Link to={"./detail/${}"}> */}
-          <SingleList rooms={data} highlighted={highlighted} parsed={parsed} />
-          {/* <Pagination prevPage={prevPage} nextPage={nextPage} /> */}
-          <BtnContainer>
-            <div onClick={() => handlePage("prev")}>이전</div>
-            <div onClick={() => handlePage("next")}>다음</div>
-          </BtnContainer>
-        </Listings>
-      </ListWrapper>
-      <MapWrapper>
-        {parsed.location === "제주" ? (
-          <JejuMap rooms={data} markerhighlighted={marker} />
-        ) : parsed.location === "서울" ? (
-          <MapView rooms={data} markerhighlighted={marker} />
-        ) : null}
-      </MapWrapper>
-    </Container>
+            <h1>{parsed.location}의 숙소</h1>
+          </header>
+          <ListFilter
+            rooms={data}
+            placeOpen={placeOpen}
+            TogglePlace={TogglePlace}
+            savePlaceType={savePlaceType}
+            submitPlace={submitPlace}
+            priceOpen={priceOpen}
+            TogglePrice={TogglePrice}
+            filterOpen={filterOpen}
+            ToggleFilter={ToggleFilter}
+            saveFilterType={saveFilterType}
+            submitFilter={submitFilter}
+            savePropertyType={savePropertyType}
+            saveLanguage={saveLanguage}
+            clearFilter={clearFilter}
+          />
+          <Listings>
+            <Alert>
+              <div>
+                <img
+                  src="https://a0.muscache.com/airbnb/static/packages/icon-uc-alarm.e0a2b02f.gif"
+                  alt=""
+                />
+              </div>
+              <p>
+                예약에 앞서 여행 제한 사항을 확인하세요.에어비앤비 커뮤니티의
+                건강과 안전이 최우선입니다. 정부 지침을 준수하고 꼭 필요한
+                경우에만 여행하실 것을 부탁드립니다.자세히 알아보기
+              </p>
+            </Alert>
+            {/* <Link to={"./detail/${}"}> */}
+            <SingleList
+              rooms={data}
+              highlighted={highlighted}
+              parsed={parsed}
+            />
+            {/* <Pagination prevPage={prevPage} nextPage={nextPage} /> */}
+            <BtnContainer>
+              <div onClick={() => handlePage("prev")}>이전</div>
+              <div onClick={() => handlePage("next")}>다음</div>
+            </BtnContainer>
+          </Listings>
+        </ListWrapper>
+        <MapWrapper>
+          {parsed.location === "제주" ? (
+            <JejuMap rooms={data} markerhighlighted={marker} />
+          ) : parsed.location === "서울" ? (
+            <MapView rooms={data} markerhighlighted={marker} />
+          ) : parsed.location === "부산" ? (
+            <BusanMap rooms={data} markerhighlighted={marker} />
+          ) : null}
+        </MapWrapper>
+      </Container>
+      <Footer />
+    </div>
   );
 };
 

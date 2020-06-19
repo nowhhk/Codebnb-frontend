@@ -99,7 +99,7 @@ const ListFilter = ({
           <PriceDropdown>
             <div>
               <h4>요금</h4>
-              <Range rooms={rooms}></Range>
+              {/* <Range rooms={rooms}></Range> */}
             </div>
           </PriceDropdown>
         ) : null}

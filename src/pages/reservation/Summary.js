@@ -1,43 +1,40 @@
 import React from "react";
 import styled from "styled-components";
 
-const Summary = ({
-  data,
-  totalNights,
-  changeCurrency,
-  calcNights,
-  totalAmount,
-}) => {
+const Summary = ({ data, changeCurrency, calcNights, totalAmount }) => {
+  const priceToNum = (str) => {
+    str = str.slice(0, -3);
+    return str;
+  };
+
   return (
     <Container>
       <div>
         <h2>요금 세부정보</h2>
-        <div>
-          {data.currency === "KRW" ? (
-            <span>₩</span>
-          ) : data.currency === "USD" ? (
-            <span>$</span>
-          ) : null}
-          {`${data.price} x ${totalNights}박`}
-        </div>
-        <div>
-          {data.currency === "KRW" ? (
-            <span>₩</span>
-          ) : data.currency === "USD" ? (
-            <span>$</span>
-          ) : null}
-          {totalAmount}
+        <div className="flexBet">
+          <div className="totalPrice">
+            {data.currency === "KRW" ? (
+              <span>₩ </span>
+            ) : data.currency === "USD" ? (
+              <span>$ </span>
+            ) : null}
+            {`${data.price && priceToNum(data.price)} X ${calcNights}박`}
+          </div>
+          <div>
+            <span>
+              {data.currency === "KRW" ? (
+                <span>₩ </span>
+              ) : data.currency === "USD" ? (
+                <span>$ </span>
+              ) : null}
+              {(data.price && priceToNum(data.price)) * calcNights}
+            </span>
+          </div>
         </div>
       </div>
 
       <hr></hr>
-      <ShortMsg>
-        <p>언제까지 취소가능</p>
-        <p>
-          9월 30일일 까지 무료 취소 가능 그 이후 10월 9일 4:00 PM 전에 예약을
-          취소하면 서비스 수수료를 제외한 요금 전액이 환불됩니다.
-        </p>
-      </ShortMsg>
+      <ShortMsg>통화선택</ShortMsg>
       <Currency>
         {data.currency === "KRW" ? (
           <div>
@@ -72,16 +69,19 @@ const Container = styled.div`
   h2 {
     font-size: 1.375rem;
   }
+
+  .flexBet {
+    display: flex;
+    justify-content: space-between;
+    margin: 2em 0;
+  }
+
+  .totalPrice {
+  }
 `;
 
 const ShortMsg = styled.div`
-  p {
-    line-height: 1.4em;
-  }
-
-  p:last-child {
-    color: ${(props) => props.theme.color.gray};
-  }
+  margin: 2em 0 1em 0;
 `;
 
 const Currency = styled.div`
