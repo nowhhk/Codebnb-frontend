@@ -880,7 +880,6 @@ const Convinience = styled.div`
   border-bottom: 1px solid #dddddd;
   padding: 40px 0px;
 `;
-
 const Convinience_Upper = styled.div`
   width: 646.59px;
   height: 26px;

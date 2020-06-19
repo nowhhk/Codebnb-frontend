@@ -2,89 +2,62 @@ import React, { useState, useEffect } from "react";
 import styled from "styled-components";
 import Checkbox from "../../components/Checkbox";
 
-const MoreFilter = ({ filter, handleModal, handleOutside }) => {
-  const [selected, setSelected] = useState([]);
-
-  const handleCheckbox = (e) => {
-    // 각 항목당 id 가 있으면 value 대신 id
-    const { value } = e.target;
-    let userSelected = [...selected];
-    if (userSelected.includes(value)) {
-      userSelected = userSelected.filter((s) => s !== value);
-    } else {
-      userSelected = [...userSelected, value];
-    }
-    setSelected(userSelected);
-  };
-
-  useEffect(() => {
-    console.log(selected);
-  }, [selected]);
-
-  const clearForm = (e) => {
-    e.preventDefault();
-    setSelected([]);
-  };
-
-  const submitForm = (e) => {
-    e.preventDefault();
-
-    // update fetch?
-  };
-
+const MoreFilter = ({
+  filter,
+  amenities,
+  languages,
+  handleModal,
+  handleOutside,
+  handleAmenities,
+  handleAmenitiesType,
+  submitAmenities,
+}) => {
   return (
     <Container>
       <Backdrop id="outside" onClick={(e) => handleOutside(e)}>
         <Box>
-          <Header>
+          <div className="header">
             <div>
               <i className="fas fa-times" onClick={handleModal}></i>
             </div>
             <div>필터 추가하기</div>
             <div></div>
-          </Header>
-          <Content>
+          </div>
+          <div className="content">
             <Section>
-              <h1>편의시설</h1>
-              <div>
-                <Checkbox
-                  name={"amenities"}
-                  value={selected}
-                  options={filter.amenities}
-                  onChange={handleCheckbox}
-                />
-              </div>
+              <h2>편의시설</h2>
+
+              {filter.amenities.map((amenity) => (
+                <div className="eachline">
+                  <label>
+                    <input
+                      type="checkbox"
+                      value={amenity}
+                      onChange={handleAmenitiesType}
+                    />
+                    {amenity}
+                  </label>
+                </div>
+              ))}
             </Section>
             <Section>
-              <h1>건물유형</h1>
-              <div>
-                <Checkbox
-                  name={"property_types"}
-                  value={selected}
-                  options={filter.property_types}
-                  onChange={handleCheckbox}
-                />
-              </div>
+              <h2>건물유형</h2>
+
+              {filter.property_types.map((property) => (
+                <div className="eachline">
+                  <label>
+                    <input type="checkbox" value={property} />
+                    {property}
+                  </label>
+                </div>
+              ))}
             </Section>
-            <Section>
-              <h1>호스트 언어</h1>
-              <div>
-                <Checkbox
-                  name={"languages"}
-                  value={selected}
-                  options={filter.languages}
-                  onChange={handleCheckbox}
-                />
-              </div>
-            </Section>
-            <Section>
-              <h1>건물유형</h1>
-            </Section>
-            <BtnContainer>
-              <div onClick={clearForm}>지우기</div>
-              <Btn onClick={submitForm}>저장</Btn>
-            </BtnContainer>
-          </Content>
+          </div>
+          <div></div>
+          <div className="submit">
+            <div>지우기</div>
+            <Btn onClick={submitAmenities}>저장</Btn>
+          </div>
         </Box>
       </Backdrop>
     </Container>
@@ -97,6 +70,7 @@ const Container = styled.div`
   bottom: 0;
   left: 0;
   right: 0;
+  z-index: 100;
 `;
 
 const Backdrop = styled.div`
@@ -105,57 +79,71 @@ const Backdrop = styled.div`
   bottom: 0;
   left: 0;
   right: 0;
-  z-index: 100;
   background-color: rgba(0, 0, 0, 0.3);
 `;
 
-const Box = styled.div`
+const Box = styled.form`
   position: relative;
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
-  width: 40%;
+  width: 700px;
   background-color: white;
   box-shadow: 0 0 10px rgba(0, 0, 0, 0.25);
   z-index: 101;
   border-radius: 20px;
-`;
 
-const Header = styled.div`
-  display: flex;
-  justify-content: space-between;
-  border-bottom: 1px solid #eee;
-  padding: 1.75em;
-`;
+  .header {
+    display: flex;
+    justify-content: space-between;
+    border-bottom: 1px solid #eee;
+    padding: 1.75em;
+  }
 
-const Content = styled.form`
-  max-height: calc(100vh - 200px);
-  overflow-y: auto;
-  padding: 1em 1.5em;
+  .content {
+    max-height: calc(100vh - 200px);
+    overflow-y: auto;
+    padding: 1em 1.5em;
+  }
+
+  .submit {
+    position: absolute;
+    width: 100%;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    display: flex;
+    justify-content: space-between;
+    padding: 1em 1.5em;
+    background: white;
+    border-top: 1px solid #eee;
+    border-bottom-left-radius: 20px;
+    border-bottom-right-radius: 20px;
+  }
 `;
 
 const Section = styled.div`
   border-bottom: 1px solid #eeeeee;
   padding: 1em 0;
 
-  h1 {
-    font-size: 1.25rem;
-    font-weight: normal;
+  h2 {
+    font-size: 1.5rem;
     margin-bottom: 1.25em;
   }
 
-  div {
+  div.eachline {
     display: flex;
-    flex-wrap: wrap;
-  }
-`;
 
-const BtnContainer = styled.div`
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: 1em 1.5em;
-  border-top: 1px solid #eee;
+    flex-basis: 50%;
+    margin-bottom: 1.15em;
+    align-items: center;
+
+    label {
+      flex-basis: 50%;
+      color: ${(props) => props.theme.color.gray};
+      margin-left: 0.35em;
+    }
+  }
 `;
 
 const Btn = styled.button`
