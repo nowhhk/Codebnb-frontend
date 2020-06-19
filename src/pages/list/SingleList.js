@@ -1,8 +1,10 @@
 import React from "react";
+import { useHistory } from "react-router-dom";
 import styled from "styled-components";
 import ImageSlider from "./Slider/ImageSlider";
 
-const SingleList = ({ rooms, goToDetail }) => {
+const SingleList = ({ rooms, highlighted, parsed }) => {
+  let history = useHistory();
   const truncate = (str) => {
     return str.length > 40 ? str.substring(0, 37) + "..." : str;
   };
@@ -12,16 +14,28 @@ const SingleList = ({ rooms, goToDetail }) => {
     return price - discount;
   };
 
-  const calculateTotal = () => {
-    //1박 요금 곱하기 몇박 더하기 서비스 수수료
-  };
+  // const goToDetail = () => {
+  //   const queryRoomId = house.room_id;
+  //   history.push(`/detail/${queryRoomId}`);
+  // };
 
+  console.log(history);
   return (
     <div>
-      {rooms.map((house, idx) => (
-        <Container key={house.idx} room_id={house.room_id}>
+      {rooms.map((house) => (
+        <Container
+          key={house.room_id}
+          onMouseOver={() => highlighted(house.room_id)}
+        >
           <ImageSlider slides={house.images} heart={house.is_wishlist} />
-          <DetailContainer onClick={goToDetail}>
+
+          <DetailContainer
+            onClick={() =>
+              history.push(`/detail/${house.room_id}`, {
+                parsed,
+              })
+            }
+          >
             <div style={{ justifyContent: "normal" }}>
               <Subtitle>
                 <div style={{ display: "flex" }}>
@@ -34,7 +48,8 @@ const SingleList = ({ rooms, goToDetail }) => {
                   </span>
                 </div>
               </Subtitle>
-              <Header>{truncate(house.title)}</Header>
+              {/* <Link to={`/detail/${house.room_id}`}></Link> */}
+              <Header>{truncate(house.title)}</Header>{" "}
               <Options>
                 <p>
                   인원 {house.max_capacity}명 · 침실 {house.bedrooms}개 · 침대

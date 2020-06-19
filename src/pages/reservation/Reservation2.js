@@ -65,23 +65,26 @@ const Reservation = (props) => {
     setReservation({ ...reservation, payment_methods: value });
   };
 
+  // const calcNights = () => {
+  //   const start = new Date(data.check_in_date);
+  //   const end = new Date(data.check_out_date);
+  //   let nightCount = 0;
+  //   while (end > start) {
+  //     nightCount++;
+  //     start.setDate(start.getDate() + 1);
+  //   }
+  //   return nightCount;
+  //   setTotal(nightCount);
+  //   setTotalAmount(data.price * nightCount);
+  // };
+
   const calcNights = () => {
     const start = new Date(data.check_in_date);
     const end = new Date(data.check_out_date);
-    let nightCount = 0;
-    while (end > start) {
-      nightCount++;
-      start.setDate(start.getDate() + 1);
-    }
-    setTotal(nightCount);
-    setTotalAmount(data.price * nightCount);
+    const timeDiff = Math.abs(end.getTime() - start.getTime());
+    var nightCount = Math.ceil(timeDiff / (1000 * 3600 * 24));
+    return nightCount;
   };
-
-  // const roomTotal = data.price * total;
-  // setReservation({ total_cost: roomTotal });
-
-  // let total = calcNights() * data.price;
-  // setReservation({ ...reservation, total_cost: total });
 
   const sendReservation = () => {};
 
@@ -105,8 +108,6 @@ const Reservation = (props) => {
   //     });
   //   this.props.history.push("/complete?");
   // };
-
-  console.log(props);
 
   return (
     <Container>
@@ -384,19 +385,17 @@ const Reservation = (props) => {
           </Section>
           <Section>
             <h3>예약 정보</h3>
-            <div className="flexCenter">
-              <div className="res">
-                <h4>날짜</h4>
-                <div className="flexBet">
-                  <div>체크인</div>
-                  <div>{data.check_in_date}</div>
-                </div>
-                <div className="flexBet">
-                  <div>체크아웃</div>
-                  <div>{data.check_out_date}</div>
-                </div>
+
+            <div className="res">
+              <h4>날짜</h4>
+              <div className="flexBet">
+                <p>
+                  {data.check_in_date} - {data.check_out_date}
+                </p>
+                <p>총 {calcNights()} 박</p>
               </div>
             </div>
+
             <div className="flexCenter">
               <div className="res">
                 <h4>게스트</h4>
@@ -409,7 +408,14 @@ const Reservation = (props) => {
             <h3>결제 일정</h3>
             <div className="payment">
               <div>
-                <h4>{totalAmount} 지금 결제</h4>
+                <h4>
+                  {data.currency === "KRW" ? (
+                    <span>₩</span>
+                  ) : data.currency === "USD" ? (
+                    <span>$</span>
+                  ) : null}
+                  {`${calcNights() * data.price}`}
+                </h4>
                 <p>총액을 결제하시면 모든 절차가 완료됩니다.</p>
               </div>
               <label>
@@ -600,6 +606,7 @@ const Section = styled.section`
 
   .pitch {
     p {
+      font-size: 0.875rem;
       color: ${(props) => props.theme.color.gray};
       margin: 0.35em 0;
     }
@@ -609,7 +616,7 @@ const Section = styled.section`
     margin: 0.875em 0;
     p {
       color: ${(props) => props.theme.color.gray};
-      margin: 0.875em 0;
+      margin: 0.5em 0;
     }
   }
 

@@ -3,16 +3,20 @@ import { withRouter, useHistory, Link } from "react-router-dom";
 import { API } from "../../config";
 import SingleList from "./SingleList";
 import ListFilter from "./ListFilter";
-// import Pagination from "./Pagination";
 import MapView from "./map/MapView2";
+import JejuMap from "./map/MapJeju";
 import styled from "styled-components";
 
 const List = (props) => {
-  const history = useHistory();
+  const queryString = require("query-string");
   const [data, setData] = useState([]);
+
+  ///// 쿼리값 /////
+  const parsed = queryString.parse(props.location.search);
+
   ///// 숙소유형 /////
   const [placeOpen, setPlaceOpen] = useState(false);
-  const [place, setPlaceType] = useState([]);
+  const [place, setPlace] = useState([]);
   const [placeQuery, setPlaceQuery] = useState("");
 
   ///// 요금 /////
@@ -23,25 +27,27 @@ const List = (props) => {
   ///// 필터추가 /////
   const [filterOpen, setFilterOpen] = useState(false);
   const [filters, setFilters] = useState([]);
-  const [property_type, setPropertyType] = useState([]);
+  const [filtersQuery, setFiltersQuery] = useState("");
+
+  const [property, setProperty] = useState([]);
+  const [propertyQuery, setPropertyQuery] = useState("");
+
   const [language, setLanguage] = useState([]);
+  const [languageQuery, setLanguageQuery] = useState("");
 
-  const [queryupdate, setqueryupdate] = useState({
-    place_query: "",
-    filters_query: "",
-    property_query: "",
-    language_query: "",
-  });
-
+  ///// 페이지네이션 /////
   const limit = 10;
   const [offset, setOffset] = useState(0);
+
+  ///// 맵 마커 /////
+  const [marker, setMarker] = useState("");
 
   /////////////////////// fetch data  //////////////////////
   //component did update `${shortstay}/room/list${this.props.location.search}&${place_query}&${amenities_query}&${property_query}&${language_query}`
 
   useEffect(() => {
-    // let location = props.location.search;
-    getData("?location=서울", 0);
+    let location = props.location.search;
+    getData(location, 0);
   }, []);
 
   const handlePage = (to) => {
@@ -49,18 +55,20 @@ const List = (props) => {
       if (offset === 0) return;
       setOffset(offset - limit);
       let prevOffset = offset - limit;
-      getData("?location=서울", prevOffset);
+      getData(props.location.search, prevOffset);
     } else if (to === "next") {
       console.log("next clicked");
       setOffset(offset + limit);
       let nextOffset = offset + limit;
-      getData("?location=서울", nextOffset);
+      getData(props.location.search, nextOffset);
     }
   };
 
   const getData = (location, offsetNum) => {
+    // fetch("/data/data_seoul.json")
     fetch(
-      `${API}/room/list${location}&limit=${limit}&offset=${offsetNum}&${placeQuery}`,
+      // `${API}/room/list${location}&${placeQuery}&${filtersQuery}&limit=${limit}&offset=${offsetNum}`,
+      `${API}/room/list${location}&${placeQuery}&limit=${limit}&offset=${offsetNum}`,
       {
         headers: {
           "Content-type": "application/json",
@@ -70,101 +78,9 @@ const List = (props) => {
       .then((res) => res.json())
       .then((res) => {
         setData(res.rooms);
+        // console.log(res.rooms);
       });
   };
-
-  const handlePlaceType = () => {
-    console.log("handlePlaceType");
-  };
-
-  const handlePrice = () => {
-    console.log("handlePrice");
-  };
-
-  const handleFilter = () => {
-    console.log("handleFilter");
-  };
-
-  ///////////////////// update fetch data  //////////////////////
-  // useEffect(() => {
-  //   fetch(
-  //     `${shortstay}/room/list?location=서울&${queryupdate.place_query}&limit=${limit}&offset=${offset}`,
-  //     {
-  //       method: "GET",
-  //       headers: {
-  //         "Content-type": "application/json",
-  //       },
-  //     }
-  //   )
-  //     .then((res) => res.json())
-  //     // .then((res) => console.log(res.rooms));
-  //     .then((res) => {
-  //       setData(res.rooms);
-  //     });
-  // }, [queryupdate]);
-
-  // useEffect(() => {
-  //   fetch("/data/data_seoul.json")
-  //     .then((res) => res.json())
-  //     // .then((res) => console.log(res));
-  //     .then((res) => {
-  //       setData(res.rooms);
-  //     });
-  // }, []);
-
-  // pagination
-
-  // const prevPage = () => {
-  //   const prevOffset = offset - limit;
-
-  //   if (offset >= limit) {
-  //     getData();
-  //     // fetch(
-  //     //   `${shortstay}/room/list?location=서울&limit=${limit}&offset=${offset}`,
-  //     //   {
-  //     //     method: "GET",
-  //     //     headers: {
-  //     //       "Content-type": "application/json",
-  //     //     },
-  //     //   }
-  //     // )
-  //     //   .then((res) => res.json())
-  //     //   .then((res) => {
-  //     //     setData(res.rooms);
-  //     //   });
-  //     setOffset(prevOffset);
-  //   }
-  // };
-
-  // const nextPage = () => {
-  //   const nextOffset = limit + offset;
-  //   setOffset(nextOffset);
-  //   getData();
-
-  //   // fetch(
-  //   //   `${shortstay}/room/list?location=서울&limit=${limit}&offset=${offset}`,
-  //   //   {
-  //   //     method: "GET",
-  //   //     headers: {
-  //   //       "Content-type": "application/json",
-  //   //     },
-  //   //   }
-  //   // )
-  //   //   .then((res) => res.json())
-  //   //   .then((res) => {
-  //   //     setData(res.rooms);
-  //   //   });
-  // };
-
-  // useEffect(() => {
-  //   console.log(amenities);
-  // }, [amenities]);
-
-  // const submitForm = (e) => {
-  //   e.preventDefault();
-
-  //   // update fetch?
-  // };
 
   ///// 숙소유형 /////
 
@@ -182,7 +98,7 @@ const List = (props) => {
     } else {
       selected = [...selected, value];
     }
-    setPlaceType(selected);
+    setPlace(selected);
   };
 
   const submitPlace = () => {
@@ -190,20 +106,12 @@ const List = (props) => {
       return `place_type=${item}`;
     });
     const placeQuery = query.join("&");
-    // setqueryupdate({ ...placeQuery, placeQuery: placeQuery });
     setPlaceQuery(placeQuery);
+    setPlace([]);
     setPlaceOpen(false);
   };
 
-  // console.log(queryupdate.place_query);
-
-  ///// 요금 /////
-
-  // toggle dropdown
-  const TogglePrice = () => {
-    setPriceOpen(!priceOpen);
-  };
-
+  console.log(placeQuery);
   ///// 편의시설 /////
 
   const ToggleFilter = () => {
@@ -225,13 +133,13 @@ const List = (props) => {
 
   const savePropertyType = (e) => {
     const { value } = e.target;
-    let selected = [...property_type];
+    let selected = [...property];
     if (selected.includes(value)) {
       selected = selected.filter((s) => s !== value);
     } else {
       selected = [...selected, value];
     }
-    setPropertyType(selected);
+    setProperty(selected);
   };
 
   ///// 호스트 언어 /////
@@ -247,74 +155,60 @@ const List = (props) => {
     setLanguage(selected);
   };
 
-  // // submit form
-  // const submitFilter = (e) => {
-  //   e.preventDefault();
-  //   const filtersQuery = filters.map((item) => {
-  //     return `amenities=${item}`;
-  //   });
-  //   const filtersQueryString = filtersQuery.join("&");
-  //   setFiltersQuery(filtersQueryString);
-
-  //   const propertyQuery = property_type.map((item) => {
-  //     return `property_type=${item}`;
-  //   });
-  //   const propertyQueryString = propertyQuery.join("&");
-  //   setPropertyQuery(propertyQueryString);
-
-  //   const languageQuery = language.map((item) => {
-  //     return `language=${item}`;
-  //   });
-  //   const languageQueryString = languageQuery.join("&");
-  //   setLanguageQuery(languageQueryString);
-
-  //   setFilterOpen(false);
-  // };
-
-  // submit form
   const submitFilter = (e) => {
     e.preventDefault();
-    const filtersQuery = filters.map((item) => {
+
+    const filtersQS = filters.map((item) => {
       return `amenities=${item}`;
     });
-    const filtersQS = filtersQuery.join("&");
-    setqueryupdate({ ...queryupdate, filters_query: filtersQS });
+    const filtersQuery = filtersQS.join("&");
+    setFiltersQuery(filtersQuery);
+    setFilters([]);
 
-    const propertyQuery = property_type.map((item) => {
+    const propertyQS = property.map((item) => {
       return `property_type=${item}`;
     });
-    const propertyQS = propertyQuery.join("&");
-    setqueryupdate({ ...queryupdate, property_query: propertyQS });
+    const propertyQuery = propertyQS.join("&");
+    setPropertyQuery(propertyQuery);
+    setProperty([]);
 
-    // const languageQuery = language.map((item) => {
-    //   return `language=${item}`;
-    // });
-    // const languageQueryString = languageQuery.join("&");
-    // setqueryupdate({ ...queryupdate, language_query: languageQueryString });
+    const languageQS = language.map((item) => {
+      return `language=${item}`;
+    });
+    const languageQuery = languageQS.join("&");
+    setLanguageQuery(languageQuery);
+    setLanguage([]);
 
     setFilterOpen(false);
   };
 
-  // console.log(queryupdate.filters_query);
-
-  const clearPlace = (e) => {
+  const clearFilter = (e) => {
     e.preventDefault();
-    setPlaceType([]);
+    setFilters([]);
+    setProperty([]);
+    setLanguage([]);
   };
 
-  const goToDetail = () => {
-    const queryRoomId = props.room_id;
-    //console.log("query Product ID:", queryProductID)
-    //this.props.history.push(`detail/${queryProductID}`)
-    history.push(`/detail/${queryRoomId}`);
+  ///// 요금 /////
+
+  // toggle dropdown
+  const TogglePrice = () => {
+    setPriceOpen(!priceOpen);
+  };
+
+  const highlighted = (id) => {
+    setMarker(id);
   };
 
   return (
     <Container>
       <ListWrapper>
         <header>
-          <p>300개 이상의 숙소 · 12월 3일 - 12월 5일 · 게스트 2명</p>
-          <h1>제주도의 숙소</h1>
+          <p>
+            300개 이상의 숙소 · {parsed.checkin} - {parsed.checkout} · 게스트
+            {parsed.adults}명
+          </p>
+          <h1>{parsed.location}의 숙소</h1>
         </header>
         <ListFilter
           rooms={data}
@@ -330,7 +224,7 @@ const List = (props) => {
           submitFilter={submitFilter}
           savePropertyType={savePropertyType}
           saveLanguage={saveLanguage}
-          handleClearPlace={clearPlace}
+          clearFilter={clearFilter}
         />
         <Listings>
           <Alert>
@@ -347,7 +241,7 @@ const List = (props) => {
             </p>
           </Alert>
           {/* <Link to={"./detail/${}"}> */}
-          <SingleList rooms={data} goToDetail={goToDetail} />
+          <SingleList rooms={data} highlighted={highlighted} parsed={parsed} />
           {/* <Pagination prevPage={prevPage} nextPage={nextPage} /> */}
           <BtnContainer>
             <div onClick={() => handlePage("prev")}>이전</div>
@@ -356,7 +250,11 @@ const List = (props) => {
         </Listings>
       </ListWrapper>
       <MapWrapper>
-        <MapView rooms={data} />
+        {parsed.location === "제주" ? (
+          <JejuMap rooms={data} markerhighlighted={marker} />
+        ) : parsed.location === "서울" ? (
+          <MapView rooms={data} markerhighlighted={marker} />
+        ) : null}
       </MapWrapper>
     </Container>
   );

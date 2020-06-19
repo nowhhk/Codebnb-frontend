@@ -1,6 +1,7 @@
 {
   "rooms": [
     {
+      "room_id": 1,
       "title": "[New 오픈] 마리따 m01,바닷가바로 앞, 커플펜션,조용한마을,곽지,협재 인근",
       "property_type": "집 전체",
       "max_capacity": 2,
@@ -26,6 +27,7 @@
       "tag": true
     },
     {
+      "room_id": 2,
       "title": "제주감성숙소 미니메리 [미니메리룸:]",
       "property_type": "집 전체",
       "max_capacity": 4,
@@ -51,6 +53,7 @@
       "tag": false
     },
     {
+      "room_id": 3,
       "title": "[하이레지던스] 신제주 중심 공항근처 신축 스튜디오 (스탠다드)",
       "property_type": "집 전체",
       "max_capacity": 3,
@@ -76,6 +79,7 @@
       "tag": true
     },
     {
+      "room_id": 4,
       "title": "귤밭한가운데있는집 귤한가 202호",
       "property_type": "집 전체",
       "max_capacity": 2,
@@ -101,6 +105,7 @@
       "tag": false
     },
     {
+      "room_id": 5,
       "title": "Ju's home(2) 공항 9km/ 제주시 바닷가 앞 2층 감성숙소",
       "property_type": "집 전체",
       "max_capacity": 4,

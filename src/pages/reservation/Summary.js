@@ -1,18 +1,24 @@
 import React from "react";
 import styled from "styled-components";
 
-const Summary = ({ data, changeCurrency, calcNights, totalAmount }) => {
+const Summary = ({
+  data,
+  totalNights,
+  changeCurrency,
+  calcNights,
+  totalAmount,
+}) => {
   return (
     <Container>
       <div>
-        <div>몇박 {calcNights()}</div>
+        <h2>요금 세부정보</h2>
         <div>
           {data.currency === "KRW" ? (
             <span>₩</span>
           ) : data.currency === "USD" ? (
             <span>$</span>
           ) : null}
-          {`${data.price} x ${calcNights()}박`}
+          {`${data.price} x ${totalNights}박`}
         </div>
         <div>
           {data.currency === "KRW" ? (
@@ -62,6 +68,10 @@ const Container = styled.div`
   border: 1px solid #e4e4e4;
   border-radius: 1em;
   padding: 2em;
+
+  h2 {
+    font-size: 1.375rem;
+  }
 `;
 
 const ShortMsg = styled.div`

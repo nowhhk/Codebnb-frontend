@@ -10,8 +10,8 @@ import {
 
 const MapView = ({ rooms, markerhighlighted }) => {
   const [mapRef, setMapRef] = useState(null);
-  const [center, setCenter] = useState({ lat: 37.543212, lng: 126.992247 });
-  const [zoom, setZoom] = useState(12);
+  const [center, setCenter] = useState({ lat: 33.443074, lng: 126.548729 });
+  const [zoom, setZoom] = useState(11);
   const [data, setData] = useState(5);
 
   // useEffect(() => {

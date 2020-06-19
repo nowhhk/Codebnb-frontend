@@ -16,6 +16,7 @@ const ListFilter = ({
   submitFilter,
   savePropertyType,
   saveLanguage,
+  clearFilter,
 }) => {
   // state
   const [filter, setFilter] = useState([]);
@@ -165,7 +166,7 @@ const ListFilter = ({
                 </div>
                 <div></div>
                 <div className="submit">
-                  <div>지우기</div>
+                  <div onClick={clearFilter}>지우기</div>
                   <Btn onClick={submitFilter}>저장</Btn>
                 </div>
               </Box>

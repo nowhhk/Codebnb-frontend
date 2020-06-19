@@ -13,12 +13,8 @@ const Routes = () => {
   return (
     <Router>
       <Switch>
-<<<<<<< HEAD
-        <Route exact path="/detail/:id" component={Detail} />
-=======
         <Route exact path="/detail/:id" component={Detail} />{" "}
         {/* id 추가 - 6.18 남우*/}
->>>>>>> master
         <Route exact path="/host" component={Host} />
         <Route exact path="/list" component={List} />
         <Route exact path="/login" component={Login} />
