@@ -13,14 +13,14 @@ const containerStyle = {
 //   lng: 126.52324,
 // };
 
-function LocationMap() {
+function LocationMap(props) {
   const [map, setMap] = React.useState(null);
   const [data, setData] = useState({});
 
-  // fetch(`${API}/room/detail/${this.props.match.params.id}`)
+  // fetch(`${API}/room/detail/${props.match.params.id}`)
 
   useEffect(() => {
-    fetch(`${API}/room/detail/1`)
+    fetch(`${API}/room/detail/${props.match.params.id}`)
       .then((res) => res.json())
       // .then((res) => console.log(res));
       .then((res) => {

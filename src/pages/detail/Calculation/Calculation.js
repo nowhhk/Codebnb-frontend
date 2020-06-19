@@ -78,7 +78,9 @@ class Calculation extends Component {
   };
 
   render() {
-    console.log("stage3 :", this.state.stage3);
+    // console.log("stage3 :", this.state.stage3);
+    // console.log(this.props.location.state.parsed.checkin);
+    // console.log("startDate :", this.state.startDate);
 
     const {
       duration,
@@ -105,7 +107,7 @@ class Calculation extends Component {
               </GuidePrice>
             )}
             <PointWrapper>
-              <i class="fas fa-star"></i> {ratings.overall}
+              <i class="fas fa-star"></i> {Math.round(ratings.overall)}
             </PointWrapper>
           </TopWrapper>
           <MiddleWrapper>

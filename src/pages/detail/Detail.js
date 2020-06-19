@@ -66,6 +66,17 @@ class Detail extends Component {
       );
   };
 
+  // componentDidMount = () => {
+  //   fetch(`${API}/room/detail/${this.props.location.state}`, {
+  //     method: "GET",
+  //     headers: {
+  //       "content-Type": "application/json",
+  //     },
+  //   })
+  //     .then((res) => res.json())
+  //     .then((res) => console.log("state :", res));
+  // };
+
   render() {
     const {
       roomInfo,
@@ -80,6 +91,9 @@ class Detail extends Component {
       ratings,
       monthlyDiscount,
     } = this.state;
+
+    // console.log(this.props.location.state.parsed);
+
     return (
       <>
         <Nav />
@@ -394,7 +408,7 @@ class Detail extends Component {
               </Calendar_Left>
               <Point_Review>
                 <Point_Upper>
-                  <i class="fas fa-star"></i> {ratings.overall}
+                  <i class="fas fa-star"></i> {Math.round(ratings.overall)}
                 </Point_Upper>
                 <Point_Down>
                   <Point_Down_Left>
