@@ -1,7 +1,11 @@
 import React, { useState, useEffect } from "react";
+import { useHistory } from "react-router";
 import styled from "styled-components";
+import { API } from "../../config";
 
 const Form = (props) => {
+  const history = useHistory();
+
   const [inputs, setInputs] = useState({
     cleanliness: "5",
     communication: "5",
@@ -25,7 +29,7 @@ const Form = (props) => {
     // console.log(inputs);
     // console.log(props.roomId, props.hostId);
     const token = localStorage.getItem("access_token");
-    fetch(`http://10.58.5.55:8000/api/review/${props.roomId}/${props.hostId}`, {
+    fetch(`${API}/api/review/${props.roomId}/${props.hostId}`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -37,6 +41,7 @@ const Form = (props) => {
     }).then((res) => {
       if (res.status === 200) {
         window.location.reload();
+        // history.push(`/datail/${props.roomId}`);
       } else {
         alert("");
       }

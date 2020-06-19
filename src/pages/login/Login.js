@@ -2,6 +2,7 @@ import React, { Component, useState } from "react";
 import styled from "styled-components";
 import GoogleLogin from "react-google-login";
 import FacebookLogin from "react-facebook-login/dist/facebook-login-render-props";
+import { API } from "../../config";
 
 const Login = (props) => {
   const [avatar, setAvatar] = useState("");
@@ -12,7 +13,7 @@ const Login = (props) => {
   const responseGoogle = (response) => {
     console.log(response);
 
-    fetch("http://10.58.5.55:8000/api/google", {
+    fetch(`${API}/user/google`, {
       method: "POST",
       headers: {
         "Content-type": "application/json",
@@ -40,7 +41,7 @@ const Login = (props) => {
   const responseFacebook = (response) => {
     console.log("페이스북 로그인정보", response);
 
-    fetch("http://10.58.2.61:8000/api/facebook", {
+    fetch(`${API}/user/facebook`, {
       method: "POST",
       headers: {
         "Content-type": "application/json",

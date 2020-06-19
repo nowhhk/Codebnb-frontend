@@ -3,6 +3,7 @@ import { withRouter } from "react-router-dom";
 import styled from "styled-components";
 import Footer from "../../components/Footer";
 import ImageUploader from "react-images-upload";
+import { API } from "../../config";
 
 class Host extends Component {
   constructor(props) {
@@ -91,19 +92,30 @@ class Host extends Component {
 
   handleSubmit = (e) => {
     e.preventDefault();
+    const formData = new FormData();
+    for (let i = 0; i < this.state.images.length; i++) {
+      formData.append("images", this.state.images[i]);
+    }
+    this.setState({ images: formData });
     const token = localStorage.getItem("access_token");
-    fetch(`http://10.58.5.55:8000/api/register/room`, {
+    fetch(`${API}/api/register/room`, {
       method: "POST",
       headers: {
+        "Content-Type":
+          "multipart/form-data; boundary=----WebKitFormBoundaryIn312MOjBWdkffIM",
         Authorization: token,
       },
       body: JSON.stringify({
         inputs: this.state,
       }),
-    });
-    // .then((res) => {});
+    }).then((res) => console.log(res));
   };
 
+  // fileChangeHandler = (e) => {
+  //   this.setState({
+  //     images: e.target.files[0],
+  //   });
+  // };
   render() {
     const {
       place_type,
@@ -128,6 +140,7 @@ class Host extends Component {
       monthly_stay,
     } = this.state;
     console.log(this.state);
+
     return (
       <Container>
         <Header>
@@ -483,7 +496,12 @@ class Host extends Component {
               </Option>
               <Option>
                 <Title>멋진 사진으로 숙소가 돋보이게 해주세요.</Title>
-
+                {/* <input
+                  id="ImageUploader"
+                  onChange={this.fileChangeHandler}
+                  type="file"
+                  accept="image/bmp,image/gif,image/jpeg,image/png,image/tiff,image/webp"
+                ></input> */}
                 <ImageUploader
                   withIcon={false}
                   buttonText="사진 업로드"
