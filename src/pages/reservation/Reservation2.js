@@ -1,15 +1,113 @@
-import React, { useState } from "react";
-import styled from "styled-components";
+import React, { useState, useEffect } from "react";
+import { withRouter } from "react-router-dom";
 import Textarea from "../../components/TextArea";
 import Summary from "./Summary";
+import styled from "styled-components";
 
-const Reservation = () => {
-  const [selected, setSelected] = useState("full");
+const Reservation = (props) => {
+  // state
+  const [data, setData] = useState([]);
+  const [currency, setCurrency] = useState("");
+  const [reservation, setReservation] = useState({
+    room_id: "",
+    greeting: "",
+    check_in: "",
+    check_out: "",
+    adults: "",
+    children: 0,
+    infants: 0,
+    total_cost: "",
+    payment_methods: "",
+  });
+  const [total, setTotal] = useState("");
+  const [totalAmount, setTotalAmount] = useState(0);
 
-  const handleRadio = (e) => {
+  // get data
+
+  // useEffect(() => {
+  //   fetch("http://10.58.7.153:8000/booking/payment", {
+  //     method: "GET",
+  //     headers: {
+  //       "Content-type": "application/json",
+  //     },
+  //   })
+  //     .then((res) => res.json())
+  //     .then((res) => console.log(res.booking_information));
+  // }, []);
+
+  useEffect(() => {
+    fetch("/data/booking.json")
+      .then((res) => res.json())
+      // .then((res) => console.log(res));
+      .then((res) => {
+        setData(res.booking_information);
+      });
+  }, []);
+
+  const changeCurrency = (e) => {
+    // fetch("address") + currency query
     const { value } = e.target;
-    setSelected(value);
+    if (value === "KRW") {
+      //set value as currency query
+      setCurrency(`display_currency=KRW`);
+    } else {
+      setCurrency(`display_currency=USD`);
+    }
   };
+
+  const handleMessage = (e) => {
+    const { value } = e.target;
+    setReservation({ ...reservation, greeting: value });
+  };
+
+  const handlePayment = (e) => {
+    const { value } = e.target;
+    setReservation({ ...reservation, payment_methods: value });
+  };
+
+  // const calcNights = () => {
+  //   const start = new Date(data.check_in_date);
+  //   const end = new Date(data.check_out_date);
+  //   let nightCount = 0;
+  //   while (end > start) {
+  //     nightCount++;
+  //     start.setDate(start.getDate() + 1);
+  //   }
+  //   return nightCount;
+  //   setTotal(nightCount);
+  //   setTotalAmount(data.price * nightCount);
+  // };
+
+  const calcNights = () => {
+    const start = new Date(data.check_in_date);
+    const end = new Date(data.check_out_date);
+    const timeDiff = Math.abs(end.getTime() - start.getTime());
+    var nightCount = Math.ceil(timeDiff / (1000 * 3600 * 24));
+    return nightCount;
+  };
+
+  const sendReservation = () => {};
+
+  // const sendRes = () => {
+  //   const token = localStorage.getItem("token");
+  //   fetch("address", {
+  //     method: "POST",
+  //     header: {
+  //       "Content-type": "application/json",
+  //       Authorization: token,
+  //     },
+  //     body: JSON.stringify({
+  //       reservation: reservation
+  //     }),
+  //   })
+  //     .then((res) => {
+  //       if (res.status === 200) {
+  //         alert("Reservation Successful");
+  //         this.props.history.push("/complete?");
+  //       }
+  //     });
+  //   this.props.history.push("/complete?");
+  // };
 
   return (
     <Container>
@@ -22,16 +120,19 @@ const Reservation = () => {
         <Left>
           <h2>확인 및 결제</h2>
           <Confirm>
-            <div className="placeimg"></div>
+            <div className="placeimg">
+              <img src={data.room_picture} />
+            </div>
             <div className="detail">
+              <p>{data.title}</p>
               <p>
-                [New 오픈] "마리따"m01,바닷가바로 앞,
-                커플펜션,조용한마을,곽지,협재 인근
+                {data.place_type} · 침대 {data.beds}개 · 욕실 {data.baths}개
               </p>
-              <p>집 전체 · 침대 1개 · 욕실 1개</p>
               <div className="rating">
                 <i className="fas fa-star"></i>
-                <span>4.84(95)</span>
+                <span>
+                  {data.overall_rating}({data.num_reviews})
+                </span>
               </div>
             </div>
           </Confirm>
@@ -39,7 +140,7 @@ const Reservation = () => {
             <div className="flexBet">
               <div className="pitch">
                 <h4>흔치 않은 기회입니다</h4>
-                <p>마리따님의 숙소는 보통 예약이 가득 차 있습니다.</p>
+                <p>{data.host_name}님의 숙소는 보통 예약이 가득 차 있습니다.</p>
               </div>
               <div>
                 <svg
@@ -284,19 +385,22 @@ const Reservation = () => {
           </Section>
           <Section>
             <h3>예약 정보</h3>
-            <div className="flexCenter">
-              <div className="res">
-                <h4>날짜</h4>
-                <p>2020. 10. 14–2020. 10. 16</p>
+
+            <div className="res">
+              <h4>날짜</h4>
+              <div className="flexBet">
+                <p>
+                  {data.check_in_date} - {data.check_out_date}
+                </p>
+                <p>총 {calcNights()} 박</p>
               </div>
-              <div>수정</div>
             </div>
+
             <div className="flexCenter">
               <div className="res">
                 <h4>게스트</h4>
-                <p>게스트 1명</p>
+                <p>게스트 {data.guest_total}명</p>
               </div>
-              <div>수정</div>
             </div>
             <hr></hr>
           </Section>
@@ -304,22 +408,36 @@ const Reservation = () => {
             <h3>결제 일정</h3>
             <div className="payment">
               <div>
-                <h4>₩231,059 지금 결제</h4>
+                <h4>
+                  {data.currency === "KRW" ? (
+                    <span>₩</span>
+                  ) : data.currency === "USD" ? (
+                    <span>$</span>
+                  ) : null}
+                  {`${calcNights() * data.price}`}
+                </h4>
                 <p>총액을 결제하시면 모든 절차가 완료됩니다.</p>
               </div>
               <label>
-                <input
-                  type="radio"
-                  name="payment"
-                  value="full"
-                  checked={selected === "full"}
-                  onChange={handleRadio}
-                />
+                <input type="radio" value="full" checked="true" />
               </label>
             </div>
             <h4>결제 수단</h4>
             <div className="payment">
-              <div>credit card</div>
+              <div>
+                {data.payment_methods &&
+                  data.payment_methods.map((m, idx) => (
+                    <label key={m.idx}>
+                      <input
+                        type="radio"
+                        name="payment"
+                        value={m}
+                        onChange={handlePayment}
+                      />
+                      {m}
+                    </label>
+                  ))}
+              </div>
             </div>
             <hr></hr>
           </Section>
@@ -331,14 +449,21 @@ const Reservation = () => {
               <p>호스트에게 여행 목적과 도착 예정 시간을 알려주세요.</p>
             </div>
             <div className="host">
-              <div className="avatar"></div>
+              <div className="avatar">
+                <img src={data.host_avatar} />
+              </div>
               <div>
-                <p>마리따</p>
-                <p>에어비앤비 가입: 2018년</p>
+                <p>{data.host_name}</p>
+                <p>에어비앤비 가입: {data.user_since}년</p>
               </div>
             </div>
             <div className="message">
-              <Textarea />
+              <input
+                type="textarea"
+                name="message"
+                value={reservation.greeting}
+                onChange={handleMessage}
+              ></input>
             </div>
             <hr></hr>
           </Section>
@@ -369,10 +494,18 @@ const Reservation = () => {
             </p>
           </Section>
 
-          <button>확인 및 결제</button>
+          <button onClick={sendReservation}>확인 및 결제</button>
         </Left>
         <Right>
-          <Summary />
+          {/* pass in checkin, checkout, price */}
+          <Summary
+            data={data}
+            price={data.price}
+            calcNights={calcNights}
+            totalAmount={totalAmount}
+            currency={data.currency && data.currency}
+            changeCurrency={changeCurrency}
+          />
         </Right>
       </MainWrapper>
     </Container>
@@ -417,11 +550,14 @@ const Confirm = styled.div`
   padding-right: 2em;
 
   .placeimg {
-    width: 108px;
-    height: 80px;
-    background-color: black;
-    border-radius: 10px;
     margin-right: 1em;
+
+    img {
+      width: 108px;
+      height: 80px;
+      border-radius: 10px;
+      object-fit: cover;
+    }
   }
 
   .detail {
@@ -470,6 +606,7 @@ const Section = styled.section`
 
   .pitch {
     p {
+      font-size: 0.875rem;
       color: ${(props) => props.theme.color.gray};
       margin: 0.35em 0;
     }
@@ -479,7 +616,7 @@ const Section = styled.section`
     margin: 0.875em 0;
     p {
       color: ${(props) => props.theme.color.gray};
-      margin: 0.875em 0;
+      margin: 0.5em 0;
     }
   }
 
@@ -513,11 +650,14 @@ const Section = styled.section`
     margin: 1.5em 0;
 
     .avatar {
-      width: 40px;
-      height: 40px;
-      border-radius: 50%;
       margin-right: 1em;
-      background-color: black;
+
+      img {
+        width: 40px;
+        height: 40px;
+        border-radius: 50%;
+        object-fit: cover;
+      }
     }
     p {
       margin-bottom: 0.25em;
@@ -527,6 +667,13 @@ const Section = styled.section`
   .message {
     width: 100%;
     margin: 2em 0;
+
+    input {
+      width: 100%;
+      height: 8em;
+      border: 1px solid #dedede;
+      border-radius: 0.5em;
+    }
   }
 
   .refund {
@@ -557,4 +704,4 @@ const Right = styled.div`
   width: 40%;
 `;
 
-export default Reservation;
+export default withRouter(Reservation);

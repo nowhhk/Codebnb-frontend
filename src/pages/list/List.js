@@ -1,62 +1,231 @@
 import React, { useState, useEffect } from "react";
-import styled from "styled-components";
+import { withRouter, useHistory, Link } from "react-router-dom";
+import { API } from "../../config";
 import SingleList from "./SingleList";
 import ListFilter from "./ListFilter";
-import Pagination from "./Pagination";
 import MapView from "./map/MapView2";
+import JejuMap from "./map/MapJeju";
+import styled from "styled-components";
 
-// import MapView from "./map/MapView";
-
-const List = () => {
+const List = (props) => {
+  const queryString = require("query-string");
   const [data, setData] = useState([]);
 
-  // useEffect(() => {
-  //   fetch("http://10.58.5.55:8000/api/monthly", {
-  //     method: "GET",
-  //     headers: {
-  //       "Content-type": "application/json",
-  //     },
-  //   })
-  //     .then((res) => res.json())
-  //     // .then((res) => console.log(res));
-  //     .then((res) => {
-  //       setData(res.data);
-  //     });
-  // }, []);
+  ///// 쿼리값 /////
+  const parsed = queryString.parse(props.location.search);
 
-  // useEffect(() => {
-  //   fetch(
-  //     "http://10.58.5.61:8000/room/list?location=서울&property_type=아파트&languages=한국어",
-  //     {
-  //       method: "GET",
-  //       headers: {
-  //         "Content-type": "application/json",
-  //       },
-  //     }
-  //   )
-  //     .then((res) => res.json())
-  //     .then((res) => console.log(res.rooms));
-  //   // .then((res) => {
-  //   //   setData(res.rooms);
-  //   // });
-  // }, []);
+  ///// 숙소유형 /////
+  const [placeOpen, setPlaceOpen] = useState(false);
+  const [place, setPlace] = useState([]);
+  const [placeQuery, setPlaceQuery] = useState("");
+
+  ///// 요금 /////
+  const [priceOpen, setPriceOpen] = useState(false);
+  const [price, setPrice] = useState([]);
+  const [priceQuery, setPriceQuery] = useState("");
+
+  ///// 필터추가 /////
+  const [filterOpen, setFilterOpen] = useState(false);
+  const [filters, setFilters] = useState([]);
+  const [filtersQuery, setFiltersQuery] = useState("");
+
+  const [property, setProperty] = useState([]);
+  const [propertyQuery, setPropertyQuery] = useState("");
+
+  const [language, setLanguage] = useState([]);
+  const [languageQuery, setLanguageQuery] = useState("");
+
+  ///// 페이지네이션 /////
+  const limit = 10;
+  const [offset, setOffset] = useState(0);
+
+  ///// 맵 마커 /////
+  const [marker, setMarker] = useState("");
+
+  /////////////////////// fetch data  //////////////////////
+  //component did update `${shortstay}/room/list${this.props.location.search}&${place_query}&${amenities_query}&${property_query}&${language_query}`
 
   useEffect(() => {
-    fetch("/data/data.json")
+    let location = props.location.search;
+    getData(location, 0);
+  }, []);
+
+  const handlePage = (to) => {
+    if (to === "prev") {
+      if (offset === 0) return;
+      setOffset(offset - limit);
+      let prevOffset = offset - limit;
+      getData(props.location.search, prevOffset);
+    } else if (to === "next") {
+      console.log("next clicked");
+      setOffset(offset + limit);
+      let nextOffset = offset + limit;
+      getData(props.location.search, nextOffset);
+    }
+  };
+
+  const getData = (location, offsetNum) => {
+    // fetch("/data/data_seoul.json")
+    fetch(
+      // `${API}/room/list${location}&${placeQuery}&${filtersQuery}&limit=${limit}&offset=${offsetNum}`,
+      `${API}/room/list${location}&${placeQuery}&limit=${limit}&offset=${offsetNum}`,
+      {
+        headers: {
+          "Content-type": "application/json",
+        },
+      }
+    )
       .then((res) => res.json())
-      // .then((res) => console.log(res));
       .then((res) => {
         setData(res.rooms);
+        // console.log(res.rooms);
       });
-  }, []);
+  };
+
+  ///// 숙소유형 /////
+
+  // toggle dropdown
+  const TogglePlace = () => {
+    setPlaceOpen(!placeOpen);
+  };
+
+  // save user selection
+  const savePlaceType = (e) => {
+    const { value } = e.target;
+    let selected = [...place];
+    if (selected.includes(value)) {
+      selected = selected.filter((s) => s !== value);
+    } else {
+      selected = [...selected, value];
+    }
+    setPlace(selected);
+  };
+
+  const submitPlace = () => {
+    const query = place.map((item) => {
+      return `place_type=${item}`;
+    });
+    const placeQuery = query.join("&");
+    setPlaceQuery(placeQuery);
+    setPlace([]);
+    setPlaceOpen(false);
+  };
+
+  console.log(placeQuery);
+  ///// 편의시설 /////
+
+  const ToggleFilter = () => {
+    setFilterOpen(!filterOpen);
+  };
+
+  const saveFilterType = (e) => {
+    const { value } = e.target;
+    let selected = [...filters];
+    if (selected.includes(value)) {
+      selected = selected.filter((s) => s !== value);
+    } else {
+      selected = [...selected, value];
+    }
+    setFilters(selected);
+  };
+
+  ///// 건물유형 /////
+
+  const savePropertyType = (e) => {
+    const { value } = e.target;
+    let selected = [...property];
+    if (selected.includes(value)) {
+      selected = selected.filter((s) => s !== value);
+    } else {
+      selected = [...selected, value];
+    }
+    setProperty(selected);
+  };
+
+  ///// 호스트 언어 /////
+
+  const saveLanguage = (e) => {
+    const { value } = e.target;
+    let selected = [...language];
+    if (selected.includes(value)) {
+      selected = selected.filter((s) => s !== value);
+    } else {
+      selected = [...selected, value];
+    }
+    setLanguage(selected);
+  };
+
+  const submitFilter = (e) => {
+    e.preventDefault();
+
+    const filtersQS = filters.map((item) => {
+      return `amenities=${item}`;
+    });
+    const filtersQuery = filtersQS.join("&");
+    setFiltersQuery(filtersQuery);
+    setFilters([]);
+
+    const propertyQS = property.map((item) => {
+      return `property_type=${item}`;
+    });
+    const propertyQuery = propertyQS.join("&");
+    setPropertyQuery(propertyQuery);
+    setProperty([]);
+
+    const languageQS = language.map((item) => {
+      return `language=${item}`;
+    });
+    const languageQuery = languageQS.join("&");
+    setLanguageQuery(languageQuery);
+    setLanguage([]);
+
+    setFilterOpen(false);
+  };
+
+  const clearFilter = (e) => {
+    e.preventDefault();
+    setFilters([]);
+    setProperty([]);
+    setLanguage([]);
+  };
+
+  ///// 요금 /////
+
+  // toggle dropdown
+  const TogglePrice = () => {
+    setPriceOpen(!priceOpen);
+  };
+
+  const highlighted = (id) => {
+    setMarker(id);
+  };
+
   return (
     <Container>
       <ListWrapper>
-        <Header>
-          <P>300개 이상의 숙소 · 12월 3일 - 12월 5일 · 게스트 2명</P>
-          <Header1>제주도의 숙소</Header1>
-          <ListFilter />
-        </Header>
+        <header>
+          <p>
+            300개 이상의 숙소 · {parsed.checkin} - {parsed.checkout} · 게스트
+            {parsed.adults}명
+          </p>
+          <h1>{parsed.location}의 숙소</h1>
+        </header>
+        <ListFilter
+          rooms={data}
+          placeOpen={placeOpen}
+          TogglePlace={TogglePlace}
+          savePlaceType={savePlaceType}
+          submitPlace={submitPlace}
+          priceOpen={priceOpen}
+          TogglePrice={TogglePrice}
+          filterOpen={filterOpen}
+          ToggleFilter={ToggleFilter}
+          saveFilterType={saveFilterType}
+          submitFilter={submitFilter}
+          savePropertyType={savePropertyType}
+          saveLanguage={saveLanguage}
+          clearFilter={clearFilter}
+        />
         <Listings>
           <Alert>
             <div>
@@ -71,47 +240,79 @@ const List = () => {
               경우에만 여행하실 것을 부탁드립니다.자세히 알아보기
             </p>
           </Alert>
-          <SingleList rooms={data} />
-          <Pagination>Pagination</Pagination>
+          {/* <Link to={"./detail/${}"}> */}
+          <SingleList rooms={data} highlighted={highlighted} parsed={parsed} />
+          {/* <Pagination prevPage={prevPage} nextPage={nextPage} /> */}
+          <BtnContainer>
+            <div onClick={() => handlePage("prev")}>이전</div>
+            <div onClick={() => handlePage("next")}>다음</div>
+          </BtnContainer>
         </Listings>
       </ListWrapper>
       <MapWrapper>
-        <MapView rooms={data} />
+        {parsed.location === "제주" ? (
+          <JejuMap rooms={data} markerhighlighted={marker} />
+        ) : parsed.location === "서울" ? (
+          <MapView rooms={data} markerhighlighted={marker} />
+        ) : null}
       </MapWrapper>
     </Container>
   );
 };
 
 const Container = styled.div`
+  display: flex;
   width: 100%;
   margin: 0 auto;
-  display: flex;
 `;
 
 const ListWrapper = styled.div`
   width: 840px;
   height: 100vh;
-  padding: 2em 2em 0 1em;
-  z-index: 1;
   overflow: scroll;
-`;
+  padding: 2em;
+  z-index: 1;
 
-const Header = styled.div``;
+  header {
+    color: ${(props) => props.theme.color.black};
+    z-index: 1;
 
-const P = styled.p`
-  font-size: 0.875em;
-  color: ${(props) => props.theme.color.black};
-`;
+    p {
+      font-size: 0.875em;
+    }
 
-const Header1 = styled.h1`
-  font-size: 2em;
-  color: ${(props) => props.theme.color.black};
-  margin: 0.25em 0;
+    h1 {
+      font-size: 2em;
+      margin: 0.25em 0;
+    }
+  }
 `;
 
 const Listings = styled.div`
   height: 600px;
-  z-index: 0;
+  z-index: -1;
+`;
+
+const BtnContainer = styled.div`
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+  padding-bottom: 2em;
+  margin: 0 auto;
+
+  div {
+    background-color: ${(props) => props.theme.color.black};
+    color: white;
+    border-radius: 0.5em;
+    padding: 0.5em 1em;
+    margin: 0 2em;
+    cursor: pointer;
+
+    &:hover {
+      background-color: black;
+    }
+  }
 `;
 
 const Alert = styled.div`
@@ -145,4 +346,4 @@ const MapWrapper = styled.div`
   z-index: 0;
 `;
 
-export default List;
+export default withRouter(List);
