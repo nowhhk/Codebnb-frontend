@@ -1,23 +1,56 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { withRouter } from "react-router-dom";
 import styled from "styled-components";
 import Nav from "../../components/Nav";
 import Footer from "../../components/Footer";
+import TripList from "./TripList";
+import Trip from "./Trip";
+import Form from "./Form";
 
 const Trips = () => {
   const [activeTab, setActiveTab] = useState("upcoming");
+  const [upcoming, setUpcoming] = useState([]);
+  const [past, setPast] = useState([]);
+
+  useEffect(() => {
+    const token = localStorage.getItem("access_token");
+    fetch("http://10.58.5.55:8000/api/tripstate", {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: token,
+      },
+    })
+      .then((res) => res.json())
+      // .then((res) => console.log("트립스테이트", res));
+      .then((res) => {
+        setUpcoming(res.data[0].up_coming);
+        setPast(res.data[0].past_booking);
+      });
+  }, []);
 
   const tab = {
     upcoming: (
-      <div>다시 여행을 떠나실 준비가 되면 에어비앤비가 도와드리겠습니다. </div>
+      <div>
+        {upcoming.length === 0 ? (
+          "다시 여행을 떠나실 준비가 되면 에어비앤비가 도와드리겠습니다."
+        ) : (
+          <TripList list={upcoming} />
+        )}
+      </div>
     ),
     past: (
       <div>
-        과거 여행이 없습니다. 하지만 여행을 완료하면 여기에서 확인하실 수
-        있습니다.
+        {past.length === 0 ? (
+          "과거 여행이 없습니다. 하지만 여행을 완료하면 여기에서 확인하실 수 있습니다."
+        ) : (
+          <TripList list={past} />
+        )}
       </div>
     ),
   };
+  console.log("예정된예약", upcoming);
+  console.log("이전예약", past);
 
   return (
     <>
@@ -25,13 +58,33 @@ const Trips = () => {
         <Nav />
         <TripsWrapper>
           <section>
-            <div>여행</div>
-            <div>
-              <button onClick={() => setActiveTab("upcoming")}>
+            <h2>여행</h2>
+            <Buttons>
+              <button
+                style={
+                  activeTab === "upcoming"
+                    ? {
+                        color: "black",
+                      }
+                    : undefined
+                }
+                onClick={() => setActiveTab("upcoming")}
+              >
                 예정된 예약
               </button>
-              <button onClick={() => setActiveTab("past")}>이전 예약</button>
-            </div>
+              <button
+                style={
+                  activeTab === "past"
+                    ? {
+                        color: "black",
+                      }
+                    : undefined
+                }
+                onClick={() => setActiveTab("past")}
+              >
+                이전 예약
+              </button>
+            </Buttons>
             <div>{tab[activeTab]}</div>
             <div>
               <svg
@@ -754,4 +807,21 @@ const Wrap = styled.div`
 const TripsWrapper = styled.div`
   margin-top: 36px;
   padding: 0 80px 65px;
+
+  h2 {
+    font-size: 34px;
+    color: ${(props) => props.theme.color.black};
+  }
+`;
+const Buttons = styled.div`
+  border-bottom: solid 1px #dddddd;
+  margin-bottom: 20px;
+  button {
+    padding: 0;
+    border: none;
+    color: ${(props) => props.theme.color.gray};
+    background: none;
+    font-size: 16px;
+    margin: 30px 30px 20px 0;
+  }
 `;

@@ -5,7 +5,7 @@ import Host from "./pages/host/Host";
 import List from "./pages/list/List";
 import Login from "./pages/login/Login";
 import Main from "./pages/main/Main";
-import Reservation from "./pages/reservation/Reservation";
+import Reservation from "./pages/reservation/Reservation2";
 import Signup from "./pages/signup/Signup";
 import Trips from "./pages/trips/Trips";
 
