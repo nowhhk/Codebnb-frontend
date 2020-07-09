@@ -1,8 +1,9 @@
-import React, { useState, useEffect } from "react";
-import { useHistory } from "react-router";
-import styled from "styled-components";
-import Signup from "../pages/signup/Signup";
+import React, { useEffect, useState } from "react";
+
 import Login from "../pages/login/Login";
+import Signup from "../pages/signup/Signup";
+import styled from "styled-components";
+import { useHistory } from "react-router";
 
 const Nav = () => {
   const history = useHistory();
@@ -50,7 +51,7 @@ const Nav = () => {
           </svg>
         </Logo>
         <NavButton>
-          <div>
+          <div className="max">
             <span
               onClick={() => {
                 history.push("host");
@@ -59,7 +60,7 @@ const Nav = () => {
               숙소 호스트되기
             </span>
           </div>
-          <div>
+          <div className="max">
             <span
               onClick={() => {
                 history.push("/trips");
@@ -68,15 +69,11 @@ const Nav = () => {
               여행
             </span>
           </div>
-          <div>
+          <div className="max">
             <span>도움말</span>
           </div>
-          <div onClick={goToSignUp}>
-            <span>회원 가입</span>
-          </div>
-          <div onClick={goToLogin}>
-            <span>{loginBtn}</span>
-          </div>
+
+          <div onClick={goToLogin}>{loginBtn}</div>
         </NavButton>
       </NavWrapper>
       {openSignup ? <Signup handleClose={handleClose} /> : null}
@@ -93,13 +90,16 @@ const NavWrapper = styled.header`
   margin: 0 auto;
   width: 100%;
   max-width: 1760px;
-  min-width: 1000px;
+  /* min-width: 1000px; */
   height: 80px;
   padding: 0px 80px;
   display: flex;
   justify-content: space-between;
   align-items: center;
-  /* border-bottom: solid 1px ${(props) => props.theme.color.gray}; */
+  @media only screen and (max-width: 1000px) {
+    width: 100%;
+    padding: 0 50px;
+  }
 `;
 
 const Logo = styled.div`
@@ -115,6 +115,11 @@ const NavButton = styled.div`
   display: flex;
   font-size: 14px;
   font-weight: 500;
+  .max {
+    @media only screen and (max-width: 1000px) {
+      display: none;
+    }
+  }
 
   div {
     display: flex;

@@ -1,12 +1,13 @@
-import React, { useState, useEffect } from "react";
-import { withRouter } from "react-router-dom";
-import styled from "styled-components";
-import Nav from "../../components/Nav";
-import Footer from "../../components/Footer";
-import TripList from "./TripList";
-import Trip from "./Trip";
-import Form from "./Form";
+import React, { useEffect, useState } from "react";
+
 import { API } from "../../config";
+import Footer from "../../components/Footer";
+import Form from "./Form";
+import Nav from "../../components/Nav";
+import Trip from "./Trip";
+import TripList from "./TripList";
+import styled from "styled-components";
+import { withRouter } from "react-router-dom";
 
 const Trips = () => {
   const [activeTab, setActiveTab] = useState("upcoming");
@@ -807,7 +808,7 @@ const Wrap = styled.div`
 
 const TripsWrapper = styled.div`
   margin-top: 36px;
-  padding: 0 80px 65px;
+  padding: 0 80px;
 
   h2 {
     font-size: 34px;

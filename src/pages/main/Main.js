@@ -1,9 +1,9 @@
-import React from "react";
-import styled from "styled-components";
-import Nav from "../../components/Nav";
 import Footer from "../../components/Footer";
-import Search from "./Search";
 import MainItem from "./MainItem";
+import Nav from "../../components/Nav";
+import React from "react";
+import Search from "./Search";
+import styled from "styled-components";
 
 const Main = () => {
   const list = items.map((item) => (
@@ -66,8 +66,12 @@ const items = [
 const MainWrapper = styled.div`
   padding: 0px 80px;
   max-width: 1760px;
-  min-width: 1000px;
+  /* min-width: 1000px; */
   margin: 0 auto;
+  @media only screen and (max-width: 1000px) {
+    overflow-x: hidden;
+    padding: 0px 50px;
+  }
 `;
 
 const Tab = styled.div`
@@ -98,4 +102,7 @@ const Paragraph = styled.p`
 const List = styled.div`
   display: flex;
   margin-bottom: 70px;
+  width: 100%;
+  max-width: 1760px;
+  min-width: 1000px;
 `;
