@@ -1,14 +1,16 @@
-import React, { useState } from "react";
-import { withRouter } from "react-router-dom";
 import "react-dates/initialize";
 import "./reactdate.css";
+
+import React, { useState } from "react";
+
 import { DateRangePicker } from "react-dates";
 // import moment from "moment";
 import styled from "styled-components";
+import { withRouter } from "react-router-dom";
 
 const Search = (props) => {
   //위치
-  const [location, setLocation] = useState("");
+  const [location, setLocation] = useState(null);
   const onChange = (e) => {
     setLocation(e.target.value);
   };
@@ -50,18 +52,35 @@ const Search = (props) => {
     checkout = endDate.format("YYYY-MM-DD");
   }
 
-  console.log("checkin:", checkin);
-  console.log("checkout:", checkout);
-  console.log(location, checkin, checkout, adults, children, infants);
-  //   console.log("오늘은", moment().format("YYYY-MM-DD"));
-
   const goToList = () => {
-    if (location !== null && checkin !== undefined && checkout !== undefined) {
-      props.history.push(
-        `/list?location=${location}&checkin=${checkin}&checkout=${checkout}&adults=${adults}&childen=${children}&infants=${infants}`
-      );
+    let checkinString = "";
+    let checkoutString = "";
+    let adultsString = "";
+    let childrenString = "";
+    let infantsString = "";
+
+    if (checkin) {
+      checkinString = `&checkin=${checkin}`;
+    }
+    if (checkout) {
+      checkoutString = `&checkout=${checkin}`;
+    }
+    if (adults) {
+      adultsString = `&adults=${adults}`;
+    }
+    if (children) {
+      childrenString = `&children=${children}`;
+    }
+    if (infants) {
+      infantsString = `&infants=${infants}`;
+    }
+
+    if (location === null) {
+      alert("위치를 입력하세요");
     } else {
-      alert("날짜 / 위치를 입력하세요.");
+      props.history.push(
+        `/list?location=${location}${checkinString}${checkoutString}${adultsString}${childrenString}${infantsString}`
+      );
     }
   };
 
@@ -71,16 +90,20 @@ const Search = (props) => {
         <SearchInputs>
           <SearchInput>
             <InputBtn>
-              <div>&nbsp;위치</div>
-              <input
-                placeholder="어디로 여행가세요?"
-                onChange={onChange}
-                value={location}
-              ></input>
+              <div className="location">&nbsp;위치</div>
+              <i className="fas fa-search min"></i>
+              <form onSubmit={goToList}>
+                <input
+                  placeholder="어디로 여행가세요?"
+                  onChange={onChange}
+                  value={location}
+                ></input>
+              </form>
             </InputBtn>
           </SearchInput>
+
           <Line></Line>
-          <SearchInput>
+          <SearchInput className="media">
             <InputBtn>
               <div>&nbsp;체크인/체크아웃</div>
               <div>
@@ -102,7 +125,7 @@ const Search = (props) => {
             </InputBtn>
           </SearchInput>
           <Line></Line>
-          <SearchInput>
+          <SearchInput className="media">
             <InputBtn onClick={handleOpen}>
               <div>인원</div>
               <div>{guestNum}</div>
@@ -236,7 +259,7 @@ const Search = (props) => {
         </SearchInputs>
 
         <SearchBtn onClick={goToList}>
-          <i className="fas fa-search"></i>&nbsp;&nbsp;검색
+          <i className="fas fa-search"></i>&nbsp;&nbsp;<span>검색</span>
         </SearchBtn>
       </SearchWrapper>
     </>
@@ -250,19 +273,46 @@ export default withRouter(Search);
 const SearchWrapper = styled.div`
   width: 100%;
   height: 70px;
-  /* border: solid 1px black; */
   display: flex;
-  /* justify-content: space-between; */
+  justify-content: space-between;
   padding: 12px;
   margin-bottom: 70px;
   border-radius: 12px;
   box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.08) !important;
+  .min {
+    display: none;
+  }
+   {
+    @media only screen and (max-width: 1000px) {
+      width: 100%;
+    }
+    @media only screen and (max-width: 720px) {
+      width: 100%;
+      border-radius: 50px;
+      height: 60px;
+      .min {
+        font-size: 16px;
+        display: block;
+        margin-right: 10px;
+      }
+      .location {
+        display: none;
+      }
+    }
+  }
 `;
 
 const SearchInputs = styled.div`
   display: flex;
   align-items: center;
   width: 100%;
+   {
+    @media only screen and (max-width: 720px) {
+      .media {
+        display: none;
+      }
+    }
+  }
 `;
 
 const SearchInput = styled.div`
@@ -294,10 +344,17 @@ const InputBtn = styled.button`
     margin-top: 3px;
     font-size: 14px;
   }
+  @media only screen and (max-width: 720px) {
+    flex-direction: row;
+    align-items: center;
+  }
 `;
 
 const SearchBtn = styled.button`
   border: none;
+  display:flex;
+  justify-content:space-around;
+  align-items:center;
   /* background-color: ${(props) => props.theme.color.red}; */
   padding: 0 25px;
   color: #ffffff;
@@ -306,6 +363,20 @@ const SearchBtn = styled.button`
   background-size: 200% 200%;
   min-width:95px;
   cursor: pointer;
+  @media only screen and (max-width: 720px) {
+      display:none;
+    }
+  {
+    @media only screen and (max-width: 1000px) {
+      min-width: 35px;
+      padding: 0 16px;
+    }
+  }
+  span {
+    @media only screen and (max-width: 1000px) {
+      display:none;
+    }
+  }
 `;
 const GuestModal = styled.div`
   z-index: 10;
@@ -373,4 +444,8 @@ const Guests = styled.div`
 const Line = styled.div`
   height: 44px;
   border: solid 1px rgb(221, 221, 221);
+
+  @media only screen and (max-width: 720px) {
+    display: none;
+  }
 `;

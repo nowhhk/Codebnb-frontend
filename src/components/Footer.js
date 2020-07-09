@@ -1,5 +1,6 @@
-import React from "react";
 import styled, { css } from "styled-components";
+
+import React from "react";
 
 export const Footer = () => {
   return (
@@ -9,43 +10,87 @@ export const Footer = () => {
           <section>
             <h4>소개</h4>
             <ul>
-              <li>다양성 및 소속감</li>
-              <li>접근성</li>
-              <li>신뢰와 안전</li>
-              <li>Airbnb Citizen</li>
-              <li>올림픽</li>
-              <li>뉴스룸</li>
+              <div>
+                <li>다양성 및 소속감</li>
+              </div>
+              <div>
+                <li>접근성</li>
+              </div>
+              <div>
+                <li>신뢰와 안전</li>
+              </div>
+              <div>
+                <li>Airbnb Citizen</li>
+              </div>
+              <div>
+                <li>올림픽</li>
+              </div>
+              <div>
+                <li>뉴스룸</li>
+              </div>
             </ul>
           </section>
           <section>
             <h4>커뮤니티</h4>
             <ul>
-              <li>에어비앤비 매거진</li>
-              <li>에어비앤비 어소시에이트</li>
-              <li>에어비앤비 비즈니스 프로그램</li>
-              <li>친구 초대하기</li>
-              <li>채용정보</li>
+              <div>
+                <li>에어비앤비 매거진</li>
+              </div>
+              <div>
+                <li>에어비앤비 어소시에이트</li>
+              </div>
+              <div>
+                <li>에어비앤비 비즈니스 프로그램</li>
+              </div>
+              <div>
+                <li>친구 초대하기</li>
+              </div>
+              <div>
+                <li>채용정보</li>
+              </div>
             </ul>
           </section>
           <section>
             <h4>호스팅하기</h4>
             <ul>
-              <li>숙소 호스팅</li>
-              <li>온라인 체험 호스팅하기</li>
-              <li>브라이언 체스키 CEO의 메시지</li>
-              <li>책임감 있는 호스팅</li>
-              <li>Open Homes</li>
-              <li>자료 센터</li>
-              <li>커뮤니티 센터</li>
+              <div>
+                <li>숙소 호스팅</li>
+              </div>
+              <div>
+                <li>온라인 체험 호스팅하기</li>
+              </div>
+              <div>
+                <li>브라이언 체스키 CEO의 메시지</li>
+              </div>
+              <div>
+                <li>책임감 있는 호스팅</li>
+              </div>
+              <div>
+                <li>Open Homes</li>
+              </div>
+              <div>
+                <li>자료 센터</li>
+              </div>
+              <div>
+                <li>커뮤니티 센터</li>
+              </div>
             </ul>
           </section>
           <section>
             <h4>에어비앤비 지원</h4>
             <ul>
-              <li>코로나19 관련 업데이트</li>
-              <li>도움말 센터</li>
-              <li>예약 취소 옵션</li>
-              <li>에어비앤비 이웃 민원 지원</li>
+              <div>
+                <li>코로나19 관련 업데이트</li>
+              </div>
+              <div>
+                <li>도움말 센터</li>
+              </div>
+              <div>
+                <li>예약 취소 옵션</li>
+              </div>
+              <div>
+                <li>에어비앤비 이웃 민원 지원</li>
+              </div>
             </ul>
           </section>
         </FooterTop>
@@ -76,8 +121,18 @@ const FooterWrapper = styled.footer`
 const FooterTop = styled.div`
   margin: 50px auto;
   display: flex;
+   {
+    @media only screen and (max-width: 1000px) {
+      flex-direction: column;
+    }
+  }
   section {
     width: 25%;
+     {
+      @media only screen and (max-width: 1000px) {
+        width: 100%;
+      }
+    }
 
     h4 {
       color: ${(props) => props.theme.color.black};
@@ -88,9 +143,26 @@ const FooterTop = styled.div`
     ul {
       color: ${(props) => props.theme.color.gray};
       font-size: 14px;
+       {
+        @media only screen and (max-width: 1000px) {
+          width: 100vw;
+          display: flex;
+          flex-wrap: wrap;
+          border-bottom: 1px solid #dddddd;
+          margin-bottom: 40px;
+        }
+      }
       li {
         margin-bottom: 18px;
         cursor: pointer;
+
+        @media only screen and (max-width: 1000px) {
+          flex-wrap: wrap;
+          width: 24vw;
+        }
+        @media only screen and (max-width: 820px) {
+          width: 50vw;
+        }
       }
     }
   }
@@ -111,4 +183,5 @@ const Background = styled.div`
   background-color: #f7f7f7;
   border-top: 1px solid #dddddd;
   bottom: 0;
+  overflow-x: hidden;
 `;
