@@ -1,18 +1,22 @@
 import "react-dates/initialize";
 import "./reactdate.css";
 
+import * as searchActions from "../../store/modules/seacher";
+
 import React, { useState } from "react";
 
 import { DateRangePicker } from "react-dates";
+import { bindActionCreators } from "redux";
+import { connect } from "react-redux";
 // import moment from "moment";
 import styled from "styled-components";
 import { withRouter } from "react-router-dom";
 
 const Search = (props) => {
+  const { searchActions } = props;
   //위치
-  const [location, setLocation] = useState(null);
   const onChange = (e) => {
-    setLocation(e.target.value);
+    searchActions.getLocation(e.target.value);
   };
 
   //체크인, 체크아웃 날짜
@@ -21,8 +25,17 @@ const Search = (props) => {
   const [focusedInput, setFocusInput] = useState(null);
 
   const onDatesChange = ({ startDate, endDate }) => {
+    let checkin, checkout;
     setStartDate(startDate);
     setEndDate(endDate);
+
+    if (startDate !== null && endDate !== null) {
+      checkin = startDate.format("YYYY-MM-DD");
+      checkout = endDate.format("YYYY-MM-DD");
+    }
+    //리덕스 store에 저장
+    searchActions.getStartDay(checkin);
+    searchActions.getEndDay(checkout);
   };
 
   //게스트 모달 띄우기
@@ -35,6 +48,9 @@ const Search = (props) => {
   const [adults, setAdults] = useState(0);
   const [children, setChildren] = useState(0);
   const [infants, setInfants] = useState(0);
+  searchActions.getAdults(adults);
+  searchActions.getChildren(children);
+  searchActions.getInfants(infants);
 
   let guestNum;
   if (adults === 0 && children === 0 && infants === 0) {
@@ -46,12 +62,6 @@ const Search = (props) => {
       "게스트 " + (adults + children) + "명, " + "유아" + infants + "명";
   }
 
-  let checkin, checkout;
-  if (startDate !== null && endDate !== null) {
-    checkin = startDate.format("YYYY-MM-DD");
-    checkout = endDate.format("YYYY-MM-DD");
-  }
-
   const goToList = () => {
     let checkinString = "";
     let checkoutString = "";
@@ -59,11 +69,11 @@ const Search = (props) => {
     let childrenString = "";
     let infantsString = "";
 
-    if (checkin) {
-      checkinString = `&checkin=${checkin}`;
+    if (props.startDay) {
+      checkinString = `&checkin=${props.startDay}`;
     }
-    if (checkout) {
-      checkoutString = `&checkout=${checkin}`;
+    if (props.endDay) {
+      checkoutString = `&checkout=${props.endDay}`;
     }
     if (adults) {
       adultsString = `&adults=${adults}`;
@@ -75,11 +85,11 @@ const Search = (props) => {
       infantsString = `&infants=${infants}`;
     }
 
-    if (location === null) {
+    if (props.location === null) {
       alert("위치를 입력하세요");
     } else {
       props.history.push(
-        `/list?location=${location}${checkinString}${checkoutString}${adultsString}${childrenString}${infantsString}`
+        `/list?location=${props.location}${checkinString}${checkoutString}${adultsString}${childrenString}${infantsString}`
       );
     }
   };
@@ -96,7 +106,7 @@ const Search = (props) => {
                 <input
                   placeholder="어디로 여행가세요?"
                   onChange={onChange}
-                  value={location}
+                  // value={location}
                 ></input>
               </form>
             </InputBtn>
@@ -266,7 +276,23 @@ const Search = (props) => {
   );
 };
 
-export default withRouter(Search);
+// export default withRouter(Search);
+
+const mapStateToProps = ({ seacher }) => ({
+  location: seacher.location,
+  startDay: seacher.startDay,
+  endDay: seacher.endDay,
+  adults: seacher.adults,
+  children: seacher.children,
+  infants: seacher.infants,
+});
+
+// 이런 구조로 하면 나중에 다양한 리덕스 모듈을 적용해야 하는 상황에서 유용합니다.
+const mapDispatchToProps = (dispatch) => ({
+  searchActions: bindActionCreators(searchActions, dispatch),
+  // AnotherActions: bindActionCreators(anotherActions, dispatch)
+});
+export default withRouter(connect(mapStateToProps, mapDispatchToProps)(Search));
 
 //styled-components
 
