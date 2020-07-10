@@ -1,14 +1,16 @@
-import React, { Component, useState, useEffect, Fragment } from "react";
-import styled from "styled-components";
-import { Link, withRouter } from "react-router-dom";
-import { API } from "../../../config";
 import "../../detail/reactdate.css";
-import Guest from "../Guest";
+
 import {
   DateRangePicker,
-  SingleDatePicker,
   DayPickerRangeController,
+  SingleDatePicker,
 } from "react-dates";
+import { Link, withRouter } from "react-router-dom";
+import React, { Component, Fragment, useEffect, useState } from "react";
+
+import { API } from "../../../config";
+import Guest from "../../../components/Search/Guest";
+import styled from "styled-components";
 
 class Calculation extends Component {
   constructor(props) {
