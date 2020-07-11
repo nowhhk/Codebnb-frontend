@@ -1,21 +1,23 @@
-import React, { Component, useState, useEffect, Fragment } from "react";
-import styled, { injectGlobal } from "styled-components";
-import Calendar from "./calendar/Calendar";
-import Calculation from "./Calculation/Calculation";
 import "react-dates/initialize";
 import "./reactdate.css";
-import moment from "moment";
-import Footer from "../../../src/components/Footer";
-import Modal from "../detail/Modal";
+
 import {
   DateRangePicker,
-  SingleDatePicker,
   DayPickerRangeController,
+  SingleDatePicker,
 } from "react-dates";
 import { GoogleMap, LoadScript } from "@react-google-maps/api";
+import React, { Component, Fragment, useEffect, useState } from "react";
+import styled, { injectGlobal } from "styled-components";
+
+import { API } from "../../../src/config";
+import Calculation from "./Calculation/Calculation";
+import Calendar from "./calendar/Calendar";
+import Footer from "../../../src/components/Footer";
+import Guest from "../../components/Search/Guest";
 import LocationMap from "../detail/LocationMap";
 import Nav from "../../components/Nav";
-import { API } from "../../../src/config";
+import moment from "moment";
 
 class Detail extends Component {
   constructor(props) {
@@ -594,7 +596,7 @@ class Detail extends Component {
                   <ViewAll>
                     <div>모두 보기</div>
                   </ViewAll>
-                  <Modal />
+                  <Guest />
                 </Convinience_Down_Left>
               </Convinience_Down>
             </Rule>
