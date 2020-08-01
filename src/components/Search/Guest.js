@@ -15,12 +15,11 @@ const Guest = ({ searchActions, adults, children, infants }) => {
 
   let guestNum;
   if (adults === 0 && children === 0 && infants === 0) {
-    guestNum = "게스트 추가";
+    guestNum = `게스트 추가`;
   } else if (infants === 0) {
-    guestNum = "게스트 " + (adults + children) + "명";
+    guestNum = `게스트 ${adults + children}명`;
   } else if (infants !== 0) {
-    guestNum =
-      "게스트 " + (adults + children) + "명, " + "유아" + infants + "명";
+    guestNum = `게스트 ${adults + children}명, 유아 ${infants}명`;
   }
 
   return (

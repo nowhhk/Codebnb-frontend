@@ -5,7 +5,6 @@ import ReactDOM from "react-dom";
 import Reset from "./style/Reset";
 import Routes from "./Routes";
 import { ThemeProvider } from "styled-components";
-// **** (1) createStore 와 루트 리듀서 불러오기
 import { createStore } from "redux";
 import rootReducer from "./store/modules";
 
