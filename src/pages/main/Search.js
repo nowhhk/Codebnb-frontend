@@ -47,33 +47,21 @@ const Search = ({
   };
 
   const goToList = () => {
-    let checkinString = "";
-    let checkoutString = "";
-    let adultsString = "";
-    let childrenString = "";
-    let infantsString = "";
+    const checkinString = `&checkin=${startDay}`;
+    const checkoutString = `&checkout=${endDay}`;
+    const adultsString = `&adults=${adults}`;
+    const childrenString = `&children=${children}`;
+    const infantsString = `&infants=${infants}`;
 
-    if (startDay) {
-      checkinString = `&checkin=${startDay}`;
-    }
-    if (endDay) {
-      checkoutString = `&checkout=${endDay}`;
-    }
-    if (adults) {
-      adultsString = `&adults=${adults}`;
-    }
-    if (children) {
-      childrenString = `&children=${children}`;
-    }
-    if (infants) {
-      infantsString = `&infants=${infants}`;
-    }
-
-    if (location === null) {
+    if (!location) {
       alert("위치를 입력하세요");
     } else {
       history.push(
-        `/list?location=${location}${checkinString}${checkoutString}${adultsString}${childrenString}${infantsString}`
+        `/list?location=${location}${startDay ? checkinString : ``}${
+          endDay ? checkoutString : ``
+        }${adults ? adultsString : ``}${children ? childrenString : ``}${
+          infants ? infantsString : ``
+        }`
       );
     }
   };

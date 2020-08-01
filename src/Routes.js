@@ -1,5 +1,6 @@
 import React, { Component } from "react";
-import { BrowserRouter as Router, Switch, Route } from "react-router-dom";
+import { Route, BrowserRouter as Router, Switch } from "react-router-dom";
+
 import Detail from "./pages/detail/Detail";
 import Host from "./pages/host/Host";
 import List from "./pages/list/List";
@@ -13,8 +14,7 @@ const Routes = () => {
   return (
     <Router>
       <Switch>
-        <Route exact path="/detail/:id" component={Detail} />{" "}
-        {/* id 추가 - 6.18 남우*/}
+        <Route exact path="/detail/:id" component={Detail} />
         <Route exact path="/host" component={Host} />
         <Route exact path="/list" component={List} />
         <Route exact path="/login" component={Login} />
