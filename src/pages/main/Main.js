@@ -3,6 +3,10 @@ import MainItem from "./MainItem";
 import Nav from "../../components/Nav";
 import React from "react";
 import Search from "./Search";
+import img1 from "../../../src/images/1.png";
+import img2 from "../../../src/images/2.png";
+import img3 from "../../../src/images/3.png";
+import img4 from "../../../src/images/4.png";
 import styled from "styled-components";
 
 const Main = () => {
@@ -38,29 +42,26 @@ const items = [
   {
     title: "가까운 여행지",
     desc: "자동차로 금방 다녀올 수 잇는 근교 여행지에서 휴식을 즐기세요",
-    img:
-      "https://a0.muscache.com/im/pictures/5924e9ef-fc40-439e-966a-1c76a634152a.jpg?im_w=320",
+    img: img1,
   },
   {
     title: "온라인 체험",
     desc: "세계 각지의 호스트가 보여주는 특별한 세상",
-    img:
-      "https://a0.muscache.com/im/pictures/7ee8ad00-0480-4b75-843f-1d2e4c01dde6.jpg?im_w=320",
+    img: img2,
   },
   {
     title: "나만의 공간",
     desc:
       "일행만을 위한 편안한 공간에서 친구 및 가족과 오붓한 시간을 보내세요.",
-    img:
-      "https://a0.muscache.com/im/pictures/f8ec8dab-f5a4-423b-a81c-201f450d329d.jpg?im_w=320",
+    img: img3,
   },
   {
     title: "장기 숙박",
     desc: "한 달 이상 장기 숙박할 숙소를 에어비앤비에서 찾아보세요.",
-    img:
-      "https://a0.muscache.com/im/pictures/99ff3081-68b9-4e2b-801f-0ab9767eaa81.jpg?im_w=320",
+    img: img4,
   },
 ];
+
 //styled-components
 
 const MainWrapper = styled.div`

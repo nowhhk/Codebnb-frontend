@@ -24,11 +24,11 @@ const Trips = () => {
       },
     })
       .then((res) => res.json())
-      // .then((res) => console.log("트립스테이트", res));
       .then((res) => {
         setUpcoming(res.data[0].up_coming);
         setPast(res.data[0].past_booking);
-      });
+      })
+      .catch((err) => alert(err));
   }, []);
 
   const tab = {
@@ -58,6 +58,7 @@ const Trips = () => {
     <>
       <Wrap>
         <Nav />
+        <Form />
         <TripsWrapper>
           <section>
             <h2>여행</h2>
