@@ -18,14 +18,19 @@ const MainItem = (props) => {
 export default MainItem;
 
 const Item = styled.div`
+  position: relative;
   width: 100%;
+  background-color: white;
+  overflow: hidden;
   margin-right: 16px;
   box-shadow: rgba(0, 0, 0, 0.15) 0px 2px 8px;
   border-radius: 16px;
   div {
+    width: 100%;
     img {
       width: 100%;
-      height: 240px;
+      height: 100%;
+
       border-top-left-radius: 16px;
       border-top-right-radius: 16px;
       overflow: hidden;
@@ -46,5 +51,6 @@ const Text = styled.div`
   span:nth-child(2) {
     color: ${(props) => props.theme.color.gray};
     font-size: 14px;
+    padding-bottom: 20px;
   }
 `;
