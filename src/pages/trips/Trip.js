@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import styled from "styled-components";
-import { withRouter } from "react-router-dom";
+import { withRouter, Link } from "react-router-dom";
 import Form from "./Form";
 import { API } from "../../config";
 
@@ -34,17 +34,19 @@ const Trip = (props) => {
 
   return (
     <TripThumbnail>
-      <img src={`${props.image_url[0]}`} alt="" />
+      <Link to={`/detail/${props.room_id}`}>
+        <img src={`${props.image_url[0]}`} alt="" />
 
+        <div>
+          <span>
+            {props.start_date} - {props.end_date}
+          </span>
+          <span>{props.address}</span>
+          <span>{props.title}</span>
+        </div>
+      </Link>
       <div>
-        <span>
-          {props.start_date} - {props.end_date}
-        </span>
-        <span>{props.address}</span>
-        <span>{props.title}</span>
-      </div>
-      <div>
-        <button onClick={handleOpen}>리뷰 쓰기</button>
+        <Btn onClick={handleOpen}>리뷰 쓰기</Btn>
       </div>
       {openComment ? (
         <Form
@@ -90,14 +92,14 @@ const TripThumbnail = styled.div`
       margin: 8px 0 16px 0;
     }
   }
-  div:nth-child(3) {
-    button {
-        width:100%;
-      border: none;
-      background: none;
-      font-size: 14px;
-      font-weight: 600;
-      cursor:pointer;
-    }
-  }
+
+`;
+
+const Btn = styled.button`
+  width: 100%;
+  border: none;
+  background: none;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
 `;

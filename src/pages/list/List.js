@@ -68,10 +68,10 @@ const List = (props) => {
   };
 
   const getData = (location, offsetNum) => {
-    // fetch("/data/data_seoul.json")
     fetch(
-      // `${API}/room/list${location}&${placeQuery}&${filtersQuery}&limit=${limit}&offset=${offsetNum}`,
-      `${API}/room/list${location}&${placeQuery}&limit=${limit}&offset=${offsetNum}`,
+      `/data/data_seoul.json`,
+      // `/data/data_seoul.json${location}&${placeQuery}&limit=${limit}&offset=${offsetNum}`,
+      //`${API}/room/list${location}&${placeQuery}&limit=${limit}&offset=${offsetNum}`,
       {
         headers: {
           "Content-type": "application/json",
@@ -81,7 +81,6 @@ const List = (props) => {
       .then((res) => res.json())
       .then((res) => {
         setData(res.rooms);
-        // console.log(res.rooms);
       });
   };
 
