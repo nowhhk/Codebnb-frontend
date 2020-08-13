@@ -8,11 +8,17 @@ import ListFilter from "./ListFilter";
 import MapView from "./map/MapView2";
 import JejuMap from "./map/MapJeju";
 import BusanMap from "./map/MapBusan";
+import Map from "./map/Map";
+
+//import styles and assets
 import styled from "styled-components";
+import { ImgBtn, IconBtn } from "../../components/Buttons";
 
 const List = (props) => {
-  const queryString = require("query-string");
   const [data, setData] = useState([]);
+  const [responsiveMap, setRessponsivemap] = useState(false);
+  const [ID, setID] = useState("");
+  const queryString = require("query-string");
 
   ///// 쿼리값 /////
   const parsed = queryString.parse(props.location.search);
@@ -42,9 +48,6 @@ const List = (props) => {
   const limit = 10;
   const [offset, setOffset] = useState(0);
 
-  ///// 맵 마커 /////
-  const [marker, setMarker] = useState("");
-
   /////////////////////// fetch data  //////////////////////
   //component did update `${shortstay}/room/list${this.props.location.search}&${place_query}&${amenities_query}&${property_query}&${language_query}`
 
@@ -69,9 +72,8 @@ const List = (props) => {
 
   const getData = (location, offsetNum) => {
     fetch(
-      `/data/data_seoul.json`,
-      // `/data/data_seoul.json${location}&${placeQuery}&limit=${limit}&offset=${offsetNum}`,
-      //`${API}/room/list${location}&${placeQuery}&limit=${limit}&offset=${offsetNum}`,
+      // `${API}/room/list${location}&${placeQuery}&limit=${limit}&offset=${offsetNum}`,
+      "/data/data_jeju.json",
       {
         headers: {
           "Content-type": "application/json",
@@ -81,6 +83,7 @@ const List = (props) => {
       .then((res) => res.json())
       .then((res) => {
         setData(res.rooms);
+        console.log(res.rooms);
       });
   };
 
@@ -203,38 +206,59 @@ const List = (props) => {
     setPriceOpen(!priceOpen);
   };
 
-  const highlighted = (id) => {
-    setMarker(id);
+  const handleRoomID = (id) => {
+    setID(id);
+  };
+
+  const handleButton = () => {
+    setRessponsivemap(!responsiveMap);
   };
 
   return (
     <div>
       <Container>
-        <ListWrapper>
-          <header>
-            <p>
-              {parsed.checkin} - {parsed.checkout} · 게스트
-              {parsed.adults}명
-            </p>
-            <h1>{parsed.location}의 숙소</h1>
-          </header>
-          <ListFilter
-            rooms={data}
-            placeOpen={placeOpen}
-            TogglePlace={TogglePlace}
-            savePlaceType={savePlaceType}
-            submitPlace={submitPlace}
-            priceOpen={priceOpen}
-            TogglePrice={TogglePrice}
-            filterOpen={filterOpen}
-            ToggleFilter={ToggleFilter}
-            saveFilterType={saveFilterType}
-            submitFilter={submitFilter}
-            savePropertyType={savePropertyType}
-            saveLanguage={saveLanguage}
-            clearFilter={clearFilter}
-          />
-          <Listings>
+        <Main>
+          <Result>
+            {!responsiveMap ? (
+              <Button>
+                <ImgBtn
+                  fa="far fa-map"
+                  label="지도"
+                  handleButton={handleButton}
+                />
+              </Button>
+            ) : null}
+            {responsiveMap ? (
+              <div>
+                <CloseBtn>
+                  <IconBtn handleButton={handleButton} />
+                </CloseBtn>
+                <Map data={data} currentID={ID} />
+              </div>
+            ) : null}
+            <header style={{ margin: "1.5em 2em" }}>
+              <p>
+                {parsed.checkin} - {parsed.checkout} · 게스트
+                {parsed.adults}명
+              </p>
+              <h1>{parsed.location}의 숙소</h1>
+            </header>
+            <ListFilter
+              rooms={data}
+              placeOpen={placeOpen}
+              TogglePlace={TogglePlace}
+              savePlaceType={savePlaceType}
+              submitPlace={submitPlace}
+              priceOpen={priceOpen}
+              TogglePrice={TogglePrice}
+              filterOpen={filterOpen}
+              ToggleFilter={ToggleFilter}
+              saveFilterType={saveFilterType}
+              submitFilter={submitFilter}
+              savePropertyType={savePropertyType}
+              saveLanguage={saveLanguage}
+              clearFilter={clearFilter}
+            />
             <Alert>
               <div>
                 <img
@@ -248,46 +272,49 @@ const List = (props) => {
                 경우에만 여행하실 것을 부탁드립니다.자세히 알아보기
               </p>
             </Alert>
-            {/* <Link to={"./detail/${}"}> */}
-            <SingleList
-              rooms={data}
-              highlighted={highlighted}
-              parsed={parsed}
-            />
-            {/* <Pagination prevPage={prevPage} nextPage={nextPage} /> */}
-            <BtnContainer>
-              <div onClick={() => handlePage("prev")}>이전</div>
-              <div onClick={() => handlePage("next")}>다음</div>
-            </BtnContainer>
-          </Listings>
-        </ListWrapper>
-        <MapWrapper>
-          {parsed.location === "제주" ? (
-            <JejuMap rooms={data} markerhighlighted={marker} />
-          ) : parsed.location === "서울" ? (
-            <MapView rooms={data} markerhighlighted={marker} />
-          ) : parsed.location === "부산" ? (
-            <BusanMap rooms={data} markerhighlighted={marker} />
-          ) : null}
-        </MapWrapper>
+            <Listings>
+              <SingleList
+                rooms={data}
+                handleRoomID={handleRoomID}
+                parsed={parsed}
+              />
+              <BtnContainer>
+                <div onClick={() => handlePage("prev")}>이전</div>
+                <div onClick={() => handlePage("next")}>다음</div>
+              </BtnContainer>
+            </Listings>
+          </Result>
+          <GoogleMap>
+            <Map data={data} currentID={ID} />
+            {/* {parsed.location === "제주" ? (
+              <JejuMap rooms={data} markerhighlighted={marker} />
+            ) : parsed.location === "서울" ? (
+              <MapView rooms={data} markerhighlighted={marker} />
+            ) : parsed.location === "부산" ? (
+              <BusanMap rooms={data} markerhighlighted={marker} />
+            ) : null} */}
+          </GoogleMap>
+        </Main>
+        <Footer />
       </Container>
-      <Footer />
     </div>
   );
 };
 
-const Container = styled.div`
+const Container = styled.div``;
+
+const Main = styled.div`
   display: flex;
-  width: 100%;
-  margin: 0 auto;
 `;
 
-const ListWrapper = styled.div`
+const Result = styled.div`
   width: 840px;
   height: 100vh;
   overflow: scroll;
-  padding: 2em;
-  z-index: 1;
+
+  @media (max-width: 1127px) {
+    width: 100%;
+  }
 
   header {
     color: ${(props) => props.theme.color.black};
@@ -304,10 +331,28 @@ const ListWrapper = styled.div`
   }
 `;
 
-const Listings = styled.div`
-  height: 600px;
-  z-index: -1;
+const Button = styled.div`
+  display: none;
+
+  @media (max-width: 1127px) {
+    display: inline-flex;
+    position: fixed;
+    left: 50%;
+    bottom: 5%;
+    margin-left: -45px;
+    z-index: 100;
+  }
 `;
+
+const CloseBtn = styled.div`
+  position: fixed;
+  left: 50%;
+  bottom: 5%;
+  margin-left: -20px;
+  z-index: 100;
+`;
+
+const Listings = styled.div``;
 
 const BtnContainer = styled.div`
   display: flex;
@@ -334,7 +379,7 @@ const BtnContainer = styled.div`
 const Alert = styled.div`
   display: flex;
   align-items: center;
-  margin-bottom: 2em;
+  margin: 1.5em 2em;
 
   div {
     width: 40;
@@ -355,11 +400,13 @@ const Alert = styled.div`
   }
 `;
 
-const MapWrapper = styled.div`
+const GoogleMap = styled.div`
   width: calc(100vw - 840px);
-  height: 100vh;
-  background-color: gainsboro;
-  z-index: 0;
+  background-color: mintcream;
+
+  @media (max-width: 1127px) {
+    display: none;
+  }
 `;
 
 export default withRouter(List);
