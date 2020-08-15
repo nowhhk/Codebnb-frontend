@@ -4,7 +4,7 @@ import Slide from "./Slide";
 import Arrow from "./Arrow";
 import styled from "styled-components";
 
-const ImageSlider = ({ slides, heart }) => {
+const ImageSlider = ({ slides, heart, map }) => {
   const [state, setState] = useState({
     active: 0,
     translate: 0,
@@ -81,17 +81,25 @@ const ImageSlider = ({ slides, heart }) => {
           <Arrow direction="right" handleClick={next} />
         </div>
       ) : null}
-      <Heart onClick={heartToggle}>
-        <Icon>
-          <i className={`${wishlist ? "fas fa-heart" : "far fa-heart"}`}></i>
-        </Icon>
-      </Heart>
+      {map ? (
+        <HeartRight onClick={heartToggle}>
+          <Icon>
+            <i className={`${wishlist ? "fas fa-heart" : "far fa-heart"}`}></i>
+          </Icon>
+        </HeartRight>
+      ) : (
+        <Heart onClick={heartToggle}>
+          <Icon>
+            <i className={`${wishlist ? "fas fa-heart" : "far fa-heart"}`}></i>
+          </Icon>
+        </Heart>
+      )}
     </Container>
   );
 };
 
 const Container = styled.div`
-  width: 300px;
+  width: 100%;
   height: 100%;
   position: relative;
   overflow: hidden;
@@ -103,6 +111,23 @@ const Heart = styled.div`
   left: 10px;
   width: 30px;
   height: 30px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.8);
+  cursor: pointer;
+  transition: all ease-in 0.15s;
+
+  &:hover {
+    transform: scale(1.05);
+    background: rgba(255, 255, 255, 1);
+  }
+`;
+
+const HeartRight = styled.div`
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  width: 25px;
+  height: 25px;
   border-radius: 50%;
   background: rgba(255, 255, 255, 0.8);
   cursor: pointer;

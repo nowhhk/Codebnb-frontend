@@ -181,7 +181,8 @@ const ListFilter = ({
 const Container = styled.div`
   display: flex;
   color: ${(props) => props.theme.color.black};
-  margin: 0.875em 0;
+  /* margin: 0.875em 0; */
+  margin: 1.5em 2em;
   z-index: 100;
 `;
 
