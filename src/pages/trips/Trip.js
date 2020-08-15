@@ -1,9 +1,9 @@
+import { Link, withRouter } from "react-router-dom";
 import React, { useEffect, useState } from "react";
 
 import { API } from "../../config";
 import Form from "./Form";
 import styled from "styled-components";
-import { withRouter } from "react-router-dom";
 
 const Trip = (props) => {
   const [openComment, setOpenComment] = useState(false);
