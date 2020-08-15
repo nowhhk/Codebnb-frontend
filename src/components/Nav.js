@@ -1,44 +1,48 @@
 import React, { useEffect, useState } from "react";
 
 import Login from "../pages/login/Login";
-import Signup from "../pages/signup/Signup";
+import Portal from "./Portal";
+import UserModal from "./UserModal";
 import styled from "styled-components";
 import { useHistory } from "react-router";
 
 const Nav = () => {
   const history = useHistory();
   const [loginBtn, setLoginBtn] = useState("로그인");
+  const [loginAvatar, setLoginAvatar] = useState("");
+  const [openLogin, setOpenLogin] = useState(false);
+  const [openModal, setOpenModal] = useState(false);
 
   useEffect(() => {
     if ("access_token" in localStorage) {
-      setLoginBtn("로그아웃");
+      const username = localStorage.getItem("username");
+      const avatar = localStorage.getItem("avatar");
+      setLoginAvatar(<img src={`${avatar}`} className="avatar" alt=""/>)
+      setLoginBtn(`${username}`);
     }
   }, [loginBtn]);
 
-  const [openSignup, setOpenSignup] = useState(false);
-  const [openLogin, setOpenLogin] = useState(false);
-
-  const goToSignUp = () => {
-    setOpenSignup(true);
-  };
-
-  const goToLogin = () => {
+  const handleUserState = () => {
     if (loginBtn === "로그인") {
-      setOpenLogin(true);
-    } else if (loginBtn === "로그아웃") {
-      window.localStorage.clear("access_token");
-      window.location.reload();
-      setLoginBtn("로그인");
+      setOpenLogin(!openLogin);
+    } else {
+      setOpenModal(!openModal);
     }
   };
 
   const handleClose = () => {
-    setOpenSignup(false);
     setOpenLogin(false);
   };
 
+  const handleLogout = () => {
+    window.localStorage.clear();
+    window.location.reload();
+    setLoginBtn("로그인");
+  };
+
   return (
-    <Background>
+    // <Portal elementId="modal-root">
+    <Background onClick={openModal && handleClose}>
       <NavWrapper>
         <Logo
           onClick={() => {
@@ -51,34 +55,31 @@ const Nav = () => {
           </svg>
         </Logo>
         <NavButton>
-          <div className="max">
-            <span
-              onClick={() => {
-                history.push("host");
-              }}
-            >
-              숙소 호스트되기
-            </span>
+          <div className="max nav">
+            <span>체험</span>
           </div>
-          <div className="max">
-            <span
-              onClick={() => {
-                history.push("/trips");
-              }}
-            >
-              여행
-            </span>
+          <div className="max nav">
+            <span>온라인 체험</span>
           </div>
-          <div className="max">
+          <div className="max nav">
             <span>도움말</span>
           </div>
 
-          <div onClick={goToLogin}>{loginBtn}</div>
+          <div className="LoginBtn nav" onClick={handleUserState}>
+            {loginBtn}{loginAvatar}
+            {openModal && (
+              <UserModal
+                openModal={openModal}
+                handleUserState={handleUserState}
+                handleLogout={handleLogout}
+              />
+            )}
+          </div>
         </NavButton>
       </NavWrapper>
-      {openSignup ? <Signup handleClose={handleClose} /> : null}
-      {openLogin ? <Login handleClose={handleClose} /> : null}
+      {openLogin && <Login openLogin={openLogin} handleClose={handleClose} />}
     </Background>
+    // </Portal>
   );
 };
 
@@ -87,6 +88,9 @@ export default Nav;
 //styled-components
 
 const NavWrapper = styled.header`
+  /* position: absolute; */
+  /* top: 0; */
+  background-color: white;
   margin: 0 auto;
   width: 100%;
   max-width: 1760px;
@@ -115,13 +119,14 @@ const NavButton = styled.div`
   display: flex;
   font-size: 14px;
   font-weight: 500;
-  .max {
+
+  .max.nav {
     @media only screen and (max-width: 1000px) {
       display: none;
     }
   }
 
-  div {
+  .nav {
     display: flex;
     justify-content: center;
     align-items: center;
@@ -138,17 +143,25 @@ const NavButton = styled.div`
       margin: 0 auto;
     }
   }
-  div:last-child {
+  .LoginBtn {
     border: 1px solid rgba(0, 0, 0, 0.1);
     border-radius: 21px;
     box-shadow: 0px 1px 2px rgba(0, 0, 0, 0.18);
     margin-left: 10px;
+    white-space: nowrap;
     &:hover {
       background-color: transparent;
+    }
+    .avatar{
+      width:26px;
+      height:26px;
+      border-radius:50%;
+      margin-left:8px;
     }
   }
 `;
 
 const Background = styled.div`
   width: 100%;
+  height: 100%;
 `;

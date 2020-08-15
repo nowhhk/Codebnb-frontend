@@ -1,7 +1,8 @@
+import React, { useEffect, useState } from "react";
+
 import Footer from "../../components/Footer";
 import MainItem from "./MainItem";
 import Nav from "../../components/Nav";
-import React from "react";
 import Search from "./Search";
 import img1 from "../../../src/images/1.png";
 import img2 from "../../../src/images/2.png";
@@ -15,7 +16,7 @@ const Main = () => {
   ));
 
   return (
-    <>
+    <div>
       <Nav />
       <MainWrapper>
         <Tab>
@@ -32,7 +33,7 @@ const Main = () => {
         <List>{list}</List>
       </MainWrapper>
       <Footer />
-    </>
+    </div>
   );
 };
 
