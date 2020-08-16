@@ -8,7 +8,8 @@
 - 프로젝트 기간: 20.6.8 ~ 20.6.19 | 2주
 
 ## Tech Stack
-- React-hooks, React-Redux, Styled-Component
+- Front-End: React-hooks, React-Redux, Styled-Component
+- Back-End: Django, MySQL [Repo](https://github.com/wecode-bootcamp-korea/Codebnb-backend)
 
 ## What did I do
 메인 페이지
