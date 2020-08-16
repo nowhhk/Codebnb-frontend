@@ -11,14 +11,23 @@
 - Front-End: React-hooks, React-Redux, Styled-Component
 - Back-End: Django, MySQL [Repo](https://github.com/wecode-bootcamp-korea/Codebnb-backend)
 
+## Pages
+- 메인 페이지
+- 로그인 페이지
+- 리스트 페이지
+- 상세 페이지
+- 예약 페이지
+- 예약 확인페이지
+- 호스트 등록 페이지
+
 ## What did I do
 메인 페이지
 - Media Query 반응형 적용
 - 유저가 입력한 검색값을 Redux를 사용하여 Global state로 관리하고,
 - query parameters로 전달하여 숙소 리스트 페이지로 라우팅
-로그인 페이지
 
-모달 형식의 페이지 레이아웃 구현
+로그인 페이지
+- 모달 페이지 레이아웃 구현
 - 구글과 페이스북의 소셜 API 이용하여 로그인 기능 구현
 - local storage을 활용하여 사용자 정보(token) 관리
 
