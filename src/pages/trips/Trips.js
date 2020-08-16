@@ -37,7 +37,7 @@ const Trips = () => {
         {upcoming.length === 0 ? (
           "다시 여행을 떠나실 준비가 되면 에어비앤비가 도와드리겠습니다."
         ) : (
-          <TripList list={upcoming} />
+          <TripList list={upcoming} activeTab={activeTab} />
         )}
       </div>
     ),
@@ -46,19 +46,17 @@ const Trips = () => {
         {past.length === 0 ? (
           "과거 여행이 없습니다. 하지만 여행을 완료하면 여기에서 확인하실 수 있습니다."
         ) : (
-          <TripList list={past} />
+          <TripList list={past} activeTab={activeTab} />
         )}
       </div>
     ),
   };
-  console.log("예정된예약", upcoming);
-  console.log("이전예약", past);
 
   return (
     <>
       <Wrap>
         <Nav />
-        <Form />
+        {/* <Form /> */}
         <TripsWrapper>
           <section>
             <h2>여행</h2>

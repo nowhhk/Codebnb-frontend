@@ -11,6 +11,10 @@ import img4 from "../../../src/images/4.png";
 import styled from "styled-components";
 
 const Main = () => {
+  useEffect(() => {
+    window.scrollTo(0, 0);
+  }, []);
+
   const list = items.map((item) => (
     <MainItem title={item.title} desc={item.desc} img={item.img} />
   ));

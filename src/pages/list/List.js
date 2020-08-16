@@ -1,18 +1,18 @@
-import React, { useState, useEffect } from "react";
-import { withRouter, useHistory, Link } from "react-router-dom";
-import { API } from "../../config";
-import Nav from "../../components/Nav";
-import Footer from "../../components/Footer";
-import SingleList from "./SingleList";
-import ListFilter from "./ListFilter";
-import MapView from "./map/MapView2";
-import JejuMap from "./map/MapJeju";
-import BusanMap from "./map/MapBusan";
-import Map from "./map/Map";
+import { IconBtn, ImgBtn } from "../../components/Buttons";
+import { Link, useHistory, withRouter } from "react-router-dom";
+import React, { useEffect, useState } from "react";
 
+import { API } from "../../config";
+import BusanMap from "./map/MapBusan";
+import Footer from "../../components/Footer";
+import JejuMap from "./map/MapJeju";
+import ListFilter from "./ListFilter";
+import Map from "./map/Map";
+import MapView from "./map/MapView2";
+import Nav from "../../components/Nav";
+import SingleList from "./SingleList";
 //import styles and assets
 import styled from "styled-components";
-import { ImgBtn, IconBtn } from "../../components/Buttons";
 
 const List = (props) => {
   const [data, setData] = useState([]);
@@ -72,8 +72,8 @@ const List = (props) => {
 
   const getData = (location, offsetNum) => {
     fetch(
-      // `${API}/room/list${location}&${placeQuery}&limit=${limit}&offset=${offsetNum}`,
-      "/data/data_jeju.json",
+      `${API}/room/list${location}&${placeQuery}&limit=${limit}&offset=${offsetNum}`,
+      // "/data/data_jeju.json",
       {
         headers: {
           "Content-type": "application/json",

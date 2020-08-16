@@ -58,10 +58,8 @@ const Login = ({ openLogin, handleClose }) => {
       }),
     })
       .then((response) => response.json())
-      // .then((response) => console.log(response))
       .then((response) => {
         localStorage.setItem("access_token", response.Authorization);
-        // window.location.reload();
       });
   };
 
