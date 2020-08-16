@@ -1,9 +1,10 @@
 import React, { Component } from "react";
-import { withRouter } from "react-router-dom";
-import styled from "styled-components";
+
+import { API } from "../../config";
 import Footer from "../../components/Footer";
 import ImageUploader from "react-images-upload";
-import { API } from "../../config";
+import styled from "styled-components";
+import { withRouter } from "react-router-dom";
 
 class Host extends Component {
   constructor(props) {
@@ -90,13 +91,7 @@ class Host extends Component {
     });
   };
 
-  handleSubmit = (e) => {
-    e.preventDefault();
-    const formData = new FormData();
-    for (let i = 0; i < this.state.images.length; i++) {
-      formData.append("images", this.state.images[i]);
-    }
-    this.setState({ images: formData });
+  onFetch = () => {
     const token = localStorage.getItem("access_token");
     fetch(`${API}/api/register/room`, {
       method: "POST",
@@ -108,14 +103,18 @@ class Host extends Component {
       body: JSON.stringify({
         inputs: this.state,
       }),
-    }).then((res) => console.log(res));
+    }).then(this.props.history.push("/detail/173"));
   };
 
-  // fileChangeHandler = (e) => {
-  //   this.setState({
-  //     images: e.target.files[0],
-  //   });
-  // };
+  handleSubmit = (e) => {
+    e.preventDefault();
+    const formData = new FormData();
+    for (let i = 0; i < this.state.images.length; i++) {
+      formData.append("images", this.state.images[i]);
+    }
+    this.setState({ images: formData }, this.onFetch);
+  };
+
   render() {
     const {
       place_type,

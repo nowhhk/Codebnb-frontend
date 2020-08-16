@@ -47,7 +47,9 @@ const Trip = (props) => {
           <span>{props.title}</span>
         </div>
       </Link>
-      <div>
+      <div
+        style={{ display: props.activeTab === "upcoming" ? "none" : "block" }}
+      >
         <Btn onClick={handleOpen}>리뷰 쓰기</Btn>
       </div>
       {openComment ? (
@@ -64,7 +66,7 @@ const Trip = (props) => {
 export default Trip;
 
 const TripThumbnail = styled.div`
-  width: 31%;
+  width: 28%;
   border-radius: 10px;
   margin-right: 30px;
   margin-bottom: 30px;

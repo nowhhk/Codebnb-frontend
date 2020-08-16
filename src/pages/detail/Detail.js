@@ -1,6 +1,8 @@
 import "react-dates/initialize";
 import "./reactdate.css";
 
+import * as searchActions from "../../store/modules/seacher";
+
 import {
   DateRangePicker,
   DayPickerRangeController,
@@ -12,11 +14,13 @@ import styled, { injectGlobal } from "styled-components";
 
 import { API } from "../../../src/config";
 import Calculation from "./Calculation/Calculation";
-import Calendar from "./calendar/Calendar";
+import Calendar from "../../components/Calendar/Calendar";
 import Footer from "../../../src/components/Footer";
 import Guest from "../../components/Search/Guest";
 import LocationMap from "../detail/LocationMap";
 import Nav from "../../components/Nav";
+import { bindActionCreators } from "redux";
+import { connect } from "react-redux";
 import moment from "moment";
 
 class Detail extends Component {
@@ -596,7 +600,6 @@ class Detail extends Component {
                   <ViewAll>
                     <div>모두 보기</div>
                   </ViewAll>
-                  <Guest />
                 </Convinience_Down_Left>
               </Convinience_Down>
             </Rule>
@@ -608,7 +611,21 @@ class Detail extends Component {
   }
 }
 
-export default Detail;
+const mapStateToProps = ({ seacher }) => ({
+  location: seacher.location,
+  startDay: seacher.startDay,
+  endDay: seacher.endDay,
+  adults: seacher.adults,
+  children: seacher.children,
+  infants: seacher.infants,
+});
+
+const mapDispatchToProps = (dispatch) => ({
+  searchActions: bindActionCreators(searchActions, dispatch),
+  // AnotherActions: bindActionCreators(anotherActions, dispatch)
+});
+
+export default connect(mapStateToProps, mapDispatchToProps)(Detail);
 
 const DetailWrapper = styled.div`
   /* div{

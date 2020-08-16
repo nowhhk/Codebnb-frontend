@@ -1,7 +1,8 @@
-import React, { useState, useEffect } from "react";
+import React, { useEffect, useState } from "react";
+
+import Trip from "./Trip";
 import styled from "styled-components";
 import { withRouter } from "react-router-dom";
-import Trip from "./Trip";
 
 const TripList = (props) => {
   const list = props.list.map((item) => {
@@ -15,6 +16,7 @@ const TripList = (props) => {
         address={item.address}
         room_id={item.room_id}
         host_id={item.host_id}
+        activeTab={props.activeTab}
       />
     );
   });

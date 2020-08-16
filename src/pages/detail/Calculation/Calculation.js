@@ -1,5 +1,7 @@
 import "../../detail/reactdate.css";
 
+import * as searchActions from "../../../store/modules/seacher";
+
 import {
   DateRangePicker,
   DayPickerRangeController,
@@ -9,7 +11,10 @@ import { Link, withRouter } from "react-router-dom";
 import React, { Component, Fragment, useEffect, useState } from "react";
 
 import { API } from "../../../config";
+import Calendar from "../../../components/Calendar/Calendar";
 import Guest from "../../../components/Search/Guest";
+import { bindActionCreators } from "redux";
+import { connect } from "react-redux";
 import styled from "styled-components";
 
 class Calculation extends Component {
@@ -72,11 +77,9 @@ class Calculation extends Component {
     }
   };
 
-  displayHandler = (endDate) => {
-    if (endDate) {
-      this.setState({ stage1: true });
-      this.setState({ stage2: false });
-    }
+  displayHandler = () => {
+    this.setState({ stage1: true });
+    this.setState({ stage2: false });
   };
 
   render() {
@@ -113,22 +116,9 @@ class Calculation extends Component {
             </PointWrapper>
           </TopWrapper>
           <MiddleWrapper>
-            <DateRangePicker
-              startDate={this.state.startDate}
-              startDateId="your_unique_start_date_id"
-              endDate={this.state.endDate}
-              endDateId="your_unique_end_date_id"
-              onDatesChange={({ startDate, endDate }) => {
-                this.setState({ startDate, endDate });
-                this.totalPriceCalculator(startDate, endDate);
-                this.displayHandler(endDate);
-                // this.discountHandler(endDate);
-              }}
-              focusedInput={this.state.focusedInput}
-              onFocusChange={(focusedInput) => this.setState({ focusedInput })}
-              appendToBody={true}
-              startDatePlaceholderText={"체크인"}
-              endDatePlaceholderText={"체크아웃"}
+            <Calendar
+              displayHandler={this.displayHandler}
+              totalPriceCalculator={this.totalPriceCalculator}
             />
           </MiddleWrapper>
 
@@ -142,7 +132,16 @@ class Calculation extends Component {
                 <BottomWrapper>
                   <Button>
                     <div className="linkButton">
-                      <Link to="/reservation">예약 하기</Link>
+                      <Link
+                        to={{
+                          pathname: "/reservation",
+                          state: {
+                            room_id: this.props.match.params.id,
+                          },
+                        }}
+                      >
+                        예약 하기
+                      </Link>
                     </div>
                   </Button>
                   <CommentWrapper>
@@ -211,7 +210,16 @@ class Calculation extends Component {
               ) : (
                 <BottomWrapper>
                   <Button>
-                    <Link to="/reservation">예약 하기</Link>
+                    <Link
+                      to={{
+                        pathname: "/reservation",
+                        state: {
+                          room_id: this.props.match.params.id,
+                        },
+                      }}
+                    >
+                      예약 하기
+                    </Link>
                   </Button>
                   <CommentWrapper>
                     예약 확정 전에는 요금이 청구되지 않습니다
@@ -301,8 +309,22 @@ class Calculation extends Component {
     );
   }
 }
+const mapStateToProps = ({ seacher }) => ({
+  location: seacher.location,
+  startDay: seacher.startDay,
+  endDay: seacher.endDay,
+  adults: seacher.adults,
+  children: seacher.children,
+  infants: seacher.infants,
+});
 
-export default withRouter(Calculation);
+const mapDispatchToProps = (dispatch) => ({
+  searchActions: bindActionCreators(searchActions, dispatch),
+  // AnotherActions: bindActionCreators(anotherActions, dispatch)
+});
+export default withRouter(
+  connect(mapStateToProps, mapDispatchToProps)(Calculation)
+);
 
 const CalendarWrapper = styled.div`
   width: 362.63px;

@@ -1,11 +1,8 @@
-import "react-dates/initialize";
-import "./reactdate.css";
-
 import * as searchActions from "../../store/modules/seacher";
 
 import React, { useState } from "react";
 
-import { DateRangePicker } from "react-dates";
+import Calendar from "../../components/Calendar/Calendar";
 import Guest from "../../components/Search/Guest";
 import { bindActionCreators } from "redux";
 import { connect } from "react-redux";
@@ -22,28 +19,8 @@ const Search = ({
   children,
   infants,
 }) => {
-  //위치
   const onChange = (e) => {
     searchActions.getLocation(e.target.value);
-  };
-
-  //체크인, 체크아웃 날짜
-  const [startDate, setStartDate] = useState(null);
-  const [endDate, setEndDate] = useState(null);
-  const [focusedInput, setFocusInput] = useState(null);
-
-  const onDatesChange = ({ startDate, endDate }) => {
-    let checkin, checkout;
-    setStartDate(startDate);
-    setEndDate(endDate);
-
-    if (startDate !== null && endDate !== null) {
-      checkin = startDate.format("YYYY-MM-DD");
-      checkout = endDate.format("YYYY-MM-DD");
-    }
-    //리덕스 store에 저장
-    searchActions.getStartDay(checkin);
-    searchActions.getEndDay(checkout);
   };
 
   const goToList = () => {
@@ -89,20 +66,7 @@ const Search = ({
             <InputBtn>
               <div>&nbsp;체크인/체크아웃</div>
               <div>
-                <DateRangePicker
-                  startDate={startDate} // momentPropTypes.momentObj or null,
-                  startDateId="your_unique_start_date_id" // PropTypes.string.isRequired,
-                  endDate={endDate} // momentPropTypes.momentObj or null,
-                  endDateId="your_unique_end_date_id" // PropTypes.string.isRequired,
-                  onDatesChange={({ startDate, endDate }) =>
-                    onDatesChange({ startDate, endDate })
-                  } // PropTypes.func.isRequired,
-                  focusedInput={focusedInput} // PropTypes.oneOf([START_DATE, END_DATE]) or null,
-                  onFocusChange={(focusedInput) => setFocusInput(focusedInput)} // PropTypes.func.isRequired,
-                  showClearDates={true}
-                  startDatePlaceholderText={"날짜 추가"}
-                  endDatePlaceholderText={""}
-                />
+                <Calendar />
               </div>
             </InputBtn>
           </SearchInput>

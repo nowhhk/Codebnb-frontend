@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from "react";
 
 import Login from "../pages/login/Login";
-import Portal from "./Portal";
 import UserModal from "./UserModal";
 import styled from "styled-components";
 import { useHistory } from "react-router";
@@ -17,7 +16,7 @@ const Nav = () => {
     if ("access_token" in localStorage) {
       const username = localStorage.getItem("username");
       const avatar = localStorage.getItem("avatar");
-      setLoginAvatar(<img src={`${avatar}`} className="avatar" alt=""/>)
+      setLoginAvatar(<img src={`${avatar}`} className="avatar" alt="" />);
       setLoginBtn(`${username}`);
     }
   }, [loginBtn]);
@@ -41,7 +40,6 @@ const Nav = () => {
   };
 
   return (
-    // <Portal elementId="modal-root">
     <Background onClick={openModal && handleClose}>
       <NavWrapper>
         <Logo
@@ -66,7 +64,8 @@ const Nav = () => {
           </div>
 
           <div className="LoginBtn nav" onClick={handleUserState}>
-            {loginBtn}{loginAvatar}
+            {loginBtn}
+            {loginAvatar}
             {openModal && (
               <UserModal
                 openModal={openModal}
@@ -79,7 +78,6 @@ const Nav = () => {
       </NavWrapper>
       {openLogin && <Login openLogin={openLogin} handleClose={handleClose} />}
     </Background>
-    // </Portal>
   );
 };
 
@@ -152,11 +150,11 @@ const NavButton = styled.div`
     &:hover {
       background-color: transparent;
     }
-    .avatar{
-      width:26px;
-      height:26px;
-      border-radius:50%;
-      margin-left:8px;
+    .avatar {
+      width: 26px;
+      height: 26px;
+      border-radius: 50%;
+      margin-left: 8px;
     }
   }
 `;

@@ -1,13 +1,27 @@
-import React, { useState, useEffect } from "react";
-import { useHistory } from "react-router-dom";
-import { API } from "../../config";
-import Nav from "../../components/Nav";
-import Footer from "../../components/Footer";
-import Textarea from "../../components/TextArea";
-import Summary from "./Summary";
-import styled from "styled-components";
+import * as searchActions from "../../store/modules/seacher";
 
-const Reservation = (props) => {
+import React, { useEffect, useState } from "react";
+
+import { API } from "../../config";
+import Footer from "../../components/Footer";
+import Nav from "../../components/Nav";
+import Summary from "./Summary";
+import Textarea from "../../components/TextArea";
+import { bindActionCreators } from "redux";
+import { connect } from "react-redux";
+import styled from "styled-components";
+import { useHistory } from "react-router-dom";
+import { withRouter } from "react-router-dom";
+
+const Reservation = ({
+  searchActions,
+  startDay,
+  endDay,
+  location,
+  adults,
+  children,
+  infants,
+}) => {
   let history = useHistory();
   // state
   const [data, setData] = useState([]);
@@ -29,9 +43,9 @@ const Reservation = (props) => {
   // get data
 
   useEffect(() => {
-    // fetch(`${API}/booking/payment?${room_id}&${display_currency}&${checkin}&${checkout}&${adults}`, {
+    window.scrollTo(0, 0);
     fetch(
-      `${API}/booking/payment?room_id=1&${currency}&checkin=2020-07-20&checkout=2020-07-31&adults=3`,
+      `${API}/booking/payment?room_id=1&${currency}&checkin=${startDay}&checkout=${endDay}&adults=${adults}`,
       {
         headers: {
           "Content-type": "application/json",
@@ -47,7 +61,7 @@ const Reservation = (props) => {
 
   useEffect(() => {
     fetch(
-      `${API}/booking/payment?room_id=1&${currency}&checkin=2020-07-20&checkout=2020-07-31&adults=3`,
+      `${API}/booking/payment?room_id=1&${currency}&checkin=${startDay}&checkout=${endDay}&adults=${adults}`,
       {
         headers: {
           "Content-type": "application/json",
@@ -98,21 +112,23 @@ const Reservation = (props) => {
   };
 
   const sendReservation = () => {
-    setReservation({
-      ...reservation,
-      room_id: data.room_id,
-      check_in: data.check_in_date,
-      check_out: data.check_out_date,
-      adults: data.guests_total,
-      children: 0,
-      infants: 0,
-      total_cost: (data.price && priceToNum(data.price)) * calcNights(),
-    });
+    setReservation(
+      {
+        ...reservation,
+        room_id: data.room_id,
+        check_in: startDay,
+        check_out: endDay,
+        adults: adults,
+        children: adults,
+        infants: infants,
+        total_cost: (data.price && priceToNum(data.price)) * calcNights(),
+      },
+      console.log(reservation)
+    );
 
-    const token = localStorage.getItem("token");
-
+    const token = localStorage.getItem("access_token");
     fetch(
-      `${API}/booking/payment?room_id=1&display_currency=KRW&checkin=2020-07-20&checkout=2020-07-31&adults=3`,
+      `${API}/booking/payment?room_id=1&display_currency=KRW&checkin=${startDay}&checkout=${endDay}&adults=${adults}`,
       {
         method: "POST",
         header: {
@@ -124,7 +140,7 @@ const Reservation = (props) => {
         }),
       }
     )
-      .then((res) => res.json())
+      // .then((res) => res.json())
       .then((res) => {
         console.log(res);
         if (res.status === 200) {
@@ -133,7 +149,7 @@ const Reservation = (props) => {
         }
       });
   };
-
+  console.log(reservation);
   return (
     <Container>
       <Nav />
@@ -738,4 +754,19 @@ const Right = styled.div`
   width: 40%;
 `;
 
-export default Reservation;
+const mapStateToProps = ({ seacher }) => ({
+  location: seacher.location,
+  startDay: seacher.startDay,
+  endDay: seacher.endDay,
+  adults: seacher.adults,
+  children: seacher.children,
+  infants: seacher.infants,
+});
+
+const mapDispatchToProps = (dispatch) => ({
+  searchActions: bindActionCreators(searchActions, dispatch),
+  // AnotherActions: bindActionCreators(anotherActions, dispatch)
+});
+export default withRouter(
+  connect(mapStateToProps, mapDispatchToProps)(Reservation)
+);
