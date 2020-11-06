@@ -1,6 +1,5 @@
 # Codebnb
 - [Demo](https://youtu.be/IhYx9S43GYw)
-- [Review Blog](https://velog.io/@nowhhk/Codebnb-%ED%94%84%EB%A1%9C%EC%A0%9D%ED%8A%B8-%EB%A6%AC%EB%B7%B0#codebnb)
 
 
 ## Description
